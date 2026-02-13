@@ -104,8 +104,8 @@ export default function DashboardLayout({
                                     {userEmail?.split('@')[0] || 'User'}
                                 </p>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                    <p className="text-[10px] font-medium text-slate-500 italic">Pro Plan</p>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
+                                    <p className="text-[10px] font-medium text-slate-500 italic">Free Plan</p>
                                 </div>
                             </div>
                             </div>
@@ -117,10 +117,13 @@ export default function DashboardLayout({
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                             </button>
                         </div>
-                        <div className="flex items-center justify-between px-1">
+                        <div className="flex items-center justify-between px-1 mb-2">
                             <span className="text-[9px] font-black font-mono text-slate-400 uppercase tracking-widest">Access_Tier</span>
-                            <span className="px-1.5 py-0.5 bg-blue-600 text-white text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase">Professional</span>
+                            <span className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase">General</span>
                         </div>
+                        <a href="mailto:huchialun97@gmail.com?subject=Enterprise Pro Plan Application" className="block w-full text-center py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white text-white dark:text-slate-900 text-[10px] font-bold rounded transition-colors uppercase tracking-wide">
+                            Upgrade to Pro
+                        </a>
                     </div>
                 </div>
             </aside>
