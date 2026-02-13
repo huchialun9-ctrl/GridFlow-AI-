@@ -124,9 +124,9 @@ export default function DashboardLayout({
                             <span className="text-[9px] font-black font-mono text-slate-400 uppercase tracking-widest">Access_Tier</span>
                             <span className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase">General</span>
                         </div>
-                        <a href="mailto:huchialun97@gmail.com?subject=Enterprise Pro Plan Application" className="block w-full text-center py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white text-white dark:text-slate-900 text-[10px] font-bold rounded transition-colors uppercase tracking-wide">
+                        <Link href="/dashboard/upgrade" className="block w-full text-center py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white text-white dark:text-slate-900 text-[10px] font-bold rounded transition-colors uppercase tracking-wide">
                             Upgrade to Pro
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </aside>
