@@ -137,10 +137,15 @@ export default function Automation() {
         }
     };
 
-    const handleCreateCustom = () => {
-        const name = prompt("Enter a name for your new recipe:");
-        if (name) {
-            handleCreateTemplate('custom', name, 'custom.com', 'Custom extraction recipe');
+    const openCreateModal = () => {
+        setNewItemName('');
+        setCreateModalOpen(true);
+    };
+
+    const confirmCreateRecipe = () => {
+        if (newItemName) {
+            handleCreateTemplate('custom', newItemName, 'custom.com', 'Custom extraction recipe');
+            setCreateModalOpen(false);
         }
     };
 
@@ -149,6 +154,8 @@ export default function Automation() {
     const [apiKeyInput, setApiKeyInput] = useState('');
     const [resultModalOpen, setResultModalOpen] = useState(false);
     const [resultData, setResultData] = useState<string | null>(null);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [newItemName, setNewItemName] = useState('');
 
     const openRunModal = (id: string) => {
         setSelectedRecipeId(id);
@@ -255,6 +262,28 @@ export default function Automation() {
                                     Run Recipe
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Result Modal */}
+            {resultModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-2xl p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all flex flex-col max-h-[80vh]">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Extraction Result</h3>
+                        <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 p-4 mb-4">
+                            <pre className="text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-pre-wrap break-all">
+                                {resultData}
+                            </pre>
+                        </div>
+                        <div className="flex justify-end">
+                            <button 
+                                onClick={() => setResultModalOpen(false)}
+                                className="px-6 py-2 text-sm font-bold bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-400 hover:text-white transition-colors rounded-lg shadow-lg"
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -380,7 +409,7 @@ export default function Automation() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Create New */}
                     <div 
-                        onClick={handleCreateCustom}
+                        onClick={openCreateModal}
                         className="group border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center p-6 space-y-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-emerald-500/50 hover:scale-[1.02] transition-all cursor-pointer min-h-[250px]"
                     >
                         <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-400 group-hover:text-emerald-500 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-900/20 transition-colors">
