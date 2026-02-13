@@ -17,12 +17,24 @@ export default function DashboardLayout({
     const router = useRouter();
     const pathname = usePathname();
     const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [tier, setTier] = useState<string>('free');
 
     useEffect(() => {
         const getUser = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 setUserEmail(user.email || 'User');
+                
+                // Fetch profile for tier
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('subscription_tier')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile?.subscription_tier) {
+                    setTier(profile.subscription_tier);
+                }
             }
         };
         getUser();
@@ -30,6 +42,7 @@ export default function DashboardLayout({
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
+        // Clear local storage if any
         router.push('/login');
     };
 
@@ -107,8 +120,8 @@ export default function DashboardLayout({
                                     {userEmail?.split('@')[0] || 'User'}
                                 </p>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-                                    <p className="text-[10px] font-medium text-slate-500 italic">Free Plan</p>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${tier === 'pro' ? 'bg-emerald-500' : 'bg-slate-400'}`}></div>
+                                    <p className="text-[10px] font-medium text-slate-500 italic">{tier === 'pro' ? 'Pro Plan' : 'Free Plan'}</p>
                                 </div>
                             </div>
                             </div>
@@ -122,11 +135,19 @@ export default function DashboardLayout({
                         </div>
                         <div className="flex items-center justify-between px-1 mb-2">
                             <span className="text-[9px] font-black font-mono text-slate-400 uppercase tracking-widest">Access_Tier</span>
-                            <span className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase">General</span>
+                            <span className={`px-1.5 py-0.5 text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase ${
+                                tier === 'pro' 
+                                ? 'bg-blue-600 text-white' 
+                                : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                            }`}>
+                                {tier === 'pro' ? 'Professional' : 'General'}
+                            </span>
                         </div>
-                        <Link href="/dashboard/upgrade" className="block w-full text-center py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white text-white dark:text-slate-900 text-[10px] font-bold rounded transition-colors uppercase tracking-wide">
-                            Upgrade to Pro
-                        </Link>
+                        {tier !== 'pro' && (
+                            <Link href="/dashboard/upgrade" className="block w-full text-center py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white text-white dark:text-slate-900 text-[10px] font-bold rounded transition-colors uppercase tracking-wide">
+                                Upgrade to Pro
+                            </Link>
+                        )}
                     </div>
                 </div>
             </aside>
