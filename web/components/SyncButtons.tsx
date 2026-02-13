@@ -106,19 +106,47 @@ export default function SyncButtons({ data }: { data: any }) {
 
     return (
         <div className="flex gap-3">
+            <style jsx>{`
+                @keyframes shimmer {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+                .shimmer-bg {
+                    position: relative;
+                    overflow: hidden;
+                }
+                .shimmer-bg::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    background: linear-gradient(
+                        90deg,
+                        transparent,
+                        rgba(255, 255, 255, 0.2),
+                        transparent
+                    );
+                    animation: shimmer 2s infinite;
+                }
+            `}</style>
             <button
                 onClick={handleSheetsSync}
                 disabled={isSyncingSheets || sheetsSuccess}
-                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition-all disabled:opacity-50 shadow-md shadow-emerald-600/20"
+                style={{ backgroundColor: '#1D6F42' }}
+                className={`flex items-center gap-2 px-4 py-2 text-white text-xs font-bold rounded-xl transition-all disabled:opacity-50 shadow-lg shadow-emerald-900/20 hover:scale-105 active:scale-95 ${!isSyncingSheets && !sheetsSuccess ? 'shimmer-bg' : ''}`}
             >
                 {isSyncingSheets ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                 ) : sheetsSuccess ? (
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-4 h-4" />
                 ) : (
-                    <FileSpreadsheet className="w-3.5 h-3.5" />
+                    <FileSpreadsheet className="w-4 h-4" />
                 )}
-                {sheetsSuccess ? 'Cloud Sync & Downloaded' : 'Managed Cloud Export'}
+                <span className="tracking-tight">
+                    {sheetsSuccess ? 'Cloud Sync & Downloaded' : 'Export to Excel (.xlsx)'}
+                </span>
             </button>
         </div>
     );

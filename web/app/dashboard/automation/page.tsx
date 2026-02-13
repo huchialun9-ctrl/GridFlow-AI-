@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Loader2, Play, Trash2, Plus, Sparkles } from 'lucide-react';
+import { Loader2, Play, Trash2, Plus, Sparkles, Wand2, FileText, Presentation } from 'lucide-react';
 
 import { supabase } from '@/lib/supabaseClient';
 
@@ -277,9 +277,21 @@ export default function Automation() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
-                                    <input type="checkbox" defaultChecked className="rounded border-slate-300 dark:border-slate-700 text-blue-500" />
-                                    <span className="text-[10px] text-slate-500">Auto-cite Source URLs (Academic Integrity)</span>
+                                 <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800 justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-1 text-[#2B579A]" title="Word Report (.docx)">
+                                            <Wand2 className="w-3 h-3" />
+                                            <FileText className="w-4 h-4" />
+                                        </div>
+                                        <div className="flex items-center gap-1 text-[#B7472A]" title="PowerPoint Presentation (.pptx)">
+                                            <Presentation className="w-4 h-4" />
+                                            <span className="text-[8px] font-black bg-orange-100 dark:bg-orange-900/40 text-[#B7472A] dark:text-[#FFA07A] px-1 rounded border border-[#B7472A]/20">AI POWER</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <input type="checkbox" defaultChecked className="w-3 h-3 rounded border-slate-300 dark:border-slate-700 text-blue-500" />
+                                        <span className="text-[10px] text-slate-500">Auto-cite Source URLs</span>
+                                    </div>
                                 </div>
                             </div>
                             
