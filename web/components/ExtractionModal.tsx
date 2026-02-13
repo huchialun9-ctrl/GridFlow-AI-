@@ -6,18 +6,20 @@ import { useState } from 'react';
 interface ExtractionModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (url: string) => void;
+    onSubmit: (url: string, mode: string) => void;
+    initialMode?: 'excel' | 'word' | 'ppt';
 }
 
-export default function ExtractionModal({ isOpen, onClose, onSubmit }: ExtractionModalProps) {
+export default function ExtractionModal({ isOpen, onClose, onSubmit, initialMode = 'excel' }: ExtractionModalProps) {
     const [url, setUrl] = useState('');
+    const [mode, setMode] = useState(initialMode);
 
     if (!isOpen) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (url) {
-            onSubmit(url);
+            onSubmit(url, mode);
             setUrl('');
         }
     };
@@ -33,6 +35,26 @@ export default function ExtractionModal({ isOpen, onClose, onSubmit }: Extractio
                 </div>
                 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold font-mono text-slate-400 uppercase tracking-widest">Processing_Mode</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {['excel', 'word', 'ppt'].map((m) => (
+                                <button
+                                    key={m}
+                                    type="button"
+                                    onClick={() => setMode(m as any)}
+                                    className={`py-2 text-[10px] font-black uppercase rounded-lg border transition-all ${
+                                        mode === m 
+                                        ? 'bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 border-transparent shadow-md' 
+                                        : 'bg-slate-50 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-400'
+                                    }`}
+                                >
+                                    {m}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     <div className="space-y-2">
                         <label className="text-[10px] font-bold font-mono text-slate-400 uppercase tracking-widest">Source_Origin_URL</label>
                         <input
@@ -52,7 +74,7 @@ export default function ExtractionModal({ isOpen, onClose, onSubmit }: Extractio
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             <p className="text-[11px] text-blue-700 dark:text-blue-400 font-medium leading-relaxed uppercase font-mono">
-                                System will deploy active nodes to parse the specified manifest. Ensure the URL is public-facing.
+                                System will deploy active nodes to parse the specified manifest using <span className="font-black underline">{mode.toUpperCase()}</span> protocol.
                             </p>
                         </div>
                     </div>
@@ -69,7 +91,7 @@ export default function ExtractionModal({ isOpen, onClose, onSubmit }: Extractio
                             type="submit"
                             className="flex-1 px-4 py-2.5 bg-slate-900 dark:bg-slate-50 hover:bg-black dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold font-mono rounded-lg transition-all shadow-lg shadow-slate-200 dark:shadow-none"
                         >
-                            EXECUTE_SEQUENCE
+                            EXECUTE_{mode.toUpperCase()}
                         </button>
                     </div>
                 </form>

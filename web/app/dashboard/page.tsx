@@ -17,6 +17,7 @@ export default function Dashboard() {
     const [renamingId, setRenamingId] = useState<string | null>(null);
     const [newName, setNewName] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [processMode, setProcessMode] = useState<'excel' | 'word' | 'ppt'>('excel');
     const [stats, setStats] = useState({
         totalRows: 0,
         activeSessions: 0,
@@ -166,6 +167,10 @@ export default function Dashboard() {
         setIsModalOpen(true);
     };
 
+    const handleModeSelect = (mode: 'excel' | 'word' | 'ppt') => {
+        setProcessMode(mode);
+    };
+
     return (
         <div className="space-y-8 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Header & Search */}
@@ -206,8 +211,11 @@ export default function Dashboard() {
             </div>
 
             {/* Strategic Capability Map */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-900/5 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
-                <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-900/5 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner relative z-10">
+                <div 
+                    onClick={() => handleModeSelect('excel')}
+                    className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer hover:bg-white dark:hover:bg-slate-800/50 ${processMode === 'excel' ? 'border-[#1D6F42] bg-white dark:bg-slate-800 shadow-lg' : 'border-transparent'}`}
+                >
                     <div className="flex items-center gap-2 mb-2">
                         <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-[#1D6F42]">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
@@ -220,7 +228,10 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 relative">
+                <div 
+                    onClick={() => handleModeSelect('word')}
+                    className={`flex flex-col gap-2 relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:bg-white dark:hover:bg-slate-800/50 ${processMode === 'word' ? 'border-[#2B579A] bg-white dark:bg-slate-800 shadow-lg' : 'border-transparent'}`}
+                >
                     <div className="absolute -top-2 -right-2 bg-blue-600 text-[8px] font-black text-white px-2 py-0.5 rounded-full shadow-lg border-2 border-white dark:border-slate-900 animate-bounce">AI POWERED</div>
                     <div className="flex items-center gap-2 mb-2">
                         <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-[#2B579A]">
@@ -234,7 +245,10 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <div 
+                    onClick={() => handleModeSelect('ppt')}
+                    className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer hover:bg-white dark:hover:bg-slate-800/50 ${processMode === 'ppt' ? 'border-[#B7472A] bg-white dark:bg-slate-800 shadow-lg' : 'border-transparent'}`}
+                >
                     <div className="flex items-center gap-2 mb-2">
                         <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-[#B7472A]">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
@@ -494,6 +508,7 @@ export default function Dashboard() {
                 isOpen={isExtModalOpen}
                 onClose={() => setIsExtModalOpen(false)}
                 onSubmit={handleNewTask}
+                initialMode={processMode}
             />
         </div>
     );
