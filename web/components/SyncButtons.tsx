@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Cloud, FileSpreadsheet, Check, Loader2, Github } from 'lucide-react';
+import XLSX from 'xlsx-js-style';
 
 export default function SyncButtons({ data }: { data: any }) {
     const [isSyncingGist, setIsSyncingGist] = useState(false);
@@ -57,28 +58,81 @@ export default function SyncButtons({ data }: { data: any }) {
                 return;
             }
 
-            // Generate CSV
-            const headers = Object.keys(data.rows[0]).join(',');
-            const csvRows = data.rows.map((row: any) => 
-                Object.values(row).map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')
-            ).join('\n');
-            const csvContent = `${headers}\n${csvRows}`;
+            // 1. Prepare Data
+            // Ensure rows are objects. If they are arrays, convert to objects based on headers if available, or use index keys.
+            let wsData = [];
+            if (Array.isArray(data.rows[0])) {
+                // If rows are arrays (e.g. [[val1, val2]]), prepend headers row
+                 wsData = [data.headers, ...data.rows];
+            } else {
+                // If rows are objects (e.g. [{col1: val1}]), SheetJS handles headers automatically
+                wsData = data.rows;
+            }
 
-            // Trigger Download
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', `${(data.name || 'export').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // 2. Create Search Sheet
+            const ws = XLSX.utils.json_to_sheet(wsData);
+
+            // 3. Styling Logic
+            const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+            const colWidths: number[] = [];
+
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                let maxLen = 10; // Min width
+
+                // Iterate over rows to find max length
+                for (let R = range.s.r; R <= range.e.r; ++R) {
+                    const cellRef = XLSX.utils.encode_cell({ c: C, r: R });
+                    const cell = ws[cellRef];
+                    if (cell && cell.v) {
+                        const len = String(cell.v).length;
+                        if (len > maxLen) maxLen = len;
+                    }
+                }
+                // Cap width at 50
+                colWidths.push(Math.min(maxLen + 2, 50));
+
+                // Add Header Style (First Row)
+                const headerRef = XLSX.utils.encode_cell({ c: C, r: 0 });
+                if (!ws[headerRef]) continue;
+
+                ws[headerRef].s = {
+                    font: {
+                        name: 'Arial',
+                        sz: 12,
+                        bold: true,
+                        color: { rgb: "FFFFFF" }
+                    },
+                    fill: {
+                        fgColor: { rgb: "4F46E5" } // Indigo-600
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: "center"
+                    },
+                    border: {
+                        top: { style: 'thin', color: { rgb: "000000" } },
+                        bottom: { style: 'thin', color: { rgb: "000000" } },
+                        left: { style: 'thin', color: { rgb: "000000" } },
+                        right: { style: 'thin', color: { rgb: "000000" } }
+                    }
+                };
+            }
+
+            // Set Column Widths
+            ws['!cols'] = colWidths.map(w => ({ wch: w }));
+
+            // 4. Create Workbook and Write
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "GridFlow Data");
+            
+            const filename = `${(data.name || 'export').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, filename);
 
             setSheetsSuccess(true);
             setTimeout(() => setSheetsSuccess(false), 3000);
         } catch (error) {
             console.error("Export failed", error);
-            alert("Export failed");
+            alert("Export failed: " + (error as any).message);
         } finally {
             setIsSyncingSheets(false);
         }
@@ -104,7 +158,7 @@ export default function SyncButtons({ data }: { data: any }) {
             <button
                 onClick={handleSheetsSync}
                 disabled={isSyncingSheets || sheetsSuccess}
-                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition-all disabled:opacity-50"
+                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition-all disabled:opacity-50 shadow-md shadow-emerald-600/20"
             >
                 {isSyncingSheets ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -113,7 +167,7 @@ export default function SyncButtons({ data }: { data: any }) {
                 ) : (
                     <FileSpreadsheet className="w-3.5 h-3.5" />
                 )}
-                {sheetsSuccess ? 'Exported' : 'Export to Sheets'}
+                {sheetsSuccess ? 'Exported Clean Excel' : 'Export Clean Excel'}
             </button>
         </div>
     );
