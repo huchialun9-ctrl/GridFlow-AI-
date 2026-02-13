@@ -38,22 +38,22 @@ export default function InnovationShowcase() {
                                 <p className="text-blue-600 dark:text-blue-400 font-mono text-[10px] font-bold uppercase tracking-widest mb-4">From_Data_to_Executive_Insight</p>
                                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
                                     Transforms unstructured crawl payloads into presentation-ready <strong>PPTX</strong> and <strong>DOCX</strong> reports. 
-                                    Powered by Gemini 1.5 semantic analysis to summarize, categorize, and format data into business-standard layouts.
+                                    Powered by Gemini 1.5 semantic analysis to summarize, categorize, and format data into business-standard layouts—with automated <strong>Academic Integrity</strong> sourcing.
                                 </p>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-900 dark:text-slate-50 flex items-center gap-1.5">
-                                        <FileText className="w-3 h-3 text-blue-500" /> 3-Line Tables
+                                        <Layout className="w-3 h-3 text-blue-500" /> Tone & Structure
                                     </div>
-                                    <p className="text-[10px] text-slate-500">Auto-formatted academic & business table standards.</p>
+                                    <p className="text-[10px] text-slate-500">Select from Professional, Student, or Critical perspectives.</p>
                                 </div>
                                 <div className="space-y-1">
                                     <div className="text-xs font-bold text-slate-900 dark:text-slate-50 flex items-center gap-1.5">
-                                        <Layout className="w-3 h-3 text-blue-500" /> Auto-Slides
+                                        <ShieldCheck className="w-3 h-3 text-blue-500" /> Source Integrity
                                     </div>
-                                    <p className="text-[10px] text-slate-500">Instant slide generation from complex datasets.</p>
+                                    <p className="text-[10px] text-slate-500">Auto-labeled URLs and citations in document footers.</p>
                                 </div>
                             </div>
                         </div>

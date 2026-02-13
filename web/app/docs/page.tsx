@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronLeft, Github, Book, Terminal, Shield, Cpu, Database, Cloud } from 'lucide-react';
+import { ChevronLeft, Github, Book, Terminal, Shield, Cpu, Database, Cloud, Sparkles, BookOpen } from 'lucide-react';
 
 export default function Docs() {
     return (
@@ -80,12 +80,12 @@ export default function Docs() {
                             <div className="text-slate-300">{`3. SUPABASE_STORAGE => UPLOADING_ENCRYPTED_ASSET`}</div>
                             <div className="text-slate-300">{`4. DATABASE_AUDIT => LOGGING_EXPORT_EVENT`}</div>
                             <div className="text-emerald-500">{`[SUCCESS] CLOUD_ASSET_READY_FOR_SYNC`}</div>
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg- emerald-500 animate-pulse"></div>
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-500 animate-pulse"></div>
                         </div>
                     </div>
                 </section>
 
-                {/* Strategic Innovations Deep Dive */}
+                {/* Strategic Innovations & Use Cases */}
                 <section id="innovations" className="mb-24 space-y-16">
                     <div className="space-y-4">
                         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
@@ -99,7 +99,7 @@ export default function Docs() {
                             <div className="p-6 border border-slate-100 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
                                 <h4 className="font-bold text-sm mb-2 text-slate-900 dark:text-slate-50">Report Pre-processing</h4>
                                 <p className="text-xs text-slate-500 leading-relaxed">
-                                    Gemini 1.5 Flash analyzes extracted rows to identify trends, key-performance indicators (KPIs), and sentiment, automatically generating high-level summaries for the document header.
+                                    Gemini 1.5 Flash analyzes extracted rows to identify trends, KPIs, and sentiment, automatically generating high-level summaries for the document header.
                                 </p>
                             </div>
                             <div className="p-6 border border-slate-100 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
@@ -111,7 +111,7 @@ export default function Docs() {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 pt-16 border-t border-slate-100 dark:border-slate-800">
                         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
                             <Shield className="w-8 h-8 text-emerald-500" />
                             Enterprise Data Hub
@@ -124,17 +124,74 @@ export default function Docs() {
                                 <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 text-emerald-600 font-mono text-xs">01</div>
                                 <div>
                                     <h4 className="font-bold text-slate-900 dark:text-slate-50">Security Infrastructure</h4>
-                                    <p className="text-sm text-slate-500 leading-relaxed">Leverages Supabase <strong>Row Level Security (RLS)</strong> to provide cryptographic identity isolation, ensuring one user's data is never visible to another, even within the same database engine.</p>
+                                    <p className="text-sm text-slate-500 leading-relaxed">Leverages Supabase <strong>Row Level Security (RLS)</strong> to provide cryptographic identity isolation.</p>
                                 </div>
                             </li>
                             <li className="flex gap-4">
                                 <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 text-emerald-600 font-mono text-xs">02</div>
                                 <div>
                                     <h4 className="font-bold text-slate-900 dark:text-slate-50">No-Code API Interface</h4>
-                                    <p className="text-sm text-slate-500 leading-relaxed">Exposes dynamic endpoints via <code>sk_live_...</code> secure tokens. This allows non-technical users to pipe web-scraped data directly into Zapier, Notion, or internal dashboards without writing a single line of Python/Node.js.</p>
+                                    <p className="text-sm text-slate-500 leading-relaxed">Exposes dynamic endpoints via <code>sk_live_...</code> secure tokens for zero-code integrations.</p>
                                 </div>
                             </li>
                         </ul>
+                    </div>
+
+                    <div className="space-y-4 pt-16 border-t border-slate-100 dark:border-slate-800">
+                        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
+                            <BookOpen className="w-8 h-8 text-indigo-500" />
+                            Academic & Business Use Cases
+                        </h2>
+                        <div className="grid md:grid-cols-3 gap-6 mt-8">
+                            <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <h4 className="font-bold text-indigo-600 mb-2">Student Focus</h4>
+                                <p className="text-xs text-slate-500 leading-relaxed">
+                                    Quickly synthesize literature reviews into Word drafts with personal reflection placeholders.
+                                </p>
+                            </div>
+                            <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <h4 className="font-bold text-emerald-600 mb-2">Teacher Focus</h4>
+                                <p className="text-xs text-slate-500 leading-relaxed">
+                                    Analyze educational trends and auto-generate lesson plan outlines or workshop summaries.
+                                </p>
+                            </div>
+                            <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <h4 className="font-bold text-blue-600 mb-2">Business Focus</h4>
+                                <p className="text-xs text-slate-500 leading-relaxed">
+                                    Crawl competitive intelligence and transform it into "Competitor Analysis" slide decks.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-12 border-t border-slate-100 dark:border-slate-800">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-6 font-mono text-xs uppercase tracking-widest">Workflow Capability Map</h3>
+                        <table className="w-full text-left border-collapse font-mono text-[10px]">
+                            <thead>
+                                <tr className="border-b border-slate-200 dark:border-slate-800">
+                                    <th className="py-4 font-bold text-slate-900 dark:text-slate-50">Module</th>
+                                    <th className="py-4 font-bold text-slate-900 dark:text-slate-50">Action</th>
+                                    <th className="py-4 font-bold text-slate-900 dark:text-slate-50">Output</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-slate-500">
+                                <tr className="border-b border-slate-50 dark:border-slate-900">
+                                    <td className="py-4">Data Collection</td>
+                                    <td className="py-4">Scrape web tables/lists.</td>
+                                    <td className="py-4 text-emerald-500 font-bold">Excel (.xlsx)</td>
+                                </tr>
+                                <tr className="border-b border-slate-50 dark:border-slate-900">
+                                    <td className="py-4">Literature Summary</td>
+                                    <td className="py-4">Analyze articles & news.</td>
+                                    <td className="py-4 text-blue-500 font-bold">Word (.docx)</td>
+                                </tr>
+                                <tr>
+                                    <td className="py-4">Dynamic Presentation</td>
+                                    <td className="py-4">Visualize data & AI insights.</td>
+                                    <td className="py-4 text-orange-500 font-bold">PowerPoint (.pptx)</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </section>
 
@@ -149,33 +206,9 @@ export default function Docs() {
                             <p className="text-sm text-slate-500 font-light mt-1">Lead Architect of GridFlow AI</p>
                         </div>
                     </div>
-                    <p className="mt-8 text-slate-600 dark:text-slate-400 italic font-serif leading-relaxed">
-                        "GridFlow AI was born from the need to transform unstructured web chaos into structured enterprise knowledge with transparency and integrity."
-                    </p>
                 </section>
-
-                {/* CTAs */}
-                <div className="mt-24 text-center space-y-8">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Ready to extend the protocol?</h2>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
-                        <a 
-                            href="https://github.com/huchialun9-ctrl/GridFlow-AI-" 
-                            target="_blank"
-                            className="px-8 py-3 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold rounded-xl hover:scale-105 transition-all shadow-xl"
-                        >
-                            Open GitHub Repository
-                        </a>
-                        <Link 
-                            href="/solutions" 
-                            className="px-8 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-                        >
-                            View Industry Solutions
-                        </Link>
-                    </div>
-                </div>
             </main>
 
-            {/* Simple Footer Docs */}
             <footer className="py-12 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
                 <div className="container mx-auto px-6 text-center text-[10px] font-mono text-slate-400 uppercase tracking-widest">
                     Documentation Lifecycle_2026 // GRIDFLOW_AI_CORE

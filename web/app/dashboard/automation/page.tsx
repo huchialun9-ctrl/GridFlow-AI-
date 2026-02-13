@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Loader2, Play, Trash2, Plus } from 'lucide-react';
+import { Loader2, Play, Trash2, Plus, Sparkles } from 'lucide-react';
 
 import { supabase } from '@/lib/supabaseClient';
 
@@ -248,10 +248,39 @@ export default function Automation() {
                                     onChange={(e) => setApiKeyInput(e.target.value)}
                                     placeholder="Enter your API Key..."
                                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-slate-400"
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') confirmRunRecipe();
-                                    }}
                                 />
+                            </div>
+
+                            {/* Report Configuration */}
+                            <div className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl space-y-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Sparkles className="w-4 h-4 text-blue-500" />
+                                    <span className="text-[10px] font-bold text-slate-900 dark:text-slate-50 uppercase tracking-widest">AI Report Settings</span>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Tone</label>
+                                        <select className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1.5 px-3 text-xs outline-none">
+                                            <option>Professional</option>
+                                            <option>Academic/Student</option>
+                                            <option>Critical Thinking</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Structure</label>
+                                        <select className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1.5 px-3 text-xs outline-none">
+                                            <option>Standard Summary</option>
+                                            <option>SWOT Analysis</option>
+                                            <option>Learning Reflection</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                                    <input type="checkbox" defaultChecked className="rounded border-slate-300 dark:border-slate-700 text-blue-500" />
+                                    <span className="text-[10px] text-slate-500">Auto-cite Source URLs (Academic Integrity)</span>
+                                </div>
                             </div>
                             
                             <div className="flex justify-end gap-3 pt-2">
@@ -264,9 +293,12 @@ export default function Automation() {
                                 <button 
                                     onClick={confirmRunRecipe}
                                     disabled={!apiKeyInput}
-                                    className="px-4 py-2 text-sm font-bold bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-slate-900/20"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') confirmRunRecipe();
+                                    }}
+                                    className="px-4 py-2 text-sm font-bold bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20"
                                 >
-                                    Run_Recipe
+                                    Confirm & Run
                                 </button>
                             </div>
                         </div>
