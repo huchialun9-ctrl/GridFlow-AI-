@@ -10,7 +10,8 @@ export async function GET(request: Request) {
         const supabase = createClient()
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {
-            return NextResponse.redirect(`https://gridflow-ai-production.up.railway.app${next}`)
+            const requestUrl = new URL(request.url)
+            return NextResponse.redirect(`${requestUrl.origin}${next}`)
         }
     }
 

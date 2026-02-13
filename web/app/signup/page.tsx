@@ -25,7 +25,7 @@ export default function Signup() {
                 email,
                 password,
                 options: {
-                    emailRedirectTo: `https://gridflow-ai-production.up.railway.app/auth/callback`,
+                    emailRedirectTo: `${window.location.origin}/auth/callback`,
                 },
             })
 
@@ -42,7 +42,7 @@ export default function Signup() {
         await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `https://gridflow-ai-production.up.railway.app/auth/callback`,
+                redirectTo: `${window.location.origin}/auth/callback`,
             },
         })
     }

@@ -42,7 +42,7 @@ export default function Login() {
         await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `https://gridflow-ai-production.up.railway.app/auth/callback`,
+                redirectTo: `${window.location.origin}/auth/callback`,
             },
         })
     }
