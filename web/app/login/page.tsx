@@ -28,6 +28,11 @@ export default function Login() {
             router.push('/dashboard')
         } catch (err: any) {
             setError(err.message)
+            // If it's a 400 or invalid credentials, clear storage to be safe
+            if (err.status === 400 || err.message.toLowerCase().includes('invalid')) {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
         } finally {
             setLoading(false)
         }

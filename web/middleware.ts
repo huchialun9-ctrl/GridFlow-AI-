@@ -29,6 +29,9 @@ export async function middleware(request: NextRequest) {
                     )
                 },
             },
+            cookieOptions: {
+                name: 'gridflow-ai-auth-v2', // Custom cookie name to avoid conflicts
+            }
         }
     )
 
