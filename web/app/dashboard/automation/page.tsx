@@ -147,6 +147,8 @@ export default function Automation() {
     const [runModalOpen, setRunModalOpen] = useState(false);
     const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
     const [apiKeyInput, setApiKeyInput] = useState('');
+    const [resultModalOpen, setResultModalOpen] = useState(false);
+    const [resultData, setResultData] = useState<string | null>(null);
 
     const openRunModal = (id: string) => {
         setSelectedRecipeId(id);
@@ -156,16 +158,17 @@ export default function Automation() {
 
     const confirmRunRecipe = async () => {
         if (!apiKeyInput || !selectedRecipeId) return;
-        setRunModalOpen(false); // Close immediately or wait? Better close and show loading/outcome.
+        setRunModalOpen(false); 
 
         try {
             const res = await fetch(`/api/v1/run/${selectedRecipeId}`, {
                 headers: { 'x-api-key': apiKeyInput }
             });
             const result = await res.json();
-            alert(JSON.stringify(result, null, 2)); // Could replace this alert too, but step by step.
+            setResultData(JSON.stringify(result, null, 2));
+            setResultModalOpen(true);
         } catch (e) {
-            alert("Failed to run recipe");
+            showNotification("Failed to run recipe", 'error');
         }
     };
 
