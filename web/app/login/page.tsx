@@ -33,7 +33,7 @@ export default function Login() {
         }
     }
 
-    const handleSocialLogin = async (provider: 'github' | 'google') => {
+    const handleSocialLogin = async (provider: 'github') => {
         await supabase.auth.signInWithOAuth({
             provider,
             options: {
