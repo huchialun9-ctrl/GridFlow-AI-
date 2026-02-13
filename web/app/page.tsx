@@ -187,11 +187,14 @@ export default async function Home() {
             © 2026 GRIDFLOW_AI. SYSTEMS OPERATIONAL.
           </div>
 
-          <div className="flex gap-6">
-            <Link href="#" className="flex items-center gap-2 text-xs font-mono font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <div className="flex gap-6 items-center">
+            <a href="mailto:huchialun97@gmail.com" className="text-xs font-mono font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
+              Contact: huchialun97@gmail.com
+            </a>
+            <div className="flex items-center gap-2 text-xs font-mono font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-default">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Status: All Systems Normal
-            </Link>
+            </div>
           </div>
         </div>
       </footer>
