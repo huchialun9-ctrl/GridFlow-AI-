@@ -1,11 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AIHelpDesk from '@/components/AIHelpDesk';
 import { ChevronDown, ChevronUp, Book, Server, Shield } from 'lucide-react';
 
 export default function HelpPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(0);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const faqs = [
         {
@@ -48,7 +53,7 @@ export default function HelpPage() {
                         </h2>
                         <div className="space-y-6 relative">
                             <div className="absolute left-3.5 top-2 bottom-2 w-px bg-slate-100 dark:bg-slate-800"></div>
-                            
+
                             <div className="relative pl-10">
                                 <span className="absolute left-0 top-0 w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 font-bold flex items-center justify-center border border-blue-100 dark:border-blue-900">1</span>
                                 <h3 className="font-bold text-slate-900 dark:text-slate-50">Initialize Extraction</h3>
@@ -69,14 +74,14 @@ export default function HelpPage() {
 
                     {/* FAQ */}
                     <section>
-                         <h2 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-6 flex items-center gap-2">
-                             <Shield className="w-5 h-5 text-indigo-500" />
-                             Frequently Asked Questions
+                        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-6 flex items-center gap-2">
+                            <Shield className="w-5 h-5 text-indigo-500" />
+                            Frequently Asked Questions
                         </h2>
                         <div className="space-y-4">
                             {faqs.map((faq, i) => (
                                 <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-                                    <button 
+                                    <button
                                         onClick={() => setOpenFaq(openFaq === i ? null : i)}
                                         className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                                     >
@@ -101,11 +106,11 @@ export default function HelpPage() {
                     <div className="bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/20 p-6">
                         <h3 className="text-xs font-bold font-mono text-blue-900 dark:text-blue-100 uppercase tracking-widest mb-2">System_Status</h3>
                         <div className="flex items-center gap-2 mb-2">
-                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                             <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">All Systems Operational</span>
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">All Systems Operational</span>
                         </div>
                         <p className="text-[10px] text-blue-600 dark:text-blue-300 font-mono">
-                            Latest check: {new Date().toLocaleTimeString()}
+                            Latest check: {mounted ? new Date().toLocaleTimeString() : '--:--:--'}
                         </p>
                     </div>
                 </div>

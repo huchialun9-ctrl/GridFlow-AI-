@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabaseClient';
 import UsageMetrics from '@/components/UsageMetrics';
 import SystemStatus from '@/components/SystemStatus';
 import Image from 'next/image';
-import logoImg from '../../public/logo.png';
+// Removed static import for logo
 
 export default function DashboardLayout({
     children,
@@ -106,7 +106,7 @@ export default function DashboardLayout({
             <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 fixed h-full hidden md:flex flex-col">
                 <div className="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                     <Link href="/" className="font-bold text-xl tracking-tight flex items-center gap-2.5">
-                        <Image src={logoImg} alt="GridFlow" width={28} height={28} className="w-7 h-7" />
+                        <Image src="/logo.png" alt="GridFlow" width={28} height={28} unoptimized className="w-7 h-7" />
                         <span><span className="text-blue-600">GridFlow</span> AI</span>
                     </Link>
                 </div>
@@ -120,8 +120,8 @@ export default function DashboardLayout({
                                     key={item.name}
                                     href={item.href}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 ${isActive
-                                            ? 'bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 shadow-lg shadow-slate-200 dark:shadow-none translate-x-1'
-                                            : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100'
+                                        ? 'bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 shadow-lg shadow-slate-200 dark:shadow-none translate-x-1'
+                                        : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100'
                                         }`}
                                 >
                                     <span className={isActive ? 'text-white dark:text-slate-900' : 'text-slate-400'}>
@@ -162,8 +162,8 @@ export default function DashboardLayout({
                         <div className="flex items-center justify-between px-1 mb-2">
                             <span className="text-[9px] font-black font-mono text-slate-400 uppercase tracking-widest">Access_Tier</span>
                             <span className={`px-1.5 py-0.5 text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase ${tier === 'pro'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                                 }`}>
                                 {tier === 'pro' ? 'Professional' : 'General'}
                             </span>

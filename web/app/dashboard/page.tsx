@@ -1,5 +1,6 @@
-
 'use client'
+
+import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -14,6 +15,8 @@ export default function Dashboard() {
     const [selectedDataset, setSelectedDataset] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isExtModalOpen, setIsExtModalOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const [currentTime, setCurrentTime] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [renamingId, setRenamingId] = useState<string | null>(null);
     const [newName, setNewName] = useState('');
@@ -58,6 +61,8 @@ export default function Dashboard() {
 
     useEffect(() => {
         fetchData();
+        setMounted(true);
+        setCurrentTime(new Date().toLocaleDateString());
     }, []);
 
     const handleRename = async (id: string) => {
@@ -193,7 +198,7 @@ export default function Dashboard() {
                                 {loading ? 'SYNCHRONIZING...' : 'NODE_ONLINE'}
                             </span>
                             <span className="hidden md:inline text-slate-300 dark:text-slate-800">|</span>
-                            <span className="hidden md:inline uppercase text-[10px] tracking-widest">{new Date().toLocaleDateString()}</span>
+                            <span className="hidden md:inline uppercase text-[10px] tracking-widest">{mounted ? currentTime : ''}</span>
                         </p>
                     </div>
 
