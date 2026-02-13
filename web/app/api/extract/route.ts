@@ -14,18 +14,47 @@ export async function POST(req: Request) {
         }
 
         // 1. Fetch Raw Markdown via Jina Reader
-        const jinaResponse = await fetch(`https://r.jina.ai/${url}`, {
-            headers: { 'X-Return-Format': 'markdown' }
-        });
+        let rawMarkdown = '';
+        try {
+            const jinaResponse = await fetch(`https://r.jina.ai/${url}`, {
+                headers: { 
+                    'X-Return-Format': 'markdown',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                }
+            });
 
-        if (!jinaResponse.ok) {
-            throw new Error(`Failed to fetch from Jina Reader: ${jinaResponse.statusText}`);
+            if (!jinaResponse.ok) {
+                const errorText = await jinaResponse.text().catch(() => '');
+                console.warn(`Jina Reader Warning (${jinaResponse.status}): ${jinaResponse.statusText} - ${errorText}`);
+                // Don't throw yet, try a direct fetch or fallback later if possible
+            } else {
+                rawMarkdown = await jinaResponse.text();
+            }
+        } catch (jinaError: any) {
+            console.error('Jina Fetch Error:', jinaError);
+            // Fallback to empty markdown if Jina fails entirely
         }
 
-        const rawMarkdown = await jinaResponse.text();
+        if (!rawMarkdown) {
+            // Attempt secondary simple fetch as a very basic fallback for some sites
+            try {
+                const directResponse = await fetch(url);
+                if (directResponse.ok) {
+                    rawMarkdown = await directResponse.text();
+                    // Basic HTML to text conversion if it's not markdown
+                    rawMarkdown = rawMarkdown.replace(/<[^>]*>/g, ' ').slice(0, 10000);
+                }
+            } catch (fallbackError) {
+                console.error('Direct fallback fetch failed:', fallbackError);
+            }
+        }
+
+        if (!rawMarkdown) {
+            return NextResponse.json({ error: 'Failed to retrieve content from the target URL. Please try another site.' }, { status: 422 });
+        }
 
         // 2. AI Extraction Logic (Gemini 1.5 Flash)
-        if (process.env.GEMINI_API_KEY) {
+        if (process.env.GEMINI_API_KEY && rawMarkdown.length > 50) {
             try {
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
@@ -130,6 +159,9 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error('Extraction API Error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ 
+            error: error.message || 'Unknown extraction error',
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }, { status: 500 });
     }
 }

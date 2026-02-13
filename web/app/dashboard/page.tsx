@@ -152,7 +152,9 @@ export default function Dashboard() {
             if (error) throw error;
             await fetchData();
         } catch (e: any) {
-            alert('Extraction sequence failed: ' + e.message + '\n\nPlease ensure your database table is created.');
+            console.error('Extraction flow error:', e);
+            const errorMessage = e.message || e.error || 'Unknown Error';
+            alert('PROCESS_FAILED: ' + errorMessage + '\n\nPossible reasons:\n1. Network timeout\n2. Invalid URL\n3. Database restriction (RLS)\n\nPlease verify your target URL and database state.');
         } finally {
             setLoading(false);
             setIsProcessing(false);
@@ -201,6 +203,49 @@ export default function Dashboard() {
                     <svg className="w-4 h-4 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                     INITIALIZE_EXTRACTION
                 </button>
+            </div>
+
+            {/* Strategic Capability Map */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-900/5 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
+                <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-[#1D6F42]">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <span className="text-xs font-black text-slate-900 dark:text-slate-50 uppercase tracking-widest leading-none">Data Extraction</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Scrape web tables & lists into structured datasets.</p>
+                    <div className="mt-2 flex items-center gap-2">
+                        <span className="text-[9px] font-bold text-[#1D6F42] bg-emerald-50 dark:bg-emerald-900/40 px-2 py-0.5 rounded border border-emerald-100">Excel (.xlsx)</span>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-2 relative">
+                    <div className="absolute -top-2 -right-2 bg-blue-600 text-[8px] font-black text-white px-2 py-0.5 rounded-full shadow-lg border-2 border-white dark:border-slate-900 animate-bounce">AI POWERED</div>
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-[#2B579A]">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <span className="text-xs font-black text-slate-900 dark:text-slate-50 uppercase tracking-widest leading-none">Literature Summary</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">AI analyzes articles & news to generate reflection reports.</p>
+                    <div className="mt-2 flex items-center gap-2">
+                        <span className="text-[9px] font-bold text-[#2B579A] bg-blue-50 dark:bg-blue-900/40 px-2 py-0.5 rounded border border-blue-100">Word (.docx)</span>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-[#B7472A]">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                        </div>
+                        <span className="text-xs font-black text-slate-900 dark:text-slate-50 uppercase tracking-widest leading-none">Dynamic Presentation</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Visualize data & AI insights into professional slide decks.</p>
+                    <div className="mt-2 flex items-center gap-2">
+                        <span className="text-[9px] font-bold text-[#B7472A] bg-orange-50 dark:bg-orange-900/40 px-2 py-0.5 rounded border border-orange-100">PowerPoint (.pptx)</span>
+                    </div>
+                </div>
             </div>
 
             {/* Main Content Grid */}

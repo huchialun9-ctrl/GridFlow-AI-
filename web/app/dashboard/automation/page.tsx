@@ -359,6 +359,50 @@ export default function Automation() {
                 <p className="text-sm text-slate-500 mt-1">Global node data aggregation and trends</p>
             </div>
 
+            {/* Featured Modules: Word & PPT */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-800 relative overflow-hidden group hover:scale-[1.01] transition-all">
+                    <div className="flex items-center gap-4 mb-3">
+                        <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm text-[#2B579A]">
+                            <Wand2 className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-slate-900 dark:text-slate-50">AI Summary to Word</h3>
+                            <p className="text-[10px] font-black text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full inline-block mt-1 uppercase tracking-tighter">Academic Integrity Enabled</p>
+                        </div>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                        Transform long articles, news, or competitor reports into professional Word documents with AI insights and automatic source citations.
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                        <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 uppercase font-black tracking-widest leading-none">Status: Ready_For_Literature_Review</span>
+                    </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 dark:from-orange-900/20 dark:to-red-900/20 p-6 rounded-2xl border border-orange-200 dark:border-orange-800 relative overflow-hidden group hover:scale-[1.01] transition-all">
+                    <div className="absolute top-2 right-4">
+                         <span className="text-[8px] font-black bg-[#B7472A] text-white px-2 py-0.5 rounded-full shadow-lg border-2 border-white dark:border-slate-900">AI POWERED</span>
+                    </div>
+                    <div className="flex items-center gap-4 mb-3">
+                        <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm text-[#B7472A]">
+                            <Presentation className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-slate-900 dark:text-slate-50">Auto-Presentation PPT</h3>
+                            <p className="text-[10px] font-black text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-2 py-0.5 rounded-full inline-block mt-1 uppercase tracking-tighter">Visual Intelligence</p>
+                        </div>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                        One-click conversion from raw datasets to visual-rich PowerPoint presentations, tailored for business strategy and educational workshops.
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+                        <span className="text-[10px] font-mono text-orange-600 dark:text-orange-400 uppercase font-black tracking-widest leading-none">Status: Ready_For_Dynamic_Publishing</span>
+                    </div>
+                </div>
+            </div>
+
             {/* Status Table */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div className="overflow-x-auto">
