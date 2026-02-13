@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Overlay } from "./features/Overlay"
-import styleText from "data-text:./style.css"
+import styleText from "data-text:~/style.css"
 import type { PlasmoCSConfig, PlasmoGetStyle } from "plasmo"
 
 export const config: PlasmoCSConfig = {
@@ -16,13 +16,54 @@ export const getStyle: PlasmoGetStyle = () => {
 const ContentScript = () => {
   const [hoveredRect, setHoveredRect] = useState<DOMRect | null>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const [targetTable, setTargetTable] = useState<HTMLTableElement | null>(null)
+  const [targetElement, setTargetElement] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
+    // Helper: Check if element is a valid table container
+    const isValidTable = (el: HTMLElement): boolean => {
+      if (el.tagName === 'TABLE') return true
+
+      const role = el.getAttribute('role')
+      if (role === 'grid' || role === 'table') return true
+
+      // Advanced Heuristic: Computed Style
+      // We check this last as it forces layout reflow (expensive)
+      // But user explicitly requested it for modern grids
+      const style = window.getComputedStyle(el)
+      return style.display === 'grid' ||
+        style.display === 'table' ||
+        style.display === 'inline-grid' ||
+        style.display === 'inline-table'
+    }
+
+    // Helper: Validate minimum row limit (Advanced Refinement)
+    const hasEnoughRows = (el: HTMLElement): boolean => {
+      // For TABLE
+      if (el.tagName === 'TABLE') {
+        return (el as HTMLTableElement).rows.length > 2
+      }
+
+      // For Grid/Div, count direct children that look like items
+      // Heuristic: Direct children count
+      return el.children.length > 2
+    }
+
+    // Helper: Deep Clean (Advanced Refinement)
+    const cleanText = (text: string) => {
+      // 1. Replace newlines with space
+      // 2. Remove zero-width chars (user request: \u200B-\u200D\uFEFF)
+      // 3. Trim
+      return text.replace(/[\n\r]+/g, ' ')
+        .replace(/[\u200B-\u200D\uFEFF]/g, '')
+        .trim()
+    }
+
     // Shadow Scraping: Scan on load
     const scanPage = () => {
       const tables = document.querySelectorAll("table")
-      const grids = document.querySelectorAll('[role="grid"]')
+      const grids = document.querySelectorAll('[role="grid"], [role="table"]')
+      // Note: We can't query computed style efficiently for shadow scan without killing FPS
+      // So we sticking to explicit tags/roles + maybe a few common classes for background scan
       const count = tables.length + grids.length
 
       console.log("Shadow Scan:", count, "potential datasets")
@@ -30,15 +71,11 @@ const ContentScript = () => {
       chrome.runtime.sendMessage({
         type: "SHADOW_SCAN_RESULT",
         payload: { count }
-      }).catch(() => {
-        // Extension context invalidated or sidepanel closed
-      })
+      }).catch(() => { })
     }
 
-    // Scan initially and on DOM changes (debounced)
     scanPage()
 
-    // Listener for trigger
     const messageListener = (msg: any) => {
       if (msg.type === "TRIGGER_SCAN") {
         scanPage()
@@ -48,48 +85,88 @@ const ContentScript = () => {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      const table = target.closest("table")
+      // Traverse up
+      let current: HTMLElement | null = target
+      let found: HTMLElement | null = null
 
-      if (table) {
-        const rect = table.getBoundingClientRect()
-        setHoveredRect(rect)
-        setTargetTable(table)
-        setIsVisible(true)
-      } else {
-        setIsVisible(false)
-        setTargetTable(null)
+      for (let i = 0; i < 5; i++) {
+        if (!current || current === document.body) break
+
+        if (isValidTable(current)) {
+          // Added Validation: Min Row Limit
+          if (hasEnoughRows(current)) {
+            found = current
+            break
+          }
+        }
+        current = current.parentElement
       }
+
+      if (found) {
+        const rect = found.getBoundingClientRect()
+        if (rect.width > 20 && rect.height > 20) {
+          setHoveredRect(rect)
+          setTargetElement(found)
+          setIsVisible(true)
+          return
+        }
+      }
+
+      setIsVisible(false)
+      setTargetElement(null)
+    }
+
+    const extractTableData = (element: HTMLElement): string[][] => {
+      if (element.tagName === 'TABLE') {
+        const table = element as HTMLTableElement
+        return Array.from(table.rows).map(row =>
+          Array.from(row.cells).map(cell => cleanText(cell.innerText))
+        )
+      }
+
+      // Grid/Div Extraction
+      const children = Array.from(element.children) as HTMLElement[]
+      if (children.length === 0) return []
+
+      return children.map(child => {
+        // Check if child has structure (columns)
+        // Heuristic: If child has >1 children, treat those as columns
+        const cols = Array.from(child.children) as HTMLElement[]
+        if (cols.length > 1) {
+          return cols.map(col => cleanText(col.innerText))
+        }
+        // Fallback: single column row
+        return [cleanText(child.innerText)]
+      })
     }
 
     const handleClick = (e: MouseEvent) => {
-      if (targetTable && isVisible) {
-        // Prevent default navigation or other actions if desired, but maybe just notify
+      if (targetElement && isVisible) {
         e.preventDefault()
         e.stopPropagation()
 
-        console.log("Table selected:", targetTable)
+        console.log("Element selected:", targetElement)
 
-        // Extract data
-        const rows = Array.from(targetTable.rows)
-        const extractedData = rows.map(row =>
-          Array.from(row.cells).map(cell => cell.innerText.trim())
-        )
-        // Assume first row is header for M1 (simple heuristic)
-        const headers = extractedData.length > 0 ? extractedData[0] : []
-        const body = extractedData.length > 0 ? extractedData.slice(1) : []
+        // Signal loading state (M1 Refinement)
+        chrome.runtime.sendMessage({ type: "EXTRACTION_START" })
 
-        // Send to Sidepanel
-        chrome.runtime.sendMessage({
-          type: "TABLE_SELECTED",
-          payload: {
-            headers,
-            data: body
-          }
-        })
+        // Small timeout to allow UI to show loading
+        setTimeout(() => {
+          const data = extractTableData(targetElement)
+          const headers = data.length > 0 ? data[0] : []
+          const body = data.length > 0 ? data.slice(1) : []
+
+          chrome.runtime.sendMessage({
+            type: "TABLE_SELECTED",
+            payload: {
+              headers,
+              data: body
+            }
+          })
+        }, 50)
       }
     }
 
-    // Use capture to ensuring we get events
     document.addEventListener("mouseover", handleMouseOver, true)
     document.addEventListener("click", handleClick, true)
 
@@ -98,7 +175,7 @@ const ContentScript = () => {
       document.removeEventListener("click", handleClick, true)
       chrome.runtime.onMessage.removeListener(messageListener)
     }
-  }, [targetTable, isVisible])
+  }, [targetElement, isVisible])
 
   return (
     <Overlay rect={hoveredRect} visible={isVisible} />

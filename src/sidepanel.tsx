@@ -5,6 +5,7 @@ import { Toolbar } from "./components/Toolbar"
 import { StatusBadge, type StatusType } from "./components/StatusBadge"
 import { Integrations } from "./components/Integrations"
 import { PrivacyBadge } from "./components/PrivacyBadge"
+import { Anonymizer } from "./features/Anonymizer"
 import "./style.css"
 
 function Sidepanel() {
@@ -13,6 +14,10 @@ function Sidepanel() {
     const [status, setStatus] = useState<StatusType | null>(null)
     const [detectedCount, setDetectedCount] = useState<number>(0)
     const [isProcessing, setIsProcessing] = useState(false)
+    const [isAnonymized, setIsAnonymized] = useState(false)
+
+    // Derived state: Apply anonymization if enabled
+    const displayData = isAnonymized ? Anonymizer.processDataset(data) : data
 
     useEffect(() => {
         const messageListener = (message: any, sender: any, sendResponse: any) => {
@@ -41,9 +46,9 @@ function Sidepanel() {
     }, [])
 
     const handleExport = () => {
-        if (data.length === 0) return
+        if (displayData.length === 0) return
         console.log("Exporting...")
-        const ws = XLSX.utils.aoa_to_sheet([headers, ...data])
+        const ws = XLSX.utils.aoa_to_sheet([headers, ...displayData])
         const wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, ws, "GridFlow Data")
         XLSX.writeFile(wb, "gridflow_export.xlsx")
@@ -55,7 +60,12 @@ function Sidepanel() {
 
     return (
         <div className="plasmo-flex plasmo-flex-col plasmo-h-screen plasmo-bg-white plasmo-text-slate-900 dark:plasmo-bg-slate-900 dark:plasmo-text-slate-50">
-            <Toolbar onExport={handleExport} onSettings={handleSettings} />
+            <Toolbar
+                onExport={handleExport}
+                onSettings={handleSettings}
+                isAnonymized={isAnonymized}
+                onToggleAnonymize={() => setIsAnonymized(!isAnonymized)}
+            />
 
             <div className="plasmo-flex-1 plasmo-overflow-hidden plasmo-flex plasmo-flex-col plasmo-relative">
                 {isProcessing && (
@@ -71,7 +81,7 @@ function Sidepanel() {
                             <span className="plasmo-text-[10px] plasmo-text-slate-400">Captured Table</span>
                             {status && <StatusBadge status={status} />}
                         </div>
-                        <DataGrid data={data} headers={headers} />
+                        <DataGrid data={displayData} headers={headers} />
                     </div>
                 ) : (
                     <div className="plasmo-flex-1 plasmo-flex plasmo-items-center plasmo-justify-center plasmo-flex-col plasmo-p-4">
