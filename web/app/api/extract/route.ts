@@ -80,7 +80,7 @@ export async function POST(req: Request) {
         if (process.env.GEMINI_API_KEY && rawMarkdown.length > 50) {
             try {
                 const { mode = 'excel' } = await req.clone().json().catch(() => ({}));
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
                 let prompt = '';
 
@@ -195,7 +195,7 @@ export async function POST(req: Request) {
                         headers,
                         rows: formattedRows,
                         rowCount: formattedRows.length,
-                        aiModel: 'gemini-1.5-flash',
+                        aiModel: 'gemini-1.5-flash-latest',
                         metadata
                     });
                 }

@@ -11,7 +11,7 @@ export async function POST(req: Request) {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
         if (!data || !prompt) {
             return NextResponse.json({ error: 'Data and prompt are required' }, { status: 400 });
@@ -19,8 +19,8 @@ export async function POST(req: Request) {
 
         // Prepare the payload for AI
         // We send a sample of the data to keep tokens low if it's a huge table
-        const sampleData = data.slice(0, 50); 
-        
+        const sampleData = data.slice(0, 50);
+
         const systemPrompt = `
             You are a Professional Data Analyst for GridFlow AI. 
             The user will provide a JSON array of table rows and a specific command/prompt.
@@ -53,8 +53,8 @@ export async function POST(req: Request) {
             // Handle if Gemini wraps in a key like { data: [...] } or { result: [...] }
             refinedData = Array.isArray(parsed) ? parsed : (parsed.data || parsed.rows || parsed.result || []);
         } catch (e) {
-             console.error("Failed to parse Gemini JSON:", text);
-             return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 });
+            console.error("Failed to parse Gemini JSON:", text);
+            return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 });
         }
 
         return NextResponse.json({

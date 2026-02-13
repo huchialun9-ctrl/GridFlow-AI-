@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
         if (process.env.GEMINI_API_KEY) {
             try {
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
                 // Construct a prompt to clean the data
                 const prompt = `
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
                 const result = await model.generateContent(prompt);
                 const response = await result.response;
                 let text = response.text();
-                 
+
                 text = text.replace(/```json/g, '').replace(/```/g, '').trim();
                 const json = JSON.parse(text);
 
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
                 return NextResponse.json({ error: 'AI processing failed: ' + aiError.message }, { status: 500 });
             }
         } else {
-             return NextResponse.json({ error: 'AI Service Config Missing' }, { status: 503 });
+            return NextResponse.json({ error: 'AI Service Config Missing' }, { status: 503 });
         }
 
     } catch (error: any) {
