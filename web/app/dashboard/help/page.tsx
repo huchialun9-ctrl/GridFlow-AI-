@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Book, User, Server, Shield } from 'lucide-react';
+import AIHelpDesk from '@/components/AIHelpDesk';
 
 export default function HelpPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -95,17 +95,7 @@ export default function HelpPage() {
 
                 {/* Sidebar Support */}
                 <div className="space-y-6">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                        <h3 className="text-xs font-bold font-mono text-slate-900 dark:text-slate-50 uppercase tracking-widest mb-4">Contact_Support</h3>
-                        <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-4">
-                            <User className="w-6 h-6" />
-                        </div>
-                        <p className="text-sm font-bold text-slate-900 dark:text-slate-50">Need personalized help?</p>
-                        <p className="text-xs text-slate-500 mt-2 mb-6">Our engineering team is available for Enterprise customers.</p>
-                        <a href="mailto:huchialun97@gmail.com" className="block w-full text-center py-2.5 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 text-xs font-bold rounded-xl hover:opacity-90 transition-opacity">
-                            Contact Support
-                        </a>
-                    </div>
+                    <AIHelpDesk />
 
                     <div className="bg-blue-50 dark:bg-blue-900/10 rounded-2xl border border-blue-100 dark:border-blue-900/20 p-6">
                         <h3 className="text-xs font-bold font-mono text-blue-900 dark:text-blue-100 uppercase tracking-widest mb-2">System_Status</h3>
