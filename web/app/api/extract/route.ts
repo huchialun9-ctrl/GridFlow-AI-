@@ -35,7 +35,9 @@ export async function POST(req: Request) {
             }
         } catch (jinaError: any) {
             console.error('Jina Fetch Error:', jinaError);
-            // Fallback to empty markdown if Jina fails entirely
+            if (jinaError.message === 'SITE_FORBIDDEN') {
+                throw jinaError;
+            }
         }
 
         if (!rawMarkdown) {
@@ -174,24 +176,32 @@ export async function POST(req: Request) {
         }
 
         // 3. Fallback Heuristic (Simple Regex)
-        // [Existing logic as backup]
-        const lines = rawMarkdown.split('\n').filter(line => line.trim().length > 0);
-        const items = lines
+        let items: any[][] = rawMarkdown.split('\n')
+            .filter(line => line.trim().length > 0)
             .filter(line => (line.includes('[') && line.includes('](')) || line.startsWith('| '))
             .map(line => {
                 const titleMatch = line.match(/\[(.*?)\]/);
                 const urlMatch = line.match(/\((.*?)\)/);
                 return [
-                    titleMatch ? titleMatch[1] : line.slice(0, 50),
+                    titleMatch ? titleMatch[1] : line.slice(0, 100).trim(),
                     urlMatch ? urlMatch[1] : 'Text Node',
                     line.length + ''
                 ];
             })
             .slice(0, 50);
 
+        // If no structured data found but we have content, return as a single "Document Snapshot" row
+        if (items.length === 0 && rawMarkdown.length > 0) {
+            items = [[
+                rawMarkdown.slice(0, 1000).replace(/\s+/g, ' ').trim() + (rawMarkdown.length > 1000 ? '...' : ''),
+                url,
+                rawMarkdown.length + ''
+            ]];
+        }
+
         return NextResponse.json({
-            name: 'Raw_Extract_Fallback',
-            headers: ['Content', 'Link', 'Length'],
+            name: items.length > 0 ? 'Raw_Extract_Fallback' : 'Extraction_Failed',
+            headers: ['Content', 'Source', 'Chars'],
             rows: items,
             rowCount: items.length,
             aiModel: 'none'
