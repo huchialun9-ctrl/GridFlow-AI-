@@ -94,9 +94,12 @@ export default function Automation() {
             if (res.ok) {
                 showNotification(`Template "${templateName}" created!`);
                 await fetchRecipes();
+            } else {
+                const err = await res.json();
+                showNotification(err.error || "Failed to create template", 'error');
             }
-        } catch (e) {
-            showNotification("Failed to create from template", 'error');
+        } catch (e: any) {
+            showNotification(e.message || "Network error occurred", 'error');
         } finally {
             setCreatingTemplateId(null);
         }
