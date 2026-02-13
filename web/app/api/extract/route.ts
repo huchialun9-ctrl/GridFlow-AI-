@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         // 2. AI Extraction Logic (Gemini 1.5 Flash)
         if (process.env.GEMINI_API_KEY) {
             try {
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
                 const prompt = `
                     You are a world-class Data Extraction Expert.
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
                         headers,
                         rows: formattedRows,
                         rowCount: formattedRows.length,
-                        aiModel: 'gemini-1.5-flash-v2',
+                        aiModel: 'gemini-1.5-flash-latest',
                         metadata
                     });
                 }

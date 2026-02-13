@@ -184,6 +184,7 @@ export default function Automation() {
     return (
         <div className="space-y-8 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
             {/* Create Recipe Modal */}
+            {/* Create Recipe Modal */}
             {createModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white dark:bg-slate-900 w-full max-w-md p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all">
@@ -227,93 +228,6 @@ export default function Automation() {
                     </div>
                 </div>
             )}
-
-            {/* Run Recipe Modal */}
-            {runModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 w-full max-w-md p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all">
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Run Extraction Recipe</h3>
-                        <p className="text-sm text-slate-500 mb-4">
-                            Enter your API Key to execute this extraction pipeline securely.
-                        </p>
-                        
-                        <div className="space-y-4">
-                            <div>
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">API Key</label>
-                                <input 
-                                    type="password"
-                                    autoFocus
-                                    value={apiKeyInput}
-                                    onChange={(e) => setApiKeyInput(e.target.value)}
-                                    placeholder="sk_live_..."
-                                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all placeholder:text-slate-400"
-                                />
-                            </div>
-                            
-                            <div className="flex justify-end gap-3 pt-2">
-                                <button 
-                                    onClick={() => setRunModalOpen(false)}
-                                    className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    onClick={confirmRunRecipe}
-                                    disabled={!apiKeyInput}
-                                    className="px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
-                                >
-                                    Run Recipe
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Result Modal */}
-            {resultModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 w-full max-w-2xl p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all flex flex-col max-h-[80vh]">
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Extraction Result</h3>
-                        <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 p-4 mb-4">
-                            <pre className="text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-pre-wrap break-all">
-                                {resultData}
-                            </pre>
-                        </div>
-                        <div className="flex justify-end">
-                            <button 
-                                onClick={() => setResultModalOpen(false)}
-                                className="px-6 py-2 text-sm font-bold bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-400 hover:text-white transition-colors rounded-lg shadow-lg"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Notification Toast */}
-            {notification && (
-                <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 animate-in slide-in-from-right-10 ${
-                    notification.type === 'success' 
-                        ? 'bg-white dark:bg-slate-900 border-emerald-500 text-emerald-600' 
-                        : 'bg-white dark:bg-slate-900 border-red-500 text-red-600'
-                }`}>
-                    <div className={`w-2 h-2 rounded-full ${notification.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
-                    <span className="text-sm font-bold">{notification.message}</span>
-                </div>
-            )}
-            
-            {/* ... rest of the UI ... */}
-            
-                            <div className="grid grid-cols-2 gap-2 mt-auto">
-                                <button 
-                                    onClick={() => openRunModal(recipe.id)}
-                                    className="py-2 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-400 text-white dark:text-slate-900 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <Play className="w-3 h-3" />
-                                    Run
-                                </button>
 
 
             <div>
