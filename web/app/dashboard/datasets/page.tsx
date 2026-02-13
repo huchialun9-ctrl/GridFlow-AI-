@@ -119,10 +119,12 @@ export default function MyDatasets() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {loading ? (
                     Array(6).fill(0).map((_, i) => (
-                        <div key={i} className="h-32 bg-slate-100 dark:bg-slate-800/50 animate-pulse rounded-2xl border border-slate-200 dark:border-slate-800"></div>
+                        <div key={i} className="h-32 bg-slate-100 dark:bg-slate-800/50 animate-pulse rounded-2xl border border-slate-200 dark:border-slate-800" />
                     ))
                 ) : filteredDatasets.length === 0 ? (
-                    <div className="col-span-full py-20 text-center text-slate-400 font-mono italic">NO_RECORDS_FOUND</div>
+                    <div className="col-span-full py-20 text-center text-slate-400 font-mono italic">
+                        NO_RECORDS_FOUND
+                    </div>
                 ) : (
                     filteredDatasets.map((ds) => (
                         <div 
@@ -131,12 +133,18 @@ export default function MyDatasets() {
                             className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-blue-500/30 transition-all cursor-pointer group"
                         >
                             <div className="flex justify-between items-start mb-3">
-                                <h3 className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate pr-2">{ds.name}</h3>
+                                <h3 className="font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate pr-2">
+                                    {ds.name}
+                                </h3>
                                 <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 text-[9px] font-mono rounded font-bold uppercase">
                                     {ds.row_count}R
                                 </span>
                             </div>
-                            <p className="text-[10px] text-slate-400 font-mono truncate mb-4">{ds.source_url}</p>
+                            
+                            <p className="text-[10px] text-slate-400 font-mono truncate mb-4">
+                                {ds.source_url}
+                            </p>
+                            
                             <div className="flex justify-between items-center pt-3 border-t border-slate-50 dark:border-slate-800">
                                 <div className="flex gap-2">
                                     <button 
@@ -149,9 +157,13 @@ export default function MyDatasets() {
                                     >
                                         AI Process
                                     </button>
-                                    <span className="text-[10px] font-medium text-slate-400 mt-1">{new Date(ds.created_at).toLocaleDateString()}</span>
+                                    <span className="text-[10px] font-medium text-slate-400 mt-1">
+                                        {new Date(ds.created_at).toLocaleDateString()}
+                                    </span>
                                 </div>
-                                <button className="text-blue-600 dark:text-blue-400 text-[10px] font-bold hover:underline">View Details</button>
+                                <button className="text-blue-600 dark:text-blue-400 text-[10px] font-bold hover:underline">
+                                    View Details
+                                </button>
                             </div>
                         </div>
                     ))
@@ -168,6 +180,7 @@ export default function MyDatasets() {
                 onClose={() => setIsAIModalOpen(false)} 
                 onSubmit={handleAIProcess}
                 isProcessing={isAIProcessing}
+                sampleRows={datasets.find(d => d.id === aiProcessingId)?.rows?.slice(0, 3) || []}
             />
         </div>
     );

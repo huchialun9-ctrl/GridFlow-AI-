@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "../lib/supabaseServer";
+import HeroAnimation from "@/components/HeroAnimation";
+import LogosSection from "@/components/LogosSection";
 
 export default async function Home() {
   const supabase = createClient();
@@ -86,78 +88,9 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Technical Visualization: Browser + DevTools + Sidepanel */}
-            <div className="relative mt-20 group">
-              <div className="absolute inset-x-10 bottom-0 h-40 bg-linear-to-t from-white dark:from-[#0B1120] to-transparent z-20"></div>
-              <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden relative z-10">
-                {/* Browser Toolbar Mockup */}
-                <div className="h-10 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex items-center px-4 gap-4">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
-                    <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
-                    <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
-                  </div>
-                  <div className="flex-1 h-6 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 flex items-center px-3">
-                    <span className="text-xs text-slate-400 font-mono">https://docs.gridflow.ai/demo/pricing-table</span>
-                  </div>
-                </div>
-
-                {/* Browser Content Split */}
-                <div className="flex h-[400px] bg-white dark:bg-slate-900">
-                  {/* Main Page Area */}
-                  <div className="flex-1 p-8 bg-slate-50 dark:bg-[#0B1120] border-r border-slate-200 dark:border-slate-800 relative">
-                    {/* Mock Website Grid */}
-                    <div className="grid grid-cols-2 gap-4 opacity-50 grayscale">
-                      <div className="h-24 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"></div>
-                      <div className="h-24 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"></div>
-                      <div className="h-24 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"></div>
-                      <div className="h-24 bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700"></div>
-                    </div>
-
-                    {/* Selector Overlay */}
-                    <div className="absolute top-8 left-8 right-8 bottom-auto h-[110px] border-2 border-blue-500 bg-blue-500/5 z-10 flex items-start justify-end p-2 animate-pulse">
-                      <div className="bg-blue-600 text-white text-[10px] font-mono px-1.5 py-0.5 rounded shadow">table.pricing-grid</div>
-                    </div>
-                  </div>
-
-                  {/* DevTools / Sidepanel Area */}
-                  <div className="w-[320px] flex flex-col bg-white dark:bg-slate-950">
-                    <div className="h-10 border-b border-slate-200 dark:border-slate-800 flex items-center px-4 justify-between bg-slate-50 dark:bg-slate-900">
-                      <span className="text-xs font-bold font-mono text-slate-700 dark:text-slate-300">GRIDFLOW_EXTRACTOR</span>
-                      <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-mono">ACTIVE</span>
-                    </div>
-                    <div className="flex-1 p-0 overflow-hidden font-mono text-xs">
-                      {/* Data Grid Mockup */}
-                      <div className="grid grid-cols-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-500">
-                        <div className="p-2 border-r border-slate-100 dark:border-slate-800">Plan</div>
-                        <div className="p-2 border-r border-slate-100 dark:border-slate-800">Price</div>
-                        <div className="p-2">Users</div>
-                      </div>
-                      <div className="grid grid-cols-3 border-b border-slate-100 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/10">
-                        <div className="p-2 border-r border-slate-100 dark:border-slate-800 font-medium">Starter</div>
-                        <div className="p-2 border-r border-slate-100 dark:border-slate-800">$29</div>
-                        <div className="p-2 text-slate-500">1</div>
-                      </div>
-                      <div className="grid grid-cols-3 border-b border-slate-100 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/10">
-                        <div className="p-2 border-r border-slate-100 dark:border-slate-800 font-medium">Pro</div>
-                        <div className="p-2 border-r border-slate-100 dark:border-slate-800">$99</div>
-                        <div className="p-2 text-slate-500">5</div>
-                      </div>
-
-                      {/* JSON Preview Area */}
-                      <div className="p-4 mt-auto border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
-                        <div className="text-slate-400 mb-2">// Extracted Output</div>
-                        <div className="text-slate-600 dark:text-slate-400">
-                          <span className="text-purple-600 dark:text-purple-400">const</span> data = [<br />
-                          &nbsp;&nbsp;{`{ plan: "Starter", price: 29 }`},<br />
-                          &nbsp;&nbsp;{`{ plan: "Pro", price: 99 }`}<br />
-                          ]
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Technical Visualization: Data Flow Animation */}
+            <div className="mt-20">
+              <HeroAnimation />
             </div>
           </div>
         </section>
@@ -202,48 +135,8 @@ export default async function Home() {
               <div className="absolute inset-x-20 h-0.5 bg-linear-to-r from-transparent via-blue-500 to-transparent opacity-0 animate-[shimmer_2s_infinite]"></div>
             </div>
 
-            {/* Integrations Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center opacity-80">
-              {/* Excel */}
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-400 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 relative shadow-sm">
-                  <div className="absolute -top-6 bg-slate-800 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">EXPORT</div>
-                  <svg className="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M2.5 2H9.5L11.5 6L13.5 2H20.5C21.0523 2 21.5 2.44772 21.5 3V21C21.5 21.5523 21.0523 22 20.5 22H2.5C1.94772 22 1.5 21.5523 1.5 21V3C1.5 2.44772 1.94772 2 2.5 2ZM3.5 15V13H8V15H3.5ZM3.5 17V19H8V17H3.5ZM3.5 11V9H8V11H3.5ZM19.5 7V4H4.5V7H19.5ZM10 13H14.5V15H10V13ZM10 17H14.5V19H10V17ZM16.5 13H19.5V15H16.5V13ZM16.5 17H19.5V19H16.5V17Z" /></svg>
-                </div>
-              </div>
-
-              {/* Google Sheets */}
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-400 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 relative shadow-sm">
-                  <div className="absolute -top-6 bg-slate-800 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">CLOUD SYNC</div>
-                  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6C4.9 2 4.01 2.9 4.01 4L4 20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM13 9V3.5L18.5 9H13Z" /></svg>
-                </div>
-              </div>
-
-              {/* Notion */}
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-400 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 relative shadow-sm">
-                  <div className="absolute -top-6 bg-slate-800 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">DATABASE</div>
-                  <svg className="w-6 h-6 text-black dark:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M4.19 19.56L14.7 9.07 15.61 6.84 15 4.3 12.87 3.93 5.48 11.38zM19.81 4.41L18.7 1.69 16.58 2.38 17.5 5.5zM20.25 20.33L16.29 21.75 3.75 22 3.82 20.5 5.22 17.07 5.09 13.9 6.86 11.87 18.06 1.13 20.89 4.29z" /></svg>
-                </div>
-              </div>
-
-              {/* Salesforce */}
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-400 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 relative shadow-sm">
-                  <div className="absolute -top-6 bg-slate-800 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">CRM CLEANING</div>
-                  <svg className="w-7 h-7 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm6 14H6v-2h12v2zm0-4H6v-2h12v2z" /></svg>
-                </div>
-              </div>
-
-              {/* GitHub */}
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="w-14 h-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center text-slate-400 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 relative shadow-sm">
-                  <div className="absolute -top-6 bg-slate-800 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">DEV API</div>
-                  <svg className="w-6 h-6 text-slate-900 dark:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
-                </div>
-              </div>
-            </div>
+            {/* Integrations Grid - Dynamic Component */}
+            <LogosSection />
           </div>
         </section>
 

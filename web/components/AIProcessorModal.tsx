@@ -1,17 +1,51 @@
-
-'use client'
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 interface AIModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (prompt: string) => void;
     isProcessing: boolean;
+    sampleRows: any[];
 }
 
-export default function AIProcessorModal({ isOpen, onClose, onSubmit, isProcessing }: AIModalProps) {
+export default function AIProcessorModal({ isOpen, onClose, onSubmit, isProcessing, sampleRows }: AIModalProps) {
     const [prompt, setPrompt] = useState('');
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (isOpen && sampleRows.length > 0) {
+            const newSuggestions: string[] = [];
+            const row = sampleRows[0];
+            
+            Object.keys(row).forEach(key => {
+                const value = String(row[key]);
+                // Detect Currency
+                if (value.match(/[\$€£¥]/)) {
+                    newSuggestions.push(`Convert '${key}' column to proper number format`);
+                }
+                // Detect Date
+                if (!isNaN(Date.parse(value)) && value.length > 4 && !value.match(/^\d+$/)) {
+                    newSuggestions.push(`Format '${key}' as YYYY-MM-DD`);
+                }
+                // Detect unclean data (newlines)
+                if (value.includes('\n') || value.includes('\t')) {
+                    newSuggestions.push(`Clean whitespace and newlines from '${key}'`);
+                }
+            });
+            
+            if (newSuggestions.length === 0) {
+                 newSuggestions.push("Summarize this dataset");
+                 newSuggestions.push("Translate all text to English");
+            }
+            
+            setSuggestions(newSuggestions.slice(0, 3));
+        }
+    }, [isOpen, sampleRows]);
+
+    const handleSuggestionClick = (suggestion: string) => {
+        setPrompt(prev => prev ? `${prev}\n${suggestion}` : suggestion);
+    };
 
     if (!isOpen) return null;
 
@@ -36,6 +70,29 @@ export default function AIProcessorModal({ isOpen, onClose, onSubmit, isProcessi
                 </div>
                 
                 <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                    {/* Auto-Mapping Suggestions */}
+                    {suggestions.length > 0 && (
+                        <div className="space-y-2">
+                             <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-500 uppercase tracking-wide">
+                                <Sparkles className="w-3 h-3" />
+                                Smart Suggestions
+                             </div>
+                             <div className="flex flex-wrap gap-2">
+                                {suggestions.map((s, i) => (
+                                    <button
+                                        key={i}
+                                        type="button"
+                                        onClick={() => handleSuggestionClick(s)}
+                                        className="text-xs bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors flex items-center gap-1"
+                                    >
+                                        {s}
+                                        <ArrowRight className="w-3 h-3 opacity-50" />
+                                    </button>
+                                ))}
+                             </div>
+                        </div>
+                    )}
+
                     <div className="space-y-3">
                         <label className="text-xs font-bold text-slate-400 block">Command Prompt</label>
                         <textarea

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import UsageMetrics from '@/components/UsageMetrics';
+import SystemStatus from '@/components/SystemStatus';
 
 export default function DashboardLayout({
     children,
@@ -116,8 +118,17 @@ export default function DashboardLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 md:ml-64 p-8">
-                {children}
+            <main className="flex-1 md:ml-64 flex flex-col min-h-screen relative">
+                {/* Analytics Header */}
+                <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur sticky top-0 z-30 px-8 flex items-center justify-end">
+                     <UsageMetrics />
+                </header>
+
+                <div className="flex-1 p-8">
+                    {children}
+                </div>
+                
+                <SystemStatus />
             </main>
         </div>
     );
