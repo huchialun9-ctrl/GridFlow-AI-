@@ -11,6 +11,26 @@ export default function IntegrationsPage() {
     const [isCreatingWebhook, setIsCreatingWebhook] = useState(false);
     const [newWebhookUrl, setNewWebhookUrl] = useState('');
     const [newWebhookName, setNewWebhookName] = useState('');
+    const [selectedIntegration, setSelectedIntegration] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+
+    const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
+        setNotification({ message, type });
+        setTimeout(() => setNotification(null), 3000);
+    };
+
+    const handleConfigure = (integration: any) => {
+        setSelectedIntegration(integration);
+        setIsModalOpen(true);
+    };
+
+    const handleConnect = () => {
+        // Simulate connection delay
+        setIsModalOpen(false);
+        showNotification(`Successfully connected to ${selectedIntegration.name}`);
+        // In a real app, we would save the credentials here
+    };
 
     useEffect(() => {
         fetchWebhooks();
