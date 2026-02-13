@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "../lib/supabaseServer";
 // Removed static logo import to use string path for faster resolution
 import LogosSection from "@/components/LogosSection";
