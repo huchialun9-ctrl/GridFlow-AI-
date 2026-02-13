@@ -13,7 +13,7 @@ export default function IntegrationsPage() {
     const [newWebhookName, setNewWebhookName] = useState('');
     const [selectedIntegration, setSelectedIntegration] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+    const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
 
     const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
         setNotification({ message, type });
@@ -55,8 +55,8 @@ export default function IntegrationsPage() {
             const res = await fetch('/api/webhooks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    name: newWebhookName, 
+                body: JSON.stringify({
+                    name: newWebhookName,
                     url: newWebhookUrl,
                     event_types: ['dataset.created', 'dataset.updated']
                 })
@@ -91,7 +91,7 @@ export default function IntegrationsPage() {
             // Zapier Orange Logo
             icon: (
                 <svg className="w-6 h-6 text-[#FF4F00]" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M4.2 13.8h7.1l-1.9 8.1 10.4-11.8h-7.1l1.9-8.1L4.2 13.8z"/>
+                    <path d="M4.2 13.8h7.1l-1.9 8.1 10.4-11.8h-7.1l1.9-8.1L4.2 13.8z" />
                 </svg>
             ),
             status: 'Stable',
@@ -104,10 +104,10 @@ export default function IntegrationsPage() {
             category: 'Automation',
             // Make Purple Logo (Simplified M)
             icon: (
-                 <svg className="w-6 h-6 text-[#6F42C1]" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z"/>
+                <svg className="w-6 h-6 text-[#6F42C1]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z" />
                     {/* Placeholder for Make's infinity-like logo, using stylized M concept */}
-                    <path d="M4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8-8-3.59-8-8zm2.5 1h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9z" opacity="0.5"/>
+                    <path d="M4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8-8-3.59-8-8zm2.5 1h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9z" opacity="0.5" />
                 </svg>
             ),
             status: 'Stable',
@@ -118,7 +118,7 @@ export default function IntegrationsPage() {
         {
             name: 'Airtable',
             category: 'Database',
-             // Airtable Yellow/Blue Logo
+            // Airtable Yellow/Blue Logo
             icon: (
                 <svg className="w-6 h-6 text-[#FCB400]" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12.035 1.765a2.503 2.503 0 00-1.285.34l-8.57 4.965a2.493 2.493 0 00-1.18 2.06v9.805c0 .08.005.155.015.23a2.493 2.493 0 001.165 1.83l8.57 4.965a2.503 2.503 0 002.57 0l8.57-4.965a2.493 2.493 0 001.165-1.83c.01-.075.015-.15.015-.23V7.125a2.493 2.493 0 00-1.18-2.06l-8.57-4.965a2.503 2.503 0 00-1.285-.34zM12 4.155l6.985 4.045L12 12.245 5.015 8.2 12 4.155zM4 10.365l6.5 3.765v7.61L4 18V10.365zm13.5 11.375V14.13l6.5-3.765V18l-6.5 3.74z"></path>
@@ -133,7 +133,7 @@ export default function IntegrationsPage() {
             name: 'Hugging Face',
             category: 'Developer',
             // Simple Emoji is actually best for HF if SVG unavailable, but let's try a simple path
-             icon: (
+            icon: (
                 <span className="text-2xl">🤗</span>
             ),
             status: 'Experimental',
@@ -146,12 +146,11 @@ export default function IntegrationsPage() {
     return (
         <div className="max-w-6xl mx-auto space-y-12 pb-20">
             {/* Notification Toast */}
-             {notification && (
-                <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 animate-in slide-in-from-right-10 ${
-                    notification.type === 'success'
+            {notification && (
+                <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 animate-in slide-in-from-right-10 ${notification.type === 'success'
                         ? 'bg-white dark:bg-slate-900 border-emerald-500 text-emerald-600'
                         : 'bg-white dark:bg-slate-900 border-red-500 text-red-600'
-                }`}>
+                    }`}>
                     <div className={`w-2 h-2 rounded-full ${notification.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
                     <span className="text-sm font-bold">{notification.message}</span>
                 </div>
@@ -192,7 +191,7 @@ export default function IntegrationsPage() {
                                         <label className="text-xs font-bold text-slate-500">API Token / key</label>
                                         <input type="password" placeholder="e.g. key..." className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs" />
                                     </div>
-                                     <div className="space-y-2">
+                                    <div className="space-y-2">
                                         <label className="text-xs font-bold text-slate-500">Target ID (Base/Repo)</label>
                                         <input type="text" placeholder="e.g. app..." className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs" />
                                     </div>
@@ -232,17 +231,16 @@ export default function IntegrationsPage() {
             {/* Connections Matrix */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {Connectors.map((connector) => (
-                    <motion.div 
+                    <motion.div
                         key={connector.name}
                         whileHover={{ y: -5 }}
                         className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm hover:shadow-xl hover:border-blue-500/30 transition-all relative overflow-hidden group"
                     >
                         {/* Status Badge */}
-                        <div className={`absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${
-                            connector.status === 'Stable' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                            connector.status === 'Beta' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                            'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
-                        }`}>
+                        <div className={`absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${connector.status === 'Stable' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                                connector.status === 'Beta' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                    'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'
+                            }`}>
                             {connector.status}
                         </div>
 
@@ -253,12 +251,12 @@ export default function IntegrationsPage() {
                             <h3 className="font-bold text-slate-900 dark:text-slate-50">{connector.name}</h3>
                             <div className="text-[10px] font-mono text-slate-400 mt-1">{connector.tag}</div>
                         </div>
-                        
+
                         <p className="text-xs text-slate-500 leading-relaxed mb-6 h-10">
                             {connector.description}
                         </p>
 
-                        <button 
+                        <button
                             onClick={() => handleConfigure(connector)}
                             className="w-full py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2 group-hover:bg-white dark:group-hover:bg-slate-900 group-hover:shadow-sm"
                         >
@@ -295,7 +293,7 @@ export default function IntegrationsPage() {
                             className="w-full px-3 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
-                    <div className="flex-[2] w-full space-y-1">
+                    <div className="flex-2 w-full space-y-1">
                         <label className="text-[10px] font-bold text-slate-400 uppercase">Payload URL</label>
                         <input
                             type="text"
@@ -318,7 +316,7 @@ export default function IntegrationsPage() {
                 {/* Webhooks List */}
                 <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                     {isLoading ? (
-                         <div className="p-8 flex justify-center">
+                        <div className="p-8 flex justify-center">
                             <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
                         </div>
                     ) : webhooks.length === 0 ? (
@@ -349,7 +347,7 @@ export default function IntegrationsPage() {
                                                 </span>
                                             ))}
                                         </div>
-                                        <button 
+                                        <button
                                             onClick={() => handleDeleteWebhook(hook.id)}
                                             className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                                         >

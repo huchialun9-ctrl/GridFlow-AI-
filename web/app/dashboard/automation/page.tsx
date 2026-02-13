@@ -10,7 +10,7 @@ export default function Automation() {
     const [isLoading, setIsLoading] = useState(true);
     const [webhookUrl, setWebhookUrl] = useState('');
     const [isDiffEnabled, setIsDiffEnabled] = useState(false);
-    const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+    const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export default function Automation() {
                     .select('preferences')
                     .eq('id', user.id)
                     .single();
-                
+
                 if (profile?.preferences?.diff_enabled) {
                     setIsDiffEnabled(profile.preferences.diff_enabled);
                 }
@@ -88,15 +88,15 @@ export default function Automation() {
 
     const toggleDiff = async () => {
         if (!userId) return;
-        
+
         const newState = !isDiffEnabled;
         setIsDiffEnabled(newState);
-        
+
         // Update DB
         const { error } = await supabase
             .from('profiles')
-            .update({ 
-                preferences: { diff_enabled: newState } 
+            .update({
+                preferences: { diff_enabled: newState }
             })
             .eq('id', userId);
 
@@ -165,7 +165,7 @@ export default function Automation() {
 
     const confirmRunRecipe = async () => {
         if (!apiKeyInput || !selectedRecipeId) return;
-        setRunModalOpen(false); 
+        setRunModalOpen(false);
 
         try {
             const res = await fetch(`/api/v1/run/${selectedRecipeId}`, {
@@ -192,11 +192,11 @@ export default function Automation() {
                         <p className="text-sm text-slate-500 mb-4">
                             Define a name for your new extraction workflow.
                         </p>
-                        
+
                         <div className="space-y-4">
                             <div>
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">Recipe Name</label>
-                                <input 
+                                <input
                                     type="text"
                                     autoFocus
                                     value={newItemName}
@@ -208,15 +208,15 @@ export default function Automation() {
                                     }}
                                 />
                             </div>
-                            
+
                             <div className="flex justify-end gap-3 pt-2">
-                                <button 
+                                <button
                                     onClick={() => setCreateModalOpen(false)}
                                     className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                                 >
                                     Cancel
                                 </button>
-                                <button 
+                                <button
                                     onClick={confirmCreateRecipe}
                                     disabled={!newItemName}
                                     className="px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
@@ -237,11 +237,11 @@ export default function Automation() {
                         <p className="text-sm text-slate-500 mb-4">
                             Enter your API Key to initialize the extraction protocol for this node.
                         </p>
-                        
+
                         <div className="space-y-4">
                             <div>
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">Gemini API Key</label>
-                                <input 
+                                <input
                                     type="password"
                                     autoFocus
                                     value={apiKeyInput}
@@ -257,7 +257,7 @@ export default function Automation() {
                                     <Sparkles className="w-4 h-4 text-blue-500" />
                                     <span className="text-[10px] font-bold text-slate-900 dark:text-slate-50 uppercase tracking-widest">AI Report Settings</span>
                                 </div>
-                                
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Tone</label>
@@ -277,7 +277,7 @@ export default function Automation() {
                                     </div>
                                 </div>
 
-                                 <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800 justify-between">
+                                <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800 justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="flex items-center gap-1 text-[#2B579A]" title="Word Report (.docx)">
                                             <Wand2 className="w-3 h-3" />
@@ -294,15 +294,15 @@ export default function Automation() {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="flex justify-end gap-3 pt-2">
-                                <button 
+                                <button
                                     onClick={() => setRunModalOpen(false)}
                                     className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                                 >
                                     Cancel
                                 </button>
-                                <button 
+                                <button
                                     onClick={confirmRunRecipe}
                                     disabled={!apiKeyInput}
                                     onKeyDown={(e) => {
@@ -327,22 +327,22 @@ export default function Automation() {
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                                 Extraction_Payload_Success
                             </h3>
-                            <button 
+                            <button
                                 onClick={() => setResultModalOpen(false)}
                                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
                         </div>
-                        
+
                         <div className="bg-slate-950 rounded-xl p-4 overflow-auto max-h-[60vh] border border-slate-800">
-                             <pre className="text-xs font-mono text-emerald-400 leading-relaxed">
-                                 {resultData}
-                             </pre>
+                            <pre className="text-xs font-mono text-emerald-400 leading-relaxed">
+                                {resultData}
+                            </pre>
                         </div>
-                        
+
                         <div className="flex justify-end mt-6">
-                             <button 
+                            <button
                                 onClick={() => setResultModalOpen(false)}
                                 className="px-6 py-2 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 text-sm font-bold rounded-xl transition-all shadow-xl hover:scale-105 active:scale-95"
                             >
@@ -361,7 +361,7 @@ export default function Automation() {
 
             {/* Featured Modules: Word & PPT */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-800 relative overflow-hidden group hover:scale-[1.01] transition-all">
+                <div className="bg-linear-to-br from-blue-500/10 to-indigo-500/10 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl border border-blue-200 dark:border-blue-800 relative overflow-hidden group hover:scale-[1.01] transition-all">
                     <div className="flex items-center gap-4 mb-3">
                         <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm text-[#2B579A]">
                             <Wand2 className="w-6 h-6" />
@@ -380,9 +380,9 @@ export default function Automation() {
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 dark:from-orange-900/20 dark:to-red-900/20 p-6 rounded-2xl border border-orange-200 dark:border-orange-800 relative overflow-hidden group hover:scale-[1.01] transition-all">
+                <div className="bg-linear-to-br from-orange-500/10 to-red-500/10 dark:from-orange-900/20 dark:to-red-900/20 p-6 rounded-2xl border border-orange-200 dark:border-orange-800 relative overflow-hidden group hover:scale-[1.01] transition-all">
                     <div className="absolute top-2 right-4">
-                         <span className="text-[8px] font-black bg-[#B7472A] text-white px-2 py-0.5 rounded-full shadow-lg border-2 border-white dark:border-slate-900">AI POWERED</span>
+                        <span className="text-[8px] font-black bg-[#B7472A] text-white px-2 py-0.5 rounded-full shadow-lg border-2 border-white dark:border-slate-900">AI POWERED</span>
                     </div>
                     <div className="flex items-center gap-4 mb-3">
                         <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm text-[#B7472A]">
@@ -474,7 +474,7 @@ export default function Automation() {
                         <p className="text-[11px] text-slate-500 font-mono leading-relaxed uppercase">Compare extraction results against previous manifests. Trigger alerts on value deviation.</p>
                         <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/20">
                             <span className="text-[10px] font-mono font-black text-blue-700 dark:text-blue-400">ENABLE_DIFF_ALERTS</span>
-                            <button 
+                            <button
                                 onClick={toggleDiff}
                                 className={`w-8 h-4 rounded-full relative transition-colors ${isDiffEnabled ? 'bg-blue-600' : 'bg-slate-300'}`}
                             >
@@ -490,10 +490,10 @@ export default function Automation() {
                 <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50 tracking-tight flex items-center gap-2">
                     <span className="text-emerald-500">❖</span> Recipe Library
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Create New */}
-                    <div 
+                    <div
                         onClick={openCreateModal}
                         className="group border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center p-6 space-y-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-emerald-500/50 hover:scale-[1.02] transition-all cursor-pointer min-h-[250px]"
                     >
@@ -508,19 +508,19 @@ export default function Automation() {
 
                     {/* Fetched Recipes */}
                     {isLoading ? (
-                         <div className="md:col-span-2 flex items-center justify-center min-h-[250px] bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <div className="md:col-span-2 flex items-center justify-center min-h-[250px] bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                             <Loader2 className="w-8 h-8 animate-spin text-slate-300" />
                         </div>
                     ) : recipes.map((recipe) => (
                         <div key={recipe.id} className="group bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all relative overflow-hidden flex flex-col justify-between min-h-[250px]">
-                             <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <span className="text-6xl font-black text-slate-400">{recipe.domain?.[0]?.toUpperCase() || 'R'}</span>
                             </div>
-                            
+
                             <div>
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-lg font-bold">
-                                         {recipe.domain?.[0]?.toUpperCase() || 'R'}
+                                        {recipe.domain?.[0]?.toUpperCase() || 'R'}
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-900 dark:text-slate-50 text-sm line-clamp-1">{recipe.name}</h3>
@@ -535,7 +535,7 @@ export default function Automation() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-2 mt-auto">
-                                <button 
+                                <button
                                     onClick={() => openRunModal(recipe.id)}
                                     className="py-2 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-400 text-white dark:text-slate-900 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
                                 >
@@ -554,12 +554,12 @@ export default function Automation() {
                         <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                             <svg className="w-24 h-24 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                             </svg>
+                            </svg>
                         </div>
                         <div>
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-lg bg-[#FF9900]/10 flex items-center justify-center text-[#FF9900]">
-                                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M13.665 10.155L12.571 14.897L15.308 17.652L13.665 10.155ZM11.139 12.639L4.805 15.685L17.585 18.067L19.465 9.778L11.139 12.639ZM13.889 12.062L17.29 11.118L11.758 5.485L11.233 8.356L13.889 12.062ZM2.895 19.5L10.222 15.903L18.66 17.478L2.895 19.5ZM12.321 0.5L9.626 12.008L9.957 12.464L15.228 5.151L12.321 0.5Z"/></svg>
+                                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M13.665 10.155L12.571 14.897L15.308 17.652L13.665 10.155ZM11.139 12.639L4.805 15.685L17.585 18.067L19.465 9.778L11.139 12.639ZM13.889 12.062L17.29 11.118L11.758 5.485L11.233 8.356L13.889 12.062ZM2.895 19.5L10.222 15.903L18.66 17.478L2.895 19.5ZM12.321 0.5L9.626 12.008L9.957 12.464L15.228 5.151L12.321 0.5Z" /></svg>
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-slate-900 dark:text-slate-50 text-sm">Amazon Monitor</h3>
@@ -568,25 +568,25 @@ export default function Automation() {
                             </div>
                             <p className="text-xs text-slate-500 leading-relaxed mb-6">Start tracking prices immediately with this pre-built template.</p>
                         </div>
-                        <button 
+                        <button
                             onClick={() => handleCreateTemplate('amazon', 'Amazon Monitor', 'amazon.com', 'Tracks product prices and availability')}
                             disabled={!!creatingTemplateId}
                             className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#FF9900] hover:text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:shadow-md"
                         >
-                             {creatingTemplateId === 'amazon' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Use Template'}
+                            {creatingTemplateId === 'amazon' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Use Template'}
                         </button>
                     </div>
 
                     <div className="group bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-blue-500/30 transition-all relative overflow-hidden min-h-[250px] flex flex-col justify-between">
                         <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                             <svg className="w-24 h-24 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                             </svg>
                         </div>
                         <div>
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-10 h-10 rounded-lg bg-[#0077B5]/10 flex items-center justify-center text-[#0077B5]">
-                                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-slate-900 dark:text-slate-50 text-sm">LinkedIn Tracker</h3>
@@ -595,7 +595,7 @@ export default function Automation() {
                             </div>
                             <p className="text-xs text-slate-500 leading-relaxed mb-6">Monitor company growth and job postings.</p>
                         </div>
-                        <button 
+                        <button
                             onClick={() => handleCreateTemplate('linkedin', 'LinkedIn Tracker', 'linkedin.com', 'Monitors company employee count')}
                             disabled={!!creatingTemplateId}
                             className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0077B5] hover:text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:shadow-md"

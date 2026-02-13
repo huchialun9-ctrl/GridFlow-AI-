@@ -166,7 +166,7 @@ export default function Docs() {
                     </div>
 
                     <div className="pt-12 border-t border-slate-100 dark:border-slate-800">
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-6 font-mono text-xs uppercase tracking-widest">Workflow Capability Map</h3>
+                        <h3 className="font-bold text-slate-900 dark:text-slate-50 mb-6 font-mono text-xs uppercase tracking-widest">Workflow Capability Map</h3>
                         <table className="w-full text-left border-collapse font-mono text-[10px]">
                             <thead>
                                 <tr className="border-b border-slate-200 dark:border-slate-800">
