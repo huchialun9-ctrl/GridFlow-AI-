@@ -88,7 +88,7 @@ export default async function Home() {
 
             {/* Technical Visualization: Browser + DevTools + Sidepanel */}
             <div className="relative mt-20 group">
-              <div className="absolute inset-x-10 bottom-0 h-40 bg-gradient-to-t from-white dark:from-[#0B1120] to-transparent z-20"></div>
+              <div className="absolute inset-x-10 bottom-0 h-40 bg-linear-to-t from-white dark:from-[#0B1120] to-transparent z-20"></div>
               <div className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden relative z-10">
                 {/* Browser Toolbar Mockup */}
                 <div className="h-10 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex items-center px-4 gap-4">
@@ -199,7 +199,7 @@ export default async function Home() {
               </div>
 
               {/* Flow Particles */}
-              <div className="absolute inset-x-20 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 animate-[shimmer_2s_infinite]"></div>
+              <div className="absolute inset-x-20 h-0.5 bg-linear-to-r from-transparent via-blue-500 to-transparent opacity-0 animate-[shimmer_2s_infinite]"></div>
             </div>
 
             {/* Integrations Grid */}

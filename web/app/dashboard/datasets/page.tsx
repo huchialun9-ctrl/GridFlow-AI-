@@ -138,7 +138,6 @@ export default function MyDatasets() {
                             </div>
                             <p className="text-[10px] text-slate-400 font-mono truncate mb-4">{ds.source_url}</p>
                             <div className="flex justify-between items-center pt-3 border-t border-slate-50 dark:border-slate-800">
-                            <div className="flex justify-between items-center pt-3 border-t border-slate-50 dark:border-slate-800">
                                 <div className="flex gap-2">
                                     <button 
                                         onClick={(e) => { 
