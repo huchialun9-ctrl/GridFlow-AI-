@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import UsageMetrics from '@/components/UsageMetrics';
 import SystemStatus from '@/components/SystemStatus';
+import Image from 'next/image';
 
 export default function DashboardLayout({
     children,
@@ -61,8 +62,9 @@ export default function DashboardLayout({
             {/* Sidebar */}
             <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 fixed h-full hidden md:flex flex-col">
                 <div className="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
-                    <Link href="/" className="font-bold text-xl tracking-tight">
-                        <span className="text-blue-600">GridFlow</span> AI
+                    <Link href="/" className="font-bold text-xl tracking-tight flex items-center gap-2.5">
+                        <Image src="/logo.png" alt="GridFlow" width={28} height={28} className="w-7 h-7" />
+                        <span><span className="text-blue-600">GridFlow</span> AI</span>
                     </Link>
                 </div>
 

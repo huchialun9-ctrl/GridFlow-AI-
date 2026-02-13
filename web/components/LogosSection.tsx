@@ -23,8 +23,16 @@ export default function LogosSection() {
                     <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6C4.9 2 4.01 2.9 4.01 4L4 20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM13 9V3.5L18.5 9H13Z" /></svg>
                 </Logo>
 
-                <Logo label="Notion" color="group-hover:text-black dark:group-hover:text-white group-hover:border-slate-300 dark:group-hover:border-slate-600">
-                     <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M4.19 19.56L14.7 9.07 15.61 6.84 15 4.3 12.87 3.93 5.48 11.38zM19.81 4.41L18.7 1.69 16.58 2.38 17.5 5.5zM20.25 20.33L16.29 21.75 3.75 22 3.82 20.5 5.22 17.07 5.09 13.9 6.86 11.87 18.06 1.13 20.89 4.29z" /></svg>
+                <Logo label="Zapier" color="group-hover:text-[#FF4F00] group-hover:border-orange-200 dark:group-hover:border-orange-900/50">
+                    <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M4.2 13.8h7.1l-1.9 8.1 10.4-11.8h-7.1l1.9-8.1L4.2 13.8z"/>
+                    </svg>
+                </Logo>
+
+                <Logo label="Make" color="group-hover:text-[#6F42C1] group-hover:border-purple-200 dark:group-hover:border-purple-900/50">
+                     <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z"/>
+                    </svg>
                 </Logo>
 
                 <Logo label="Airtable" color="group-hover:text-yellow-500 group-hover:border-yellow-200 dark:group-hover:border-yellow-900/50">

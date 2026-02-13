@@ -8,6 +8,9 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 export const metadata: Metadata = {
   title: "GridFlow AI - Instant Web Data Extraction",
   description: "Extract tables and lists from any website into Excel with one click. Privacy-first, AI-powered web scraping.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
