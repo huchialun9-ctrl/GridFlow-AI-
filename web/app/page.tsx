@@ -6,6 +6,7 @@ import HeroAnimation from "../components/HeroAnimation";
 import DeveloperSection from '@/components/DeveloperSection';
 import InnovationShowcase from '@/components/InnovationShowcase';
 import { Github, BookOpen } from 'lucide-react';
+import logoImg from '../public/logo.png';
 
 export default async function Home() {
   const supabase = createClient();
@@ -17,7 +18,7 @@ export default async function Home() {
       <header className="fixed top-0 w-full border-b border-slate-200 dark:border-slate-800/50 bg-[#F8FAFC]/80 dark:bg-[#0B1120]/80 backdrop-blur-md z-50">
         <div className="container mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3 font-mono font-bold text-sm tracking-tight group cursor-pointer">
-            <Image src="/logo.png" alt="GridFlow Logo" width={24} height={24} className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
+            <Image src={logoImg} alt="GridFlow Logo" width={24} height={24} className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
             GRIDFLOW_AI
           </div>
           <nav className="hidden md:flex items-center gap-8 text-xs font-medium font-mono text-slate-500 dark:text-slate-400">
@@ -67,7 +68,7 @@ export default async function Home() {
                 <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-blue-600">Data Operations</span> Platform.
               </h1>
               <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed font-light mx-auto">
-                GridFlow AI delivers automated, compliance-ready web data extraction for modern enterprises. 
+                GridFlow AI delivers automated, compliance-ready web data extraction for modern enterprises.
                 Transform unstructured web traffic into actionable business intelligence with banking-grade security.
               </p>
 
@@ -106,18 +107,18 @@ export default async function Home() {
                   </div>
                   {/* Microsoft */}
                   <div className="flex items-center gap-2">
-                    <svg className="w-6 h-6" viewBox="0 0 23 23" fill="currentColor"><path d="M0 0h11v11H0zM12 0h11v11H12zM0 12h11v11H0zM12 12h11v11H12z"/></svg>
+                    <svg className="w-6 h-6" viewBox="0 0 23 23" fill="currentColor"><path d="M0 0h11v11H0zM12 0h11v11H12zM0 12h11v11H0zM12 12h11v11H12z" /></svg>
                     <span className="font-bold text-lg">Microsoft</span>
                   </div>
                   {/* Supabase */}
                   <div className="flex items-center gap-2">
-                    <svg className="w-6 h-6 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path d="M21.362 9.354C21.362 9.354 16.717 6.307 10.999 6.307C8.169 6.307 6.452 7.086 6.452 7.086L7.331 10.84C7.331 10.84 9.079 10.155 10.662 10.155C14.735 10.155 16.297 12.062 16.297 12.062L15.341 16.59C15.341 16.59 13.064 12.91 9.389 12.91C5.839 12.91 2.373 15.655 2.373 19.34C2.373 21.047 3.328 22.128 3.328 22.128L10.375 22.118L13.12 9.613L21.362 9.354Z"/></svg>
+                    <svg className="w-6 h-6 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path d="M21.362 9.354C21.362 9.354 16.717 6.307 10.999 6.307C8.169 6.307 6.452 7.086 6.452 7.086L7.331 10.84C7.331 10.84 9.079 10.155 10.662 10.155C14.735 10.155 16.297 12.062 16.297 12.062L15.341 16.59C15.341 16.59 13.064 12.91 9.389 12.91C5.839 12.91 2.373 15.655 2.373 19.34C2.373 21.047 3.328 22.128 3.328 22.128L10.375 22.118L13.12 9.613L21.362 9.354Z" /></svg>
                     <span className="font-bold text-lg">Supabase</span>
                   </div>
                   {/* Google Cloud */}
                   <div className="flex items-center gap-2">
-                    <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-                     <span className="font-bold text-lg">Google Cloud</span>
+                    <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" /></svg>
+                    <span className="font-bold text-lg">Google Cloud</span>
                   </div>
                 </div>
               </div>
@@ -225,48 +226,48 @@ export default async function Home() {
 
       <footer className="py-20 border-t border-slate-100 dark:border-slate-900 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-6 max-w-6xl">
-            <div className="grid md:grid-cols-4 gap-12 mb-16">
-              <div className="col-span-1 md:col-span-1">
-                <div className="flex items-center gap-3 mb-6">
-                  <Image src="/logo.png" alt="GridFlow Logo" width={24} height={24} className="w-6 h-6" />
-                  <span className="font-bold text-slate-900 dark:text-slate-50 tracking-tighter">GRIDFLOW_AI</span>
-                </div>
-                <p className="text-sm text-slate-500 leading-relaxed font-light">
-                  Built by <span className="font-bold text-slate-900 dark:text-slate-50">胡家綸</span>. <br />
-                  Empowering data-driven decisions through advanced AI extraction.
-                </p>
+          <div className="grid md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-1 md:col-span-1">
+              <div className="flex items-center gap-3 mb-6">
+                <Image src={logoImg} alt="GridFlow Logo" width={24} height={24} className="w-6 h-6" />
+                <span className="font-bold text-slate-900 dark:text-slate-50 tracking-tighter">GRIDFLOW_AI</span>
               </div>
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Platform</h4>
-                <ul className="space-y-4 text-sm text-slate-500 font-light">
-                  <li><Link href="/solutions" className="hover:text-emerald-500 transition-colors">Solutions</Link></li>
-                  <li><Link href="/security" className="hover:text-emerald-500 transition-colors">Security</Link></li>
-                  <li><Link href="/docs" className="hover:text-emerald-500 transition-colors">Documentation</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Project</h4>
-                <ul className="space-y-4 text-sm text-slate-500 font-light">
-                  <li><a href="https://github.com/huchialun9-ctrl/GridFlow-AI-" target="_blank" className="hover:text-emerald-500 transition-colors">GitHub Repository</a></li>
-                  <li><a href="https://github.com/huchialun9-ctrl" target="_blank" className="hover:text-emerald-500 transition-colors">Developer Profile</a></li>
-                  <li><Link href="/legal/terms" className="hover:text-emerald-500 transition-colors">Terms of Service</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Connect</h4>
-                <p className="text-sm text-slate-500 font-light mb-4">Open for collaboration and inquiries.</p>
-                <a href="mailto:huchialun97@gmail.com" className="text-sm font-bold text-emerald-600 hover:underline">huchialun97@gmail.com</a>
+              <p className="text-sm text-slate-500 leading-relaxed font-light">
+                Built by <span className="font-bold text-slate-900 dark:text-slate-50">胡家綸</span>. <br />
+                Empowering data-driven decisions through advanced AI extraction.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Platform</h4>
+              <ul className="space-y-4 text-sm text-slate-500 font-light">
+                <li><Link href="/solutions" className="hover:text-emerald-500 transition-colors">Solutions</Link></li>
+                <li><Link href="/security" className="hover:text-emerald-500 transition-colors">Security</Link></li>
+                <li><Link href="/docs" className="hover:text-emerald-500 transition-colors">Documentation</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Project</h4>
+              <ul className="space-y-4 text-sm text-slate-500 font-light">
+                <li><a href="https://github.com/huchialun9-ctrl/GridFlow-AI-" target="_blank" className="hover:text-emerald-500 transition-colors">GitHub Repository</a></li>
+                <li><a href="https://github.com/huchialun9-ctrl" target="_blank" className="hover:text-emerald-500 transition-colors">Developer Profile</a></li>
+                <li><Link href="/legal/terms" className="hover:text-emerald-500 transition-colors">Terms of Service</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Connect</h4>
+              <p className="text-sm text-slate-500 font-light mb-4">Open for collaboration and inquiries.</p>
+              <a href="mailto:huchialun97@gmail.com" className="text-sm font-bold text-emerald-600 hover:underline">huchialun97@gmail.com</a>
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-12 border-t border-slate-50 dark:border-slate-900">
+            <p className="text-xs text-slate-400 font-mono">© 2026 GRIDFLOW_AI // DESIGN_AND_DEV_BY_胡家綸</p>
+            <div className="flex gap-8 text-[10px] items-center">
+              <div className="flex items-center gap-1.5 text-emerald-500">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span className="font-bold uppercase tracking-widest">System_Active_v1.0.4</span>
               </div>
             </div>
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-12 border-t border-slate-50 dark:border-slate-900">
-              <p className="text-xs text-slate-400 font-mono">© 2026 GRIDFLOW_AI // DESIGN_AND_DEV_BY_胡家綸</p>
-              <div className="flex gap-8 text-[10px] items-center">
-                <div className="flex items-center gap-1.5 text-emerald-500">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                  <span className="font-bold uppercase tracking-widest">System_Active_v1.0.4</span>
-                </div>
-              </div>
-            </div>
+          </div>
         </div>
       </footer>
     </div>

@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabaseClient';
 import UsageMetrics from '@/components/UsageMetrics';
 import SystemStatus from '@/components/SystemStatus';
 import Image from 'next/image';
+import logoImg from '../../public/logo.png';
 
 export default function DashboardLayout({
     children,
@@ -24,14 +25,14 @@ export default function DashboardLayout({
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 setUserEmail(user.email || 'User');
-                
+
                 // Fetch profile for tier
                 const { data: profile } = await supabase
                     .from('profiles')
                     .select('subscription_tier')
                     .eq('id', user.id)
                     .single();
-                
+
                 if (profile?.subscription_tier) {
                     setTier(profile.subscription_tier);
                 }
@@ -47,36 +48,56 @@ export default function DashboardLayout({
     };
 
     const navItems = [
-        { name: 'Overview', href: '/dashboard', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-        ) },
-        { name: 'My Datasets', href: '/dashboard/datasets', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        ) },
-        { name: 'Analytics', href: '/dashboard/insights', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-        ) },
-        { name: 'Import Data', href: '/dashboard/import', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-        ) },
-        { name: 'Integrations', href: '/dashboard/integrations', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-        ) },
-        { name: 'Automation', href: '/dashboard/automation', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        ) },
-        { name: 'Settings', href: '/dashboard/settings', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        ) },
-        { name: 'Help & Docs', href: '/dashboard/help', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-        ) },
-        { name: 'Cloud Vault', href: '/dashboard/datasets', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
-        ) },
-        { name: 'API Management', href: '/dashboard/settings?tab=api', icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-        ) },
+        {
+            name: 'Overview', href: '/dashboard', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            )
+        },
+        {
+            name: 'My Datasets', href: '/dashboard/datasets', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            )
+        },
+        {
+            name: 'Analytics', href: '/dashboard/insights', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            )
+        },
+        {
+            name: 'Import Data', href: '/dashboard/import', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            )
+        },
+        {
+            name: 'Integrations', href: '/dashboard/integrations', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            )
+        },
+        {
+            name: 'Automation', href: '/dashboard/automation', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            )
+        },
+        {
+            name: 'Settings', href: '/dashboard/settings', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            )
+        },
+        {
+            name: 'Help & Docs', href: '/dashboard/help', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            )
+        },
+        {
+            name: 'Cloud Vault', href: '/dashboard/datasets', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+            )
+        },
+        {
+            name: 'API Management', href: '/dashboard/settings?tab=api', icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+            )
+        },
     ];
 
     return (
@@ -85,33 +106,32 @@ export default function DashboardLayout({
             <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 fixed h-full hidden md:flex flex-col">
                 <div className="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
                     <Link href="/" className="font-bold text-xl tracking-tight flex items-center gap-2.5">
-                        <Image src="/logo.png" alt="GridFlow" width={28} height={28} className="w-7 h-7" />
+                        <Image src={logoImg} alt="GridFlow" width={28} height={28} className="w-7 h-7" />
                         <span><span className="text-blue-600">GridFlow</span> AI</span>
                     </Link>
                 </div>
 
                 <div className="p-4 flex-1">
                     <nav className="flex-1 px-4 space-y-2 py-4">
-                    {navItems.map((item) => {
-                        const isActive = pathname === item.href;
-                        return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 ${
-                                    isActive
-                                        ? 'bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 shadow-lg shadow-slate-200 dark:shadow-none translate-x-1'
-                                        : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100'
-                                }`}
-                            >
-                                <span className={isActive ? 'text-white dark:text-slate-900' : 'text-slate-400'}>
-                                    {item.icon}
-                                </span>
-                                {item.name}
-                            </Link>
-                        );
-                    })}
-                </nav>
+                        {navItems.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 ${isActive
+                                            ? 'bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 shadow-lg shadow-slate-200 dark:shadow-none translate-x-1'
+                                            : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100'
+                                        }`}
+                                >
+                                    <span className={isActive ? 'text-white dark:text-slate-900' : 'text-slate-400'}>
+                                        {item.icon}
+                                    </span>
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
+                    </nav>
                 </div>
 
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800">
@@ -122,14 +142,14 @@ export default function DashboardLayout({
                                     {userEmail?.[0] || '?'}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-slate-900 dark:text-slate-50 truncate">
-                                    {userEmail?.split('@')[0] || 'User'}
-                                </p>
-                                <div className="flex items-center gap-1.5">
-                                    <div className={`w-1.5 h-1.5 rounded-full ${tier === 'pro' ? 'bg-emerald-500' : 'bg-slate-400'}`}></div>
-                                    <p className="text-[10px] font-medium text-slate-500 italic">{tier === 'pro' ? 'Pro Plan' : 'Free Plan'}</p>
+                                    <p className="text-sm font-bold text-slate-900 dark:text-slate-50 truncate">
+                                        {userEmail?.split('@')[0] || 'User'}
+                                    </p>
+                                    <div className="flex items-center gap-1.5">
+                                        <div className={`w-1.5 h-1.5 rounded-full ${tier === 'pro' ? 'bg-emerald-500' : 'bg-slate-400'}`}></div>
+                                        <p className="text-[10px] font-medium text-slate-500 italic">{tier === 'pro' ? 'Pro Plan' : 'Free Plan'}</p>
+                                    </div>
                                 </div>
-                            </div>
                             </div>
                             <button
                                 onClick={handleLogout}
@@ -141,11 +161,10 @@ export default function DashboardLayout({
                         </div>
                         <div className="flex items-center justify-between px-1 mb-2">
                             <span className="text-[9px] font-black font-mono text-slate-400 uppercase tracking-widest">Access_Tier</span>
-                            <span className={`px-1.5 py-0.5 text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase ${
-                                tier === 'pro' 
-                                ? 'bg-blue-600 text-white' 
-                                : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                            }`}>
+                            <span className={`px-1.5 py-0.5 text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase ${tier === 'pro'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                }`}>
                                 {tier === 'pro' ? 'Professional' : 'General'}
                             </span>
                         </div>
@@ -162,12 +181,12 @@ export default function DashboardLayout({
             <main className="flex-1 md:ml-64 flex flex-col min-h-screen relative">
                 {/* Analytics Header */}
                 <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur sticky top-0 z-30 px-8 flex items-center justify-end gap-4">
-                     <div className="relative group">
+                    <div className="relative group">
                         <button className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors relative">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 border border-white dark:border-slate-900"></span>
                         </button>
-                        
+
                         {/* Dropdown */}
                         <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right z-50">
                             <div className="p-4 border-b border-slate-100 dark:border-slate-800">
@@ -187,14 +206,14 @@ export default function DashboardLayout({
                                 <button className="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase">Mark_All_Read</button>
                             </div>
                         </div>
-                     </div>
-                     <UsageMetrics />
+                    </div>
+                    <UsageMetrics />
                 </header>
 
                 <div className="flex-1 p-8">
                     {children}
                 </div>
-                
+
                 <SystemStatus />
             </main>
         </div>
