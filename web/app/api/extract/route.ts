@@ -86,56 +86,63 @@ export async function POST(req: Request) {
 
                 if (mode === 'word') {
                     prompt = `
-                        You are a world-class Literature Analyst & Academic Researcher.
-                        Analyze the provided Markdown content from an article/paper and extract a comprehensive summary.
+                        You are a Semantic Document Architect.
+                        Analyze the Markdown content and transform it into a well-structured document hierarchy.
 
                         **Objective:**
-                        Break down the long-form content into logical sections for a study report.
+                        Extract the content while preserving its logical flow, headers, and semantic roles (e.g., Intro, Analysis, Findings).
 
                         **Strict Extraction Rules:**
                         1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
-                        2. **Sections to Extract (as rows in "data"):**
-                           - Title & Scope: The main title and what the text covers.
-                           - Executive Summary: A high-level overview.
-                           - Core Arguments/Key Points: Major takeaways.
-                           - Supporting Evidence: Data or facts mentioned.
-                           - Practical Applications/Implications: Why it matters.
-                           - Conclusion/Next Steps: Final summary.
+                        2. **Data Structure:** Each item in "data" MUST have:
+                           - "role": (e.g., "Main Title", "Section Header", "Paragraph", "Bullet Point")
+                           - "content": The actual text.
                         3. **Metadata:**
-                           - "entity_type": "Literature Summary"
-                           - "page_title": The actual document title.
-                           - "confidence_score": 0.0 to 1.0.
+                           - "entity_type": "Structured Document"
+                           - "page_title": The document's primary subject.
+                           - "tone": (e.g., "Professional", "Technical", "Informative")
 
                         **Response Format (JSON ONLY):**
                         {
                             "data": [
-                                { "section": "Summary", "content": "..." },
-                                { "section": "Key Points", "content": "..." }
+                                { "role": "Main Title", "content": "..." },
+                                { "role": "Section Header", "content": "..." },
+                                { "role": "Paragraph", "content": "..." }
                             ],
-                            "metadata": { ... }
+                            "metadata": { "entity_type": "Structured Document", "page_title": "..." }
                         }
 
-                        **Content Source Notice:** This content was retrieved via fallback direct fetch and may contain some remaining HTML noise. Please focus on the primary semantic data.
+                        **Content Source Notice:** This content was retrieved via fallback direct fetch. Preserve the semantic meaning while ignoring technical debris.
 
                         **Markdown/Text Content:**
                         ${rawMarkdown.slice(0, 40000)}
                     `;
                 } else if (mode === 'ppt') {
                     prompt = `
-                        You are a Visual Intelligence & Presentation Designer.
-                        Analyze the content and extract key "slides" or visual data points.
+                        You are a Visual Information Designer.
+                        Analyze the Markdown content and decompose it into distinct presentation slides.
 
                         **Objective:**
-                        Identify data and headlines suitable for a PowerPoint presentation.
+                        Extract data and themes suitable for a professional slide deck. Identify logical breaks for individual slides.
 
                         **Strict Extraction Rules:**
                         1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
-                        2. **Rows:** Each row should represent a "Slide Title" and "Bullet Points/Chart Data".
+                        2. **Data Structure:** Each item in "data" MUST represent a slide with:
+                           - "slide_title": The headline of the slide.
+                           - "bullet_points": An array of strings containing supporting details or data points.
                         3. **Metadata:**
                            - "entity_type": "Presentation Outline"
-                           - "page_title": The presentation theme.
+                           - "presentation_theme": The overall narrative arc.
 
-                        **Content Source Notice:** This content was retrieved via fallback direct fetch and may contain some remaining HTML noise. Please focus on the primary semantic data.
+                        **Response Format (JSON ONLY):**
+                        {
+                            "data": [
+                                { "slide_title": "...", "bullet_points": ["...", "..."] }
+                            ],
+                            "metadata": { "entity_type": "Presentation Outline", "presentation_theme": "..." }
+                        }
+
+                        **Content Source Notice:** This content was retrieved via fallback direct fetch. De-clutter the content to focus on the presentation-worthy core.
 
                         **Markdown/Text Content:**
                         ${rawMarkdown.slice(0, 40000)}
