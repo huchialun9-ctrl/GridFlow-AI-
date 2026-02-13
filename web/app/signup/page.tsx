@@ -21,7 +21,7 @@ export default function Signup() {
         setMessage(null)
 
         try {
-            const { error } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
@@ -30,7 +30,17 @@ export default function Signup() {
             })
 
             if (error) throw error
-            setMessage('Check your email for the confirmation link.')
+            
+            // If email confirmation is disabled, we get a session immediately
+            if (data?.session) {
+                router.push('/dashboard')
+            } else if (data?.user) {
+                // User was created but needs confirmation (or is pending)
+                setMessage('Check your email for the confirmation link.')
+            } else {
+                // This happens if the user already exists (Supabase security feature)
+                setMessage('If this email is new, check your inbox. Otherwise, please sign in.')
+            }
         } catch (err: any) {
             setError(err.message)
         } finally {
