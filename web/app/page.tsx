@@ -1,7 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "../lib/supabaseServer";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <div className="flex flex-col min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] text-slate-900 dark:text-slate-50 font-sans selection:bg-slate-900 selection:text-white">
       {/* Header */}
@@ -17,18 +21,29 @@ export default function Home() {
             <Link href="https://github.com/huchialun9-ctrl/GridFlow-AI-" className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors uppercase tracking-wider">GitHub</Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link
-              href="/login"
-              className="text-xs font-medium font-mono text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 uppercase tracking-wider"
-            >
-              Login
-            </Link>
-            <Link
-              href="/dashboard"
-              className="px-4 py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-black dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold font-mono rounded shadow-sm transition-colors border border-black/5 dark:border-white/5"
-            >
-              DASHBOARD
-            </Link>
+            {!user ? (
+              <>
+                <Link
+                  href="/login"
+                  className="text-xs font-medium font-mono text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 uppercase tracking-wider"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="px-4 py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-black dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold font-mono rounded shadow-sm transition-colors border border-black/5 dark:border-white/5"
+                >
+                  GET_STARTED
+                </Link>
+              </>
+            ) : (
+              <Link
+                href="/dashboard"
+                className="px-4 py-1.5 bg-slate-900 dark:bg-slate-50 hover:bg-black dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold font-mono rounded shadow-sm transition-colors border border-black/5 dark:border-white/5"
+              >
+                GO_TO_CONSOLE
+              </Link>
+            )}
           </div>
         </div>
       </header>
