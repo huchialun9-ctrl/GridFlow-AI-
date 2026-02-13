@@ -62,7 +62,7 @@ export default function AIProcessorModal({ isOpen, onClose, onSubmit, isProcessi
                 <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-emerald-50/30 dark:bg-emerald-900/10">
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <h3 className="font-bold text-sm text-emerald-900 dark:text-emerald-400">AI Semantic Processor</h3>
+                        <h3 className="font-bold text-sm text-emerald-900 dark:text-emerald-400">Cloud Data Refinement Protocol</h3>
                     </div>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -132,7 +132,7 @@ export default function AIProcessorModal({ isOpen, onClose, onSubmit, isProcessi
                     </div>
                     
                     <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2">
-                        <p className="text-[10px] text-slate-500 font-mono uppercase tracking-tight">System_Context:</p>
+                        <p className="text-[10px] text-slate-500 font-mono uppercase tracking-tight">Refinement_Context:</p>
                         <ul className="text-[11px] text-slate-400 font-mono space-y-1">
                             <li>• [NODE] Multi-label Classification</li>
                             <li>• [NODE] Language Translation</li>
@@ -159,7 +159,7 @@ export default function AIProcessorModal({ isOpen, onClose, onSubmit, isProcessi
                                     <svg className="animate-spin h-3 w-3 text-current" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                     Processing...
                                 </>
-                            ) : 'Run AI Analysis'}
+                            ) : 'Execute Refinement'}
                         </button>
                     </div>
                 </form>

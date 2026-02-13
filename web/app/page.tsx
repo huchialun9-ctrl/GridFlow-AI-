@@ -52,22 +52,20 @@ export default async function Home() {
 
       <main className="flex-1 pt-24 md:pt-32">
         {/* Hero Section */}
-        <section className="px-6 border-b border-slate-200/60 dark:border-slate-800/60 pb-20 overflow-hidden">
-          <div className="container mx-auto max-w-5xl relative">
-            <div className="flex flex-col items-start gap-6 max-w-3xl z-10 relative">
-              <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+        <section className="px-6 border-b border-slate-200/60 dark:border-slate-800/60 pb-20 overflow-hidden relative">
+          <div className="container mx-auto max-w-6xl relative">
+            <div className="flex flex-col items-center text-center gap-8 max-w-4xl mx-auto z-10 relative mt-12">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-mono font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wide">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                v1.0.2 Stable // System Online
+                System Operational // Enterprise Ready
               </div>
               <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-slate-900 dark:text-slate-50 leading-[1.1]">
-                The Browser Native <br />
-                Data Extractor.
+                The Enterprise <br />
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-blue-600">Data Operations</span> Platform.
               </h1>
-              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed font-light">
-                Programmatic capture for the modern web.
-                Turn any DOM structure into structured datasets directly from your browser.
-                <span className="font-mono text-sm bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded mx-1 align-middle">Local-First</span>
-                architecture with enterprise-grade security.
+              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed font-light mx-auto">
+                GridFlow AI delivers automated, compliance-ready web data extraction for modern enterprises. 
+                Transform unstructured web traffic into actionable business intelligence with banking-grade security.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center gap-4 mt-8 w-full sm:w-auto">
@@ -75,21 +73,48 @@ export default async function Home() {
                   href="/dashboard"
                   className="w-full sm:w-auto px-8 py-4 bg-slate-900 dark:bg-slate-50 hover:bg-black dark:hover:bg-white text-white dark:text-slate-900 font-mono text-sm font-bold rounded flex items-center justify-center gap-2 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                  LAUNCH_CONSOLE
+                  START_AUTOMATION
                 </Link>
                 <Link
-                  href="https://github.com/huchialun9-ctrl/GridFlow-AI-"
+                  href="/solutions"
                   className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-mono text-sm font-medium rounded hover:bg-slate-50 dark:hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
-                  VIEW_SOURCE
+                  VIEW_SOLUTIONS
                 </Link>
+              </div>
+
+              {/* Trust Bar */}
+              <div className="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800/50 w-full">
+                <p className="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest mb-6">
+                  Official Ecosystem Partners
+                </p>
+                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                  {/* GitHub */}
+                  <div className="flex items-center gap-2">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
+                    <span className="font-bold text-lg">GitHub</span>
+                  </div>
+                  {/* Microsoft */}
+                  <div className="flex items-center gap-2">
+                    <svg className="w-6 h-6" viewBox="0 0 23 23" fill="currentColor"><path d="M0 0h11v11H0zM12 0h11v11H12zM0 12h11v11H0zM12 12h11v11H12z"/></svg>
+                    <span className="font-bold text-lg">Microsoft</span>
+                  </div>
+                  {/* Supabase */}
+                  <div className="flex items-center gap-2">
+                    <svg className="w-6 h-6 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path d="M21.362 9.354C21.362 9.354 16.717 6.307 10.999 6.307C8.169 6.307 6.452 7.086 6.452 7.086L7.331 10.84C7.331 10.84 9.079 10.155 10.662 10.155C14.735 10.155 16.297 12.062 16.297 12.062L15.341 16.59C15.341 16.59 13.064 12.91 9.389 12.91C5.839 12.91 2.373 15.655 2.373 19.34C2.373 21.047 3.328 22.128 3.328 22.128L10.375 22.118L13.12 9.613L21.362 9.354Z"/></svg>
+                    <span className="font-bold text-lg">Supabase</span>
+                  </div>
+                  {/* Google Cloud */}
+                  <div className="flex items-center gap-2">
+                    <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                     <span className="font-bold text-lg">Google Cloud</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Technical Visualization: Data Flow Animation */}
-            <div className="mt-20">
+            {/* Technical Visualization: Data Flow Animation - Moved Down slightly */}
+            <div className="mt-24 pointer-events-none opacity-80">
               <HeroAnimation />
             </div>
           </div>

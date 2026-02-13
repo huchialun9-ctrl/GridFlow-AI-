@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { FileSpreadsheet, Check, Loader2 } from 'lucide-react';
 import XLSX from 'xlsx-js-style';
 
+import { supabase } from '@/lib/supabaseClient';
+
 export default function SyncButtons({ data }: { data: any }) {
     const [isSyncingSheets, setIsSyncingSheets] = useState(false);
     const [sheetsSuccess, setSheetsSuccess] = useState(false);
 
-    const handleSheetsSync = () => {
+    const handleSheetsSync = async () => {
         setIsSyncingSheets(true);
         try {
             if (!data.rows || data.rows.length === 0) {
@@ -18,27 +20,26 @@ export default function SyncButtons({ data }: { data: any }) {
             }
 
             // 1. Prepare Data
-            // Ensure rows are objects. If they are arrays, convert to objects based on headers if available, or use index keys.
             let wsData = [];
             if (Array.isArray(data.rows[0])) {
-                // If rows are arrays (e.g. [[val1, val2]]), prepend headers row
                  wsData = [data.headers, ...data.rows];
             } else {
-                // If rows are objects (e.g. [{col1: val1}]), SheetJS handles headers automatically
                 wsData = data.rows;
             }
 
-            // 2. Create Search Sheet
+            // 2. Create Sheet & Styling (Keep existing styling logic)
             const ws = XLSX.utils.json_to_sheet(wsData);
+            
+            // ... (Styling logic omitted for brevity, assuming it remains or is re-implemented if needed)
+            // For brevity in this tool call, I'll trust the existing styling logic if I could partial replace, 
+            // but since I'm rewriting the function, I'll keep the core styling logic simple or copy it back?
+            // Wait, I should probably keep the styling logic.
+            // Let's re-include the robust styling logic from before to be safe.
 
-            // 3. Styling Logic
             const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
             const colWidths: number[] = [];
-
             for (let C = range.s.c; C <= range.e.c; ++C) {
-                let maxLen = 10; // Min width
-
-                // Iterate over rows to find max length
+                let maxLen = 10;
                 for (let R = range.s.r; R <= range.e.r; ++R) {
                     const cellRef = XLSX.utils.encode_cell({ c: C, r: R });
                     const cell = ws[cellRef];
@@ -47,44 +48,50 @@ export default function SyncButtons({ data }: { data: any }) {
                         if (len > maxLen) maxLen = len;
                     }
                 }
-                // Cap width at 50
                 colWidths.push(Math.min(maxLen + 2, 50));
-
-                // Add Header Style (First Row)
                 const headerRef = XLSX.utils.encode_cell({ c: C, r: 0 });
-                if (!ws[headerRef]) continue;
-
-                ws[headerRef].s = {
-                    font: {
-                        name: 'Arial',
-                        sz: 12,
-                        bold: true,
-                        color: { rgb: "FFFFFF" }
-                    },
-                    fill: {
-                        fgColor: { rgb: "4F46E5" } // Indigo-600
-                    },
-                    alignment: {
-                        horizontal: "center",
-                        vertical: "center"
-                    },
-                    border: {
-                        top: { style: 'thin', color: { rgb: "000000" } },
-                        bottom: { style: 'thin', color: { rgb: "000000" } },
-                        left: { style: 'thin', color: { rgb: "000000" } },
-                        right: { style: 'thin', color: { rgb: "000000" } }
-                    }
-                };
+                if (ws[headerRef]) {
+                    ws[headerRef].s = {
+                        font: { name: 'Arial', sz: 12, bold: true, color: { rgb: "FFFFFF" } },
+                        fill: { fgColor: { rgb: "4F46E5" } },
+                        alignment: { horizontal: "center", vertical: "center" },
+                        border: { top: { style: 'thin', color: { rgb: "000000" } }, bottom: { style: 'thin', color: { rgb: "000000" } }, left: { style: 'thin', color: { rgb: "000000" } }, right: { style: 'thin', color: { rgb: "000000" } } }
+                    };
+                }
             }
-
-            // Set Column Widths
             ws['!cols'] = colWidths.map(w => ({ wch: w }));
 
-            // 4. Create Workbook and Write
+            // 3. Write to Buffer
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "GridFlow Data");
-            
+            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            // 4. Managed Export: Upload to Supabase Storage
             const filename = `${(data.name || 'export').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+            const filePath = `${data.user_id || 'guest'}/${Date.now()}_${filename}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('exports')
+                .upload(filePath, blob, {
+                    contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+
+            if (uploadError) throw new Error('Cloud Upload Failed: ' + uploadError.message);
+
+            // 5. Audit Log (Managed Asset)
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                await supabase.from('managed_exports').insert({
+                    user_id: user.id,
+                    dataset_id: data.id,
+                    file_path: filePath,
+                    file_name: filename,
+                    file_size_bytes: blob.size
+                });
+            }
+
+            // 6. Trigger Download
             XLSX.writeFile(wb, filename);
 
             setSheetsSuccess(true);
@@ -111,7 +118,7 @@ export default function SyncButtons({ data }: { data: any }) {
                 ) : (
                     <FileSpreadsheet className="w-3.5 h-3.5" />
                 )}
-                {sheetsSuccess ? 'Exported Clean Excel' : 'Export Clean Excel'}
+                {sheetsSuccess ? 'Cloud Sync & Downloaded' : 'Managed Cloud Export'}
             </button>
         </div>
     );
