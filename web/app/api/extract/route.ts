@@ -164,7 +164,7 @@ export async function POST(req: Request) {
                         headers,
                         rows: formattedRows,
                         rowCount: formattedRows.length,
-                        aiModel: 'gemini-1.5-flash-latest',
+                        aiModel: 'gemini-1.5-flash',
                         metadata
                     });
                 }

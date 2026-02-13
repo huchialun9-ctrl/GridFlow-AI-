@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
         if (process.env.GEMINI_API_KEY) {
             try {
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
                 // Construct a prompt to clean the data
                 const prompt = `
