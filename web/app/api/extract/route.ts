@@ -25,8 +25,11 @@ export async function POST(req: Request) {
 
             if (!jinaResponse.ok) {
                 const errorText = await jinaResponse.text().catch(() => '');
-                console.warn(`Jina Reader Warning (${jinaResponse.status}): ${jinaResponse.statusText} - ${errorText}`);
-                // Don't throw yet, try a direct fetch or fallback later if possible
+                console.warn(`Jina Reader Warning (${jinaResponse.status}): ${jinaResponse.statusText}`);
+                
+                if (jinaResponse.status === 403) {
+                    throw new Error('SITE_FORBIDDEN');
+                }
             } else {
                 rawMarkdown = await jinaResponse.text();
             }
@@ -56,43 +59,80 @@ export async function POST(req: Request) {
         // 2. AI Extraction Logic (Gemini 1.5 Flash)
         if (process.env.GEMINI_API_KEY && rawMarkdown.length > 50) {
             try {
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+                const { mode = 'excel' } = await req.clone().json().catch(() => ({}));
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-                const prompt = `
-                    You are a world-class Data Extraction Expert.
-                    Analyze the provided Markdown content from a webpage and extract the primary dataset.
+                let prompt = '';
 
-                    **Objective:**
-                    Identify the main recurring entity list (e.g., Products, Articles, Job Postings, Real Estate Listings, Crypto Tokens) and extract structured data.
+                if (mode === 'word') {
+                    prompt = `
+                        You are a world-class Literature Analyst & Academic Researcher.
+                        Analyze the provided Markdown content from an article/paper and extract a comprehensive summary.
 
-                    **Strict Extraction Rules:**
-                    1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
-                    2. **Data Cleaning:** 
-                       - Remove ads, nav links, footers, and "sponsored" clutter.
-                       - Normalize all keys to snake_case (e.g., product_title, current_price, posted_date).
-                       - Ensure numeric values are numbers (remove currency symbols if possible, or keep as string if complex).
-                       - Flatten nested objects where reasonable (e.g. author.name -> author_name).
-                    3. **Metadata:**
-                       - "entity_type": What are these rows? (e.g. "Product", "Article").
-                       - "page_title": The likely title of the dataset.
-                       - "confidence_score": 0.0 to 1.0 (how clean is the data?).
-                    4. **Limit:** Extract up to 100 rows.
+                        **Objective:**
+                        Break down the long-form content into logical sections for a study report.
 
-                    **Response Format (JSON ONLY, NO Markdown):**
-                    {
-                        "data": [
-                            { "col_1": "val", "col_2": "val" }
-                        ],
-                        "metadata": {
-                            "entity_type": "...",
-                            "page_title": "...",
-                            "confidence_score": 0.95
+                        **Strict Extraction Rules:**
+                        1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
+                        2. **Sections to Extract (as rows in "data"):**
+                           - Title & Scope: The main title and what the text covers.
+                           - Executive Summary: A high-level overview.
+                           - Core Arguments/Key Points: Major takeaways.
+                           - Supporting Evidence: Data or facts mentioned.
+                           - Practical Applications/Implications: Why it matters.
+                           - Conclusion/Next Steps: Final summary.
+                        3. **Metadata:**
+                           - "entity_type": "Literature Summary"
+                           - "page_title": The actual document title.
+                           - "confidence_score": 0.0 to 1.0.
+
+                        **Response Format (JSON ONLY):**
+                        {
+                            "data": [
+                                { "section": "Summary", "content": "..." },
+                                { "section": "Key Points", "content": "..." }
+                            ],
+                            "metadata": { ... }
                         }
-                    }
 
-                    **Markdown Content:**
-                    ${rawMarkdown.slice(0, 40000)}
-                `;
+                        **Markdown Content:**
+                        ${rawMarkdown.slice(0, 40000)}
+                    `;
+                } else if (mode === 'ppt') {
+                    prompt = `
+                        You are a Visual Intelligence & Presentation Designer.
+                        Analyze the content and extract key "slides" or visual data points.
+
+                        **Objective:**
+                        Identify data and headlines suitable for a PowerPoint presentation.
+
+                        **Strict Extraction Rules:**
+                        1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
+                        2. **Rows:** Each row should represent a "Slide Title" and "Bullet Points/Chart Data".
+                        3. **Metadata:**
+                           - "entity_type": "Presentation Outline"
+                           - "page_title": The presentation theme.
+
+                        **Markdown Content:**
+                        ${rawMarkdown.slice(0, 40000)}
+                    `;
+                } else {
+                    // Default Excel mode
+                    prompt = `
+                        You are a world-class Data Extraction Expert.
+                        Analyze the provided Markdown content and extract the primary recurring dataset.
+
+                        **Objective:**
+                        Identify the main recurring entity list (e.g., Products, Leads, Transactions) and extract structured rows.
+
+                        **Strict Extraction Rules:**
+                        1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
+                        2. **Metadata:** "entity_type" (e.g. "Product"), "page_title".
+
+                        **Markdown Content:**
+                        ${rawMarkdown.slice(0, 40000)}
+                    `;
+                }
 
                 const result = await model.generateContent(prompt);
                 const response = await result.response;
@@ -159,9 +199,18 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error('Extraction API Error:', error);
+        
+        let errorMessage = error.message || 'Unknown extraction error';
+        let statusCode = 500;
+
+        if (error.message === 'SITE_FORBIDDEN') {
+            errorMessage = 'This website is protected by security protocols (Anti-Bot) and cannot be extracted at this time. Please try another source.';
+            statusCode = 403;
+        }
+
         return NextResponse.json({ 
-            error: error.message || 'Unknown extraction error',
+            error: errorMessage,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        }, { status: 500 });
+        }, { status: statusCode });
     }
 }

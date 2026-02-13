@@ -116,7 +116,7 @@ export default function Dashboard() {
         document.body.removeChild(link);
     };
 
-    const handleNewTask = async (url: string) => {
+    const handleNewTask = async (url: string, mode: string = 'excel') => {
         setIsExtModalOpen(false);
         setLoading(true);
         setIsProcessing(true);
@@ -125,7 +125,7 @@ export default function Dashboard() {
             const response = await fetch('/api/extract', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url })
+                body: JSON.stringify({ url, mode })
             });
 
             if (!response.ok) {
