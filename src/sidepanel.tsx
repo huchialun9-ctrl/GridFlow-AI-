@@ -6,6 +6,7 @@ import { StatusBadge, type StatusType } from "./components/StatusBadge"
 import { Integrations } from "./components/Integrations"
 import { PrivacyBadge } from "./components/PrivacyBadge"
 import { Anonymizer } from "./features/Anonymizer"
+import { CloudSync } from "./features/CloudSync"
 import "./style.css"
 
 function Sidepanel() {
@@ -15,6 +16,13 @@ function Sidepanel() {
     const [detectedCount, setDetectedCount] = useState<number>(0)
     const [isProcessing, setIsProcessing] = useState(false)
     const [isAnonymized, setIsAnonymized] = useState(false)
+
+    // Sync States
+    const [isSyncing, setIsSyncing] = useState(false)
+    const [showLogin, setShowLogin] = useState(false)
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [loginError, setLoginError] = useState("")
 
     // Derived state: Apply anonymization if enabled
     const displayData = isAnonymized ? Anonymizer.processDataset(data) : data
@@ -55,7 +63,56 @@ function Sidepanel() {
     }
 
     const handleSettings = () => {
-        console.log("Open settings")
+        chrome.runtime.openOptionsPage()
+    }
+
+    const handleSync = async () => {
+        if (data.length === 0) return
+
+        setIsSyncing(true)
+        try {
+            // Check auth
+            const session = await CloudSync.getSession()
+            if (!session) {
+                setShowLogin(true)
+                setIsSyncing(false)
+                return
+            }
+
+            // Upload
+            const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+            const url = tabs[0]?.url || "unknown"
+
+            const finalData = isAnonymized ? Anonymizer.processDataset(data) : data
+            await CloudSync.uploadDataset(`Dataset ${new Date().toLocaleString()}`, headers, finalData, url)
+
+            // Show success (simple alert for now)
+            // In a real app we might want a toast
+            console.log("Sync Successful")
+        } catch (e: any) {
+            console.error(e)
+            // If auth error, show login
+            if (e.message.includes("authenticated")) {
+                setShowLogin(true)
+            }
+        } finally {
+            setIsSyncing(false)
+        }
+    }
+
+    const handleLoginSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setLoginError("")
+        setIsSyncing(true)
+        try {
+            await CloudSync.login(email, password)
+            setShowLogin(false)
+            handleSync()
+        } catch (e: any) {
+            setLoginError(e.message)
+        } finally {
+            setIsSyncing(false)
+        }
     }
 
     return (
@@ -65,13 +122,54 @@ function Sidepanel() {
                 onSettings={handleSettings}
                 isAnonymized={isAnonymized}
                 onToggleAnonymize={() => setIsAnonymized(!isAnonymized)}
+                onSync={handleSync}
             />
 
             <div className="plasmo-flex-1 plasmo-overflow-hidden plasmo-flex plasmo-flex-col plasmo-relative">
-                {isProcessing && (
+                {(isProcessing || isSyncing) && (
                     <div className="plasmo-absolute plasmo-inset-0 plasmo-z-50 plasmo-bg-white/80 dark:plasmo-bg-slate-900/80 plasmo-flex plasmo-items-center plasmo-justify-center plasmo-flex-col plasmo-gap-2">
                         <div className="plasmo-animate-spin plasmo-rounded-full plasmo-h-8 plasmo-w-8 plasmo-border-b-2 plasmo-border-slate-800 dark:plasmo-border-slate-200"></div>
-                        <span className="plasmo-text-xs plasmo-font-mono plasmo-text-slate-500">Extracting data...</span>
+                        <span className="plasmo-text-xs plasmo-font-mono plasmo-text-slate-500">{isSyncing ? "Syncing..." : "Extracting..."}</span>
+                    </div>
+                )}
+
+                {showLogin && (
+                    <div className="plasmo-absolute plasmo-inset-0 plasmo-z-40 plasmo-bg-white dark:plasmo-bg-slate-900 plasmo-p-8 plasmo-flex plasmo-flex-col plasmo-justify-center">
+                        <h2 className="plasmo-text-lg plasmo-font-bold plasmo-mb-4">Log in</h2>
+                        <form onSubmit={handleLoginSubmit} className="plasmo-flex plasmo-flex-col plasmo-gap-4">
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="plasmo-p-2 plasmo-border plasmo-rounded plasmo-text-sm dark:plasmo-bg-slate-800"
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="plasmo-p-2 plasmo-border plasmo-rounded plasmo-text-sm dark:plasmo-bg-slate-800"
+                                required
+                            />
+                            {loginError && <p className="plasmo-text-red-500 plasmo-text-xs">{loginError}</p>}
+                            <div className="plasmo-flex plasmo-gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowLogin(false)}
+                                    className="plasmo-flex-1 plasmo-p-2 plasmo-border plasmo-rounded plasmo-text-sm"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="plasmo-flex-1 plasmo-p-2 plasmo-bg-slate-900 plasmo-text-white plasmo-rounded plasmo-text-sm"
+                                >
+                                    Login
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 )}
 

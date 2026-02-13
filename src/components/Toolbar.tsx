@@ -1,16 +1,29 @@
 import React from "react"
 
 
-interface ToolbarProps {
+export interface ToolbarProps {
     onExport: () => void
     onSettings: () => void
     isAnonymized: boolean
     onToggleAnonymize: () => void
+    onSync: () => void
 }
 
-export function Toolbar({ onExport, onSettings, isAnonymized, onToggleAnonymize }: ToolbarProps) {
+export function Toolbar({ onExport, onSettings, isAnonymized, onToggleAnonymize, onSync }: ToolbarProps) {
     return (
         <div className="plasmo-flex plasmo-items-center plasmo-justify-between plasmo-p-2 plasmo-border-b plasmo-border-slate-100 dark:plasmo-border-slate-800">
+            <div className="plasmo-flex plasmo-items-center plasmo-gap-1">
+                {/* Sync Button */}
+                <button
+                    onClick={onSync}
+                    className="plasmo-p-1 plasmo-text-slate-400 hover:plasmo-text-blue-600 dark:hover:plasmo-text-blue-400 plasmo-transition-colors"
+                    title="Sync to Cloud"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="plasmo-w-4 plasmo-h-4">
+                        <path fillRule="evenodd" d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-2.75a.75.75 0 001.5 0V9.66l1.95 2.1a.75.75 0 101.1-1.02l-3.25-3.5a.75.75 0 00-1.1 0l-3.25 3.5a.75.75 0 101.1 1.02l1.95-2.1v4.59z" clipRule="evenodd" />
+                    </svg>
+                </button>
+            </div>
             <div className="plasmo-flex plasmo-items-center plasmo-gap-2">
                 <span className="plasmo-text-xs plasmo-font-semibold plasmo-text-slate-900 dark:plasmo-text-slate-100">GridFlow</span>
 
@@ -18,8 +31,8 @@ export function Toolbar({ onExport, onSettings, isAnonymized, onToggleAnonymize 
                 <button
                     onClick={onToggleAnonymize}
                     className={`plasmo-flex plasmo-items-center plasmo-gap-1 plasmo-px-1.5 plasmo-py-0.5 plasmo-rounded-full plasmo-text-[8px] plasmo-font-medium plasmo-border ${isAnonymized
-                            ? "plasmo-bg-emerald-50 plasmo-text-emerald-600 plasmo-border-emerald-200 dark:plasmo-bg-emerald-900/20 dark:plasmo-border-emerald-800"
-                            : "plasmo-bg-slate-50 plasmo-text-slate-400 plasmo-border-slate-200 dark:plasmo-bg-slate-800 dark:plasmo-border-slate-700"
+                        ? "plasmo-bg-emerald-50 plasmo-text-emerald-600 plasmo-border-emerald-200 dark:plasmo-bg-emerald-900/20 dark:plasmo-border-emerald-800"
+                        : "plasmo-bg-slate-50 plasmo-text-slate-400 plasmo-border-slate-200 dark:plasmo-bg-slate-800 dark:plasmo-border-slate-700"
                         } plasmo-transition-all`}
                     title="Toggle Data Anonymization"
                 >
