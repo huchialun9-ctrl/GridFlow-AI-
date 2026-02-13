@@ -30,20 +30,39 @@ export async function POST(req: Request) {
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
                 const prompt = `
-                    You are a precise data extraction engine. 
-                    I will provide you with the markdown content of a webpage.
-                    Your task is to identify the MAIN data table, list, or content stream on this page.
-                    
-                    Rules:
-                    1. Extract the data into a clean JSON array of objects.
-                    2. Keys should be snake_case (e.g., product_name, price, date).
-                    3. Remove any advertisements, navigation links, or irrelevant footer content.
-                    4. If there are multiple potential tables, choose the one that looks like the primary content (e.g. search results, product list).
-                    5. Return ONLY the JSON string, no markdown formatting (no \`\`\`json blocks).
-                    6. Limit to top 50 rows if the list is very long.
+                    You are a world-class Data Extraction Expert.
+                    Analyze the provided Markdown content from a webpage and extract the primary dataset.
 
-                    Markdown Content:
-                    ${rawMarkdown.slice(0, 30000)} // Truncate to avoid context limits if extremely large
+                    **Objective:**
+                    Identify the main recurring entity list (e.g., Products, Articles, Job Postings, Real Estate Listings, Crypto Tokens) and extract structured data.
+
+                    **Strict Extraction Rules:**
+                    1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
+                    2. **Data Cleaning:** 
+                       - Remove ads, nav links, footers, and "sponsored" clutter.
+                       - Normalize all keys to snake_case (e.g., product_title, current_price, posted_date).
+                       - Ensure numeric values are numbers (remove currency symbols if possible, or keep as string if complex).
+                       - Flatten nested objects where reasonable (e.g. author.name -> author_name).
+                    3. **Metadata:**
+                       - "entity_type": What are these rows? (e.g. "Product", "Article").
+                       - "page_title": The likely title of the dataset.
+                       - "confidence_score": 0.0 to 1.0 (how clean is the data?).
+                    4. **Limit:** Extract up to 100 rows.
+
+                    **Response Format (JSON ONLY, NO Markdown):**
+                    {
+                        "data": [
+                            { "col_1": "val", "col_2": "val" }
+                        ],
+                        "metadata": {
+                            "entity_type": "...",
+                            "page_title": "...",
+                            "confidence_score": 0.95
+                        }
+                    }
+
+                    **Markdown Content:**
+                    ${rawMarkdown.slice(0, 40000)}
                 `;
 
                 const result = await model.generateContent(prompt);
@@ -51,9 +70,12 @@ export async function POST(req: Request) {
                 let text = response.text();
                 
                 // Clean up potential markdown code blocks
+                // Clean up potential markdown code blocks
                 text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
-                const rows = JSON.parse(text);
+                const jsonResult = JSON.parse(text);
+                const rows = jsonResult.data || [];
+                const metadata = jsonResult.metadata || {};
                 
                 // Validate it's an array
                 if (Array.isArray(rows) && rows.length > 0) {
@@ -65,14 +87,15 @@ export async function POST(req: Request) {
                          return typeof val === 'object' ? JSON.stringify(val) : String(val);
                     }));
 
-                    const name = url.replace('https://', '').replace('www.', '').split('/')[0] + ' AI_Extract';
+                    const name = (metadata.page_title || url.replace('https://', '')) + ` (${metadata.entity_type || 'Data'})`;
 
                     return NextResponse.json({
                         name,
                         headers,
                         rows: formattedRows,
                         rowCount: formattedRows.length,
-                        aiModel: 'gemini-1.5-flash'
+                        aiModel: 'gemini-1.5-flash-v2',
+                        metadata
                     });
                 }
 
