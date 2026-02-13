@@ -17,7 +17,7 @@ export async function POST(req: Request) {
         let rawMarkdown = '';
         try {
             const jinaResponse = await fetch(`https://r.jina.ai/${url}`, {
-                headers: { 
+                headers: {
                     'X-Return-Format': 'markdown',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
                 }
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
             if (!jinaResponse.ok) {
                 const errorText = await jinaResponse.text().catch(() => '');
                 console.warn(`Jina Reader Warning (${jinaResponse.status}): ${jinaResponse.statusText}`);
-                
+
                 if (jinaResponse.status === 403) {
                     console.warn('Jina Forbidden (403), will attempt direct fallback.');
                 }
@@ -40,11 +40,29 @@ export async function POST(req: Request) {
         if (!rawMarkdown) {
             // Attempt secondary simple fetch as a very basic fallback for some sites
             try {
-                const directResponse = await fetch(url);
+                const directResponse = await fetch(url, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                    }
+                });
+
                 if (directResponse.ok) {
-                    rawMarkdown = await directResponse.text();
-                    // Basic HTML to text conversion if it's not markdown
-                    rawMarkdown = rawMarkdown.replace(/<[^>]*>/g, ' ').slice(0, 10000);
+                    let html = await directResponse.text();
+
+                    // Improved HTML cleaning: remove scripts, styles, and comments first
+                    html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                        .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+                        .replace(/<!--[\s\S]*?-->/g, '');
+
+                    // Simple text extraction from remaining HTML
+                    rawMarkdown = html.replace(/<[^>]*>/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim()
+                        .slice(0, 30000); // Give AI more context if it's raw text
+
+                    console.log(`Direct fallback successful. Extracted ${rawMarkdown.length} chars.`);
                 }
             } catch (fallbackError) {
                 console.error('Direct fallback fetch failed:', fallbackError);
@@ -94,7 +112,9 @@ export async function POST(req: Request) {
                             "metadata": { ... }
                         }
 
-                        **Markdown Content:**
+                        **Content Source Notice:** This content was retrieved via fallback direct fetch and may contain some remaining HTML noise. Please focus on the primary semantic data.
+
+                        **Markdown/Text Content:**
                         ${rawMarkdown.slice(0, 40000)}
                     `;
                 } else if (mode === 'ppt') {
@@ -112,7 +132,9 @@ export async function POST(req: Request) {
                            - "entity_type": "Presentation Outline"
                            - "page_title": The presentation theme.
 
-                        **Markdown Content:**
+                        **Content Source Notice:** This content was retrieved via fallback direct fetch and may contain some remaining HTML noise. Please focus on the primary semantic data.
+
+                        **Markdown/Text Content:**
                         ${rawMarkdown.slice(0, 40000)}
                     `;
                 } else {
@@ -128,7 +150,9 @@ export async function POST(req: Request) {
                         1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
                         2. **Metadata:** "entity_type" (e.g. "Product"), "page_title".
 
-                        **Markdown Content:**
+                        **Content Source Notice:** This content was retrieved via fallback direct fetch and may contain some remaining HTML noise. Please focus on the primary semantic data.
+
+                        **Markdown/Text Content:**
                         ${rawMarkdown.slice(0, 40000)}
                     `;
                 }
@@ -136,22 +160,22 @@ export async function POST(req: Request) {
                 const result = await model.generateContent(prompt);
                 const response = await result.response;
                 let text = response.text();
-                
+
                 // Clean up potential markdown code blocks
                 text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
                 const jsonResult = JSON.parse(text);
                 const rows = jsonResult.data || [];
                 const metadata = jsonResult.metadata || {};
-                
+
                 // Validate it's an array
                 if (Array.isArray(rows) && rows.length > 0) {
                     const headers = Object.keys(rows[0]);
-                    
+
                     // Convert to 2D array for the frontend [[val1, val2], ...]
                     const formattedRows = rows.map(row => headers.map(h => {
                         const val = row[h];
-                         return typeof val === 'object' ? JSON.stringify(val) : String(val);
+                        return typeof val === 'object' ? JSON.stringify(val) : String(val);
                     }));
 
                     const name = (metadata.page_title || url.replace('https://', '')) + ` (${metadata.entity_type || 'Data'})`;
@@ -206,7 +230,7 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error('Extraction API Error:', error);
-        
+
         let errorMessage = error.message || 'Unknown extraction error';
         let statusCode = 500;
 
@@ -215,7 +239,7 @@ export async function POST(req: Request) {
             statusCode = 403;
         }
 
-        return NextResponse.json({ 
+        return NextResponse.json({
             error: errorMessage,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         }, { status: statusCode });
