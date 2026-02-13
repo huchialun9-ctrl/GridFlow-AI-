@@ -1,9 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import DatasetModal from '@/components/DatasetModal';
 import ExtractionModal from '@/components/ExtractionModal';
