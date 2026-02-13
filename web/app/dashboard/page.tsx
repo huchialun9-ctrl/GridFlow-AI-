@@ -4,12 +4,18 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import DatasetModal from '@/components/DatasetModal';
+import ExtractionModal from '@/components/ExtractionModal';
 
 export default function Dashboard() {
     const [datasets, setDatasets] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedDataset, setSelectedDataset] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isExtModalOpen, setIsExtModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [renamingId, setRenamingId] = useState<string | null>(null);
+    const [newName, setNewName] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
     const [stats, setStats] = useState({
         totalRows: 0,
         activeSessions: 0,
@@ -47,6 +53,24 @@ export default function Dashboard() {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const handleRename = async (id: string) => {
+        if (!newName.trim()) return;
+        try {
+            const { error } = await supabase
+                .from('datasets')
+                .update({ name: newName })
+                .eq('id', id);
+            
+            if (error) throw error;
+            setRenamingId(null);
+            setNewName('');
+            fetchData();
+        } catch (e) {
+            alert('Failed to rename dataset');
+            console.error(e);
+        }
+    };
 
     const handleDelete = async (e: React.MouseEvent, id: string) => {
         e.stopPropagation();
@@ -87,12 +111,15 @@ export default function Dashboard() {
         document.body.removeChild(link);
     };
 
-    const handleNewTask = async () => {
-        const url = prompt('Enter the URL of the website to extract data from:');
-        if (!url) return;
-
+    const handleNewTask = async (url: string) => {
+        setIsExtModalOpen(false);
         setLoading(true);
+        setIsProcessing(true);
+        
         try {
+            // Simulate AI work
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
             const name = url.replace('https://', '').replace('www.', '').split('/')[0] + ' Extractor';
             
             // Mocking extracted data for the new entry
@@ -116,11 +143,11 @@ export default function Dashboard() {
 
             if (error) throw error;
             await fetchData();
-            alert('EXTRACTION_SEQUENCE_INITIALIZED: Task completed successfully.');
         } catch (e: any) {
             alert('Extraction failed: ' + e.message);
         } finally {
             setLoading(false);
+            setIsProcessing(false);
         }
     };
 
@@ -131,21 +158,37 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-8 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-50 uppercase">Infrastructure Console</h1>
-                    <p className="text-sm text-slate-500 font-mono mt-1 flex items-center gap-2">
-                        STATUS // <span className={loading ? "text-amber-500 animate-pulse" : "text-emerald-500 font-bold"}>
-                            {loading ? 'SYNCHRONIZING...' : 'NODE_ONLINE'}
-                        </span>
-                        <span className="hidden md:inline text-slate-300 dark:text-slate-800">|</span>
-                        <span className="hidden md:inline uppercase text-[10px] tracking-widest">{new Date().toLocaleDateString()}</span>
-                    </p>
+            {/* Header & Search */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="flex-1 space-y-4">
+                    <div>
+                        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-50 uppercase">Infrastructure Console</h1>
+                        <p className="text-sm text-slate-500 font-mono mt-1 flex items-center gap-2">
+                            STATUS // <span className={loading ? "text-amber-500 animate-pulse" : "text-emerald-500 font-bold"}>
+                                {loading ? 'SYNCHRONIZING...' : 'NODE_ONLINE'}
+                            </span>
+                            <span className="hidden md:inline text-slate-300 dark:text-slate-800">|</span>
+                            <span className="hidden md:inline uppercase text-[10px] tracking-widest">{new Date().toLocaleDateString()}</span>
+                        </p>
+                    </div>
+                    
+                    <div className="relative max-w-md group">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="SEARCH_BY_ENTRY_OR_SOURCE..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="block w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        />
+                    </div>
                 </div>
+                
                 <button
-                    onClick={handleNewTask}
-                    className="px-6 py-3 bg-slate-900 hover:bg-black dark:bg-slate-50 dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold font-mono rounded-lg shadow-xl shadow-slate-200 dark:shadow-none transition-all flex items-center justify-center gap-3 group"
+                    onClick={() => setIsExtModalOpen(true)}
+                    className="px-6 py-3 bg-slate-900 hover:bg-black dark:bg-slate-50 dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold font-mono rounded-lg shadow-xl shadow-slate-200 dark:shadow-none transition-all flex items-center justify-center gap-3 group shrink-0"
                 >
                     <svg className="w-4 h-4 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                     INITIALIZE_EXTRACTION
@@ -191,7 +234,17 @@ export default function Dashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                            {loading && (
+                            {isProcessing && (
+                                <tr className="bg-blue-50/30 dark:bg-blue-900/10 animate-pulse">
+                                    <td colSpan={5} className="px-6 py-5">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                                            <span className="text-xs font-bold font-mono text-blue-600 tracking-tighter uppercase">AI_EXTRACTOR_NODE: Processing Data Stream...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                            {loading && !isProcessing && (
                                 <tr>
                                     <td colSpan={5} className="px-6 py-20 text-center text-slate-400 font-mono italic animate-pulse">REQUESTING_DATA_STREAM...</td>
                                 </tr>
@@ -201,13 +254,37 @@ export default function Dashboard() {
                                     <td colSpan={5} className="px-6 py-20 text-center text-slate-300 dark:text-slate-600 font-mono">ZERO_ENTRIES_LOCATED</td>
                                 </tr>
                             )}
-                            {datasets.map((ds) => (
+                            {datasets
+                                .filter(ds => 
+                                    ds.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                    ds.source_url?.toLowerCase().includes(searchQuery.toLowerCase())
+                                )
+                                .map((ds) => (
                                 <tr 
                                     key={ds.id} 
                                     onClick={() => openDetails(ds)}
                                     className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-all group cursor-pointer"
                                 >
-                                    <td className="px-6 py-5 font-bold text-slate-900 dark:text-slate-100">{ds.name}</td>
+                                    <td className="px-6 py-5">
+                                        {renamingId === ds.id ? (
+                                            <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                                                <input
+                                                    autoFocus
+                                                    value={newName}
+                                                    onChange={e => setNewName(e.target.value)}
+                                                    className="bg-slate-50 dark:bg-slate-800 border border-blue-500 rounded px-2 py-1 text-xs focus:outline-none"
+                                                />
+                                                <button onClick={() => handleRename(ds.id)} className="text-emerald-500 hover:text-emerald-600">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                                </button>
+                                                <button onClick={() => setRenamingId(null)} className="text-slate-400 hover:text-slate-500">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <span className="font-bold text-slate-900 dark:text-slate-100">{ds.name}</span>
+                                        )}
+                                    </td>
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
                                             <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
@@ -227,11 +304,22 @@ export default function Dashboard() {
                                     <td className="px-6 py-5 text-right">
                                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setRenamingId(ds.id);
+                                                    setNewName(ds.name);
+                                                }}
+                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                                                title="Rename"
+                                            >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                            </button>
+                                            <button 
                                                 onClick={(e) => handleDownloadCSV(e, ds)}
                                                 className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
                                                 title="Download CSV"
                                             >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 03-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                                             </button>
                                             <button 
                                                 onClick={(e) => handleDelete(e, ds.id)}
@@ -253,6 +341,12 @@ export default function Dashboard() {
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
                 dataset={selectedDataset} 
+            />
+
+            <ExtractionModal 
+                isOpen={isExtModalOpen}
+                onClose={() => setIsExtModalOpen(false)}
+                onSubmit={handleNewTask}
             />
         </div>
     );

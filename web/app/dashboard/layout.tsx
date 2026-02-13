@@ -75,23 +75,32 @@ export default function DashboardLayout({
                 </div>
 
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800">
-                    <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0 flex items-center justify-center text-xs font-bold uppercase">
-                                {userEmail?.[0] || '?'}
+                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3 border border-slate-100 dark:border-slate-800/50">
+                        <div className="flex items-center justify-between gap-3 mb-3">
+                            <div className="flex items-center gap-3 overflow-hidden">
+                                <div className="w-9 h-9 rounded-lg bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 shrink-0 flex items-center justify-center text-sm font-black italic shadow-inner">
+                                    {userEmail?.[0] || '?'}
+                                </div>
+                                <div className="text-sm truncate">
+                                    <p className="font-bold text-slate-900 dark:text-slate-100 truncate">{userEmail?.split('@')[0] || 'Loading...'}</p>
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                        <p className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-tighter">Node_Active</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="text-sm truncate">
-                                <p className="font-medium text-slate-900 dark:text-slate-100 truncate">{userEmail || 'Loading...'}</p>
-                                <p className="text-slate-500 text-xs">Free Plan</p>
-                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-all"
+                                title="Sign out"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            </button>
                         </div>
-                        <button
-                            onClick={handleLogout}
-                            className="text-slate-400 hover:text-red-600 transition-colors"
-                            title="Sign out"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        </button>
+                        <div className="flex items-center justify-between px-1">
+                            <span className="text-[9px] font-black font-mono text-slate-400 uppercase tracking-widest">Access_Tier</span>
+                            <span className="px-1.5 py-0.5 bg-blue-600 text-white text-[9px] font-black font-mono rounded-sm tracking-tighter uppercase">Professional</span>
+                        </div>
                     </div>
                 </div>
             </aside>
