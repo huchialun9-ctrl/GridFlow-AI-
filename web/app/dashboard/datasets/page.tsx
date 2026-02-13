@@ -4,12 +4,16 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import DatasetModal from '@/components/DatasetModal';
+import AIProcessorModal from '@/components/AIProcessorModal';
 
 export default function MyDatasets() {
     const [datasets, setDatasets] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedDataset, setSelectedDataset] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+    const [aiProcessingId, setAIProcessingId] = useState<string | null>(null);
+    const [isAIProcessing, setIsAIProcessing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const fetchData = async () => {
@@ -42,6 +46,57 @@ export default function MyDatasets() {
         ds.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
         ds.source_url?.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const handleAIProcess = async (prompt: string) => {
+        if (!aiProcessingId) return;
+        setIsAIProcessing(true);
+        
+        try {
+            const datasetToProcess = datasets.find(d => d.id === aiProcessingId);
+            if (!datasetToProcess) throw new Error('Dataset not found');
+
+            const response = await fetch('/api/ai/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data: datasetToProcess.rows,
+                    prompt
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'AI processing failed');
+            }
+
+            const { refinedData } = await response.json();
+
+            // Update database with refined data
+            const { error } = await supabase
+                .from('datasets')
+                .update({ 
+                    rows: refinedData,
+                    metadata: { 
+                        ...datasetToProcess.metadata, 
+                        ai_processed: true,
+                        ai_prompt: prompt,
+                        processed_at: new Date().toISOString()
+                    }
+                })
+                .eq('id', aiProcessingId);
+
+            if (error) throw error;
+            
+            setIsAIModalOpen(false);
+            fetchData();
+            alert('AI Protocol Successful: Data Refined.');
+        } catch (e: any) {
+            alert('AI Protocol Failed: ' + e.message);
+        } finally {
+            setIsAIProcessing(false);
+            setAIProcessingId(null);
+        }
+    };
 
     return (
         <div className="space-y-6 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -83,8 +138,20 @@ export default function MyDatasets() {
                             </div>
                             <p className="text-[10px] text-slate-400 font-mono truncate mb-4">{ds.source_url}</p>
                             <div className="flex justify-between items-center pt-3 border-t border-slate-50 dark:border-slate-800">
-                                <span className="text-[9px] font-mono text-slate-400 uppercase">{new Date(ds.created_at).toLocaleDateString()}</span>
-                                <button className="text-blue-600 dark:text-blue-400 text-[9px] font-black font-mono uppercase hover:underline">View_Detailed_Manifest</button>
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={(e) => { 
+                                            e.stopPropagation(); 
+                                            setAIProcessingId(ds.id);
+                                            setIsAIModalOpen(true);
+                                        }}
+                                        className="text-emerald-600 dark:text-emerald-400 text-[9px] font-black font-mono uppercase bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded hover:bg-emerald-100 transition-colors"
+                                    >
+                                        AI_PROCESS
+                                    </button>
+                                    <span className="text-[9px] font-mono text-slate-400 uppercase mt-1">{new Date(ds.created_at).toLocaleDateString()}</span>
+                                </div>
+                                <button className="text-blue-600 dark:text-blue-400 text-[9px] font-black font-mono uppercase hover:underline">View_Details</button>
                             </div>
                         </div>
                     ))
@@ -95,6 +162,12 @@ export default function MyDatasets() {
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
                 dataset={selectedDataset} 
+            />
+            <AIProcessorModal 
+                isOpen={isAIModalOpen} 
+                onClose={() => setIsAIModalOpen(false)} 
+                onSubmit={handleAIProcess}
+                isProcessing={isAIProcessing}
             />
         </div>
     );
