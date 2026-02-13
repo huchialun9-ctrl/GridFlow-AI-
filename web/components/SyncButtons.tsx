@@ -48,13 +48,40 @@ export default function SyncButtons({ data }: { data: any }) {
         }
     };
 
-    const handleSheetsSync = async () => {
+    const handleSheetsSync = () => {
         setIsSyncingSheets(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setIsSyncingSheets(false);
-        setSheetsSuccess(true);
-        setTimeout(() => setSheetsSuccess(false), 3000);
+        try {
+            if (!data.rows || data.rows.length === 0) {
+                alert("No data to export.");
+                setIsSyncingSheets(false);
+                return;
+            }
+
+            // Generate CSV
+            const headers = Object.keys(data.rows[0]).join(',');
+            const csvRows = data.rows.map((row: any) => 
+                Object.values(row).map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')
+            ).join('\n');
+            const csvContent = `${headers}\n${csvRows}`;
+
+            // Trigger Download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${(data.name || 'export').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setSheetsSuccess(true);
+            setTimeout(() => setSheetsSuccess(false), 3000);
+        } catch (error) {
+            console.error("Export failed", error);
+            alert("Export failed");
+        } finally {
+            setIsSyncingSheets(false);
+        }
     };
 
     return (

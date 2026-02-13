@@ -68,37 +68,57 @@ export default function IntegrationsPage() {
         {
             name: 'Zapier',
             category: 'Automation',
-            icon: <Zap className="w-6 h-6 text-orange-500" />,
+            // Zapier Orange Logo
+            icon: (
+                <svg className="w-6 h-6 text-[#FF4F00]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4.2 13.8h7.1l-1.9 8.1 10.4-11.8h-7.1l1.9-8.1L4.2 13.8z"/>
+                </svg>
+            ),
             status: 'Stable',
             tag: 'REST API Support',
-            description: 'Trigger 5,000+ apps when new data is extracted.',
+            description: 'Trigger 5,000+ apps. Seamlessly connect GridFlow events to your entire stack.',
             connected: false
         },
         {
-            name: 'Make.com',
+            name: 'Make',
             category: 'Automation',
-            icon: <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold text-xs">M</div>,
+            // Make Purple Logo (Simplified M)
+            icon: (
+                 <svg className="w-6 h-6 text-[#6F42C1]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z"/> 
+                    {/* Placeholder for Make's infinity-like logo, using stylized M concept */}
+                    <path d="M4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8-8-3.59-8-8zm2.5 1h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9z" opacity="0.5"/>
+                </svg>
+            ),
             status: 'Stable',
             tag: 'Webhook',
-            description: 'Advanced visual workflows for data processing.',
+            description: 'Visual automation. Map GridFlow fields to complex logic flows.',
             connected: false
         },
         {
             name: 'Airtable',
             category: 'Database',
-            icon: <Database className="w-6 h-6 text-yellow-500" />,
+             // Airtable Yellow/Blue Logo
+            icon: (
+                <svg className="w-6 h-6 text-[#FCB400]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.035 1.765a2.503 2.503 0 00-1.285.34l-8.57 4.965a2.493 2.493 0 00-1.18 2.06v9.805c0 .08.005.155.015.23a2.493 2.493 0 001.165 1.83l8.57 4.965a2.503 2.503 0 002.57 0l8.57-4.965a2.493 2.493 0 001.165-1.83c.01-.075.015-.15.015-.23V7.125a2.493 2.493 0 00-1.18-2.06l-8.57-4.965a2.503 2.503 0 00-1.285-.34zM12 4.155l6.985 4.045L12 12.245 5.015 8.2 12 4.155zM4 10.365l6.5 3.765v7.61L4 18V10.365zm13.5 11.375V14.13l6.5-3.765V18l-6.5 3.74z"></path>
+                </svg>
+            ),
             status: 'Beta',
             tag: 'Direct Sync',
-            description: 'Auto-populate bases with structured web data.',
+            description: 'Auto-populate bases. Turn web data into relational database records.',
             connected: false
         },
         {
             name: 'Hugging Face',
             category: 'Developer',
-            icon: <div className="text-2xl">🤗</div>,
+            // Simple Emoji is actually best for HF if SVG unavailable, but let's try a simple path
+             icon: (
+                <span className="text-2xl">🤗</span>
+            ),
             status: 'Experimental',
             tag: 'JSONL Export',
-            description: 'Push datasets directly for LLM fine-tuning.',
+            description: 'Push datasets directly for LLM fine-tuning and shared repositories.',
             connected: false
         }
     ];
