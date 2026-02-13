@@ -102,16 +102,16 @@ export default function MyDatasets() {
         <div className="space-y-6 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50 uppercase tracking-tight">My_Datasets</h1>
-                    <p className="text-sm text-slate-500 font-mono mt-1">Archive // {datasets.length} Total Records</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">My Datasets</h1>
+                    <p className="text-sm text-slate-500 mt-1">Manage and export your historical extraction results</p>
                 </div>
-                <div className="relative max-w-xs">
-                    <input
-                        type="text"
-                        placeholder="SEARCH_RECORDS..."
+                <div className="relative">
+                    <input 
+                        type="text" 
+                        placeholder="Search items..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="block w-full pl-4 pr-10 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all w-64"
                     />
                 </div>
             </div>
@@ -138,6 +138,7 @@ export default function MyDatasets() {
                             </div>
                             <p className="text-[10px] text-slate-400 font-mono truncate mb-4">{ds.source_url}</p>
                             <div className="flex justify-between items-center pt-3 border-t border-slate-50 dark:border-slate-800">
+                            <div className="flex justify-between items-center pt-3 border-t border-slate-50 dark:border-slate-800">
                                 <div className="flex gap-2">
                                     <button 
                                         onClick={(e) => { 
@@ -145,13 +146,13 @@ export default function MyDatasets() {
                                             setAIProcessingId(ds.id);
                                             setIsAIModalOpen(true);
                                         }}
-                                        className="text-emerald-600 dark:text-emerald-400 text-[9px] font-black font-mono uppercase bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded hover:bg-emerald-100 transition-colors"
+                                        className="text-emerald-600 dark:text-emerald-400 text-[10px] font-bold bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-lg hover:bg-emerald-100 transition-colors"
                                     >
-                                        AI_PROCESS
+                                        AI Process
                                     </button>
-                                    <span className="text-[9px] font-mono text-slate-400 uppercase mt-1">{new Date(ds.created_at).toLocaleDateString()}</span>
+                                    <span className="text-[10px] font-medium text-slate-400 mt-1">{new Date(ds.created_at).toLocaleDateString()}</span>
                                 </div>
-                                <button className="text-blue-600 dark:text-blue-400 text-[9px] font-black font-mono uppercase hover:underline">View_Details</button>
+                                <button className="text-blue-600 dark:text-blue-400 text-[10px] font-bold hover:underline">View Details</button>
                             </div>
                         </div>
                     ))

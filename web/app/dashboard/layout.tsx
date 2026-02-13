@@ -59,25 +59,27 @@ export default function DashboardLayout({
                 </div>
 
                 <div className="p-4 flex-1">
-                    <nav className="space-y-1">
-                        {navItems.map((item) => {
-                            const isActive = pathname === item.href;
-                            return (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                                        isActive
-                                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-                                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                                    }`}
-                                >
+                    <nav className="flex-1 px-4 space-y-2 py-4">
+                    {navItems.map((item) => {
+                        const isActive = pathname === item.href;
+                        return (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 ${
+                                    isActive
+                                        ? 'bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 shadow-lg shadow-slate-200 dark:shadow-none translate-x-1'
+                                        : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100'
+                                }`}
+                            >
+                                <span className={isActive ? 'text-white dark:text-slate-900' : 'text-slate-400'}>
                                     {item.icon}
-                                    {item.name}
-                                </Link>
-                            );
-                        })}
-                    </nav>
+                                </span>
+                                {item.name}
+                            </Link>
+                        );
+                    })}
+                </nav>
                 </div>
 
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800">
@@ -87,13 +89,15 @@ export default function DashboardLayout({
                                 <div className="w-9 h-9 rounded-lg bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 shrink-0 flex items-center justify-center text-sm font-black italic shadow-inner">
                                     {userEmail?.[0] || '?'}
                                 </div>
-                                <div className="text-sm truncate">
-                                    <p className="font-bold text-slate-900 dark:text-slate-100 truncate">{userEmail?.split('@')[0] || 'Loading...'}</p>
-                                    <div className="flex items-center gap-1.5">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                        <p className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-tighter">Node_Active</p>
-                                    </div>
+                                <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-slate-900 dark:text-slate-50 truncate">
+                                    {userEmail?.split('@')[0] || 'User'}
+                                </p>
+                                <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                    <p className="text-[10px] font-medium text-slate-500 italic">Pro Plan</p>
                                 </div>
+                            </div>
                             </div>
                             <button
                                 onClick={handleLogout}

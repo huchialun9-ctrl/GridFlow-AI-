@@ -210,10 +210,10 @@ export default function Dashboard() {
                     { label: 'Cloud Storage', value: `${stats.storageUsed} MB`, sub: 'Quota Used' }
                 ].map((stat, i) => (
                     <div key={i} className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-                        <h3 className="text-[10px] font-bold font-mono text-slate-400 uppercase tracking-[0.2em] mb-3">{stat.label}</h3>
+                        <h3 className="text-xs font-bold text-slate-400 tracking-wide mb-3">{stat.label}</h3>
                         <div className="flex items-baseline gap-2">
                             <p className="text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tighter">{stat.value}</p>
-                            <span className="text-[10px] font-mono text-slate-400 uppercase">{stat.sub}</span>
+                            <span className="text-[10px] text-slate-400">{stat.sub}</span>
                         </div>
                     </div>
                 ))}
@@ -222,7 +222,7 @@ export default function Dashboard() {
             {/* Main Table */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden border-separate">
                 <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-slate-800/20">
-                    <h2 className="text-xs font-bold font-mono text-slate-900 dark:text-slate-50 uppercase tracking-[0.15em]">Repository Index</h2>
+                    <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50 tracking-wide">Repository Index</h2>
                     <div className="flex gap-2">
                         <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
                         <div className="h-2 w-2 rounded-full bg-slate-200 dark:bg-slate-800"></div>

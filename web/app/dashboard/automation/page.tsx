@@ -5,19 +5,19 @@ export default function Automation() {
     return (
         <div className="space-y-8 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-                <h1 className="text-2xl font-black text-slate-900 dark:text-slate-50 uppercase tracking-tight">Automation_Schedules</h1>
-                <p className="text-sm text-slate-500 font-mono mt-1">Status // 2 Active Cron Jobs</p>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">Intelligence Insights</h1>
+                <p className="text-sm text-slate-500 mt-1">Global node data aggregation and trends</p>
             </div>
 
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left font-mono">
-                        <thead className="text-[10px] text-slate-400 uppercase border-b border-slate-100 dark:border-slate-800">
+                    <table className="w-full text-sm text-left">
+                        <thead className="text-[10px] text-slate-400 border-b border-slate-100 dark:border-slate-800">
                             <tr>
-                                <th className="px-6 py-4 font-bold tracking-widest">Workflow_Name</th>
-                                <th className="px-6 py-4 font-bold tracking-widest">Frequency</th>
-                                <th className="px-6 py-4 font-bold tracking-widest">Next_Execution</th>
-                                <th className="px-6 py-4 font-bold tracking-widest text-right">Status</th>
+                                <th className="px-6 py-4 font-bold tracking-wider">Workflow Name</th>
+                                <th className="px-6 py-4 font-bold tracking-wider">Frequency</th>
+                                <th className="px-6 py-4 font-bold tracking-wider">Status Indicators</th>
+                                <th className="px-6 py-4 font-bold tracking-wider text-right">State</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -28,11 +28,11 @@ export default function Automation() {
                                     <div className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1.5 text-emerald-500">
                                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                                            <span className="text-[9px] font-black">WEBHOOK_ACTIVE</span>
+                                            <span className="text-[10px] font-bold">Webhook Active</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 text-blue-500">
                                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                                            <span className="text-[9px] font-black">DIFF_ENGINE_ON</span>
+                                            <span className="text-[10px] font-bold">Diff Monitoring On</span>
                                         </div>
                                     </div>
                                 </td>
