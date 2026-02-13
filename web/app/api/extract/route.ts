@@ -28,16 +28,13 @@ export async function POST(req: Request) {
                 console.warn(`Jina Reader Warning (${jinaResponse.status}): ${jinaResponse.statusText}`);
                 
                 if (jinaResponse.status === 403) {
-                    throw new Error('SITE_FORBIDDEN');
+                    console.warn('Jina Forbidden (403), will attempt direct fallback.');
                 }
             } else {
                 rawMarkdown = await jinaResponse.text();
             }
         } catch (jinaError: any) {
             console.error('Jina Fetch Error:', jinaError);
-            if (jinaError.message === 'SITE_FORBIDDEN') {
-                throw jinaError;
-            }
         }
 
         if (!rawMarkdown) {

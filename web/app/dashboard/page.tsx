@@ -155,7 +155,7 @@ export default function Dashboard() {
         } catch (e: any) {
             console.error('Extraction flow error:', e);
             const errorMessage = e.message || e.error || 'Unknown Error';
-            alert('PROCESS_FAILED: ' + errorMessage + '\n\nPossible reasons:\n1. Network timeout\n2. Invalid URL\n3. Database restriction (RLS)\n\nPlease verify your target URL and database state.');
+            alert(`EXTRACTION_ERROR: ${errorMessage}`);
         } finally {
             setLoading(false);
             setIsProcessing(false);
