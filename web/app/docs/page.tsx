@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronLeft, Github, Book, Terminal, Shield, Cpu, Database, Cloud, Sparkles, BookOpen } from 'lucide-react';
+import { ChevronLeft, Github, Book, Terminal, Shield, Cpu, Database, Cloud, BookOpen } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export default function Docs() {
     return (
