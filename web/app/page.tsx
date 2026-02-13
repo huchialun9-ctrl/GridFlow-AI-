@@ -7,7 +7,7 @@ import HeroAnimation from "../components/HeroAnimation";
 import DeveloperSection from '@/components/DeveloperSection';
 import InnovationShowcase from '@/components/InnovationShowcase';
 import { Github, BookOpen } from 'lucide-react';
-import logoImg from '../public/logo.png';
+// Removed redundant logoImg import
 
 export default async function Home() {
   const supabase = createClient();
@@ -230,7 +230,7 @@ export default async function Home() {
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-1">
               <div className="flex items-center gap-3 mb-6">
-                <Image src={logoImg} alt="GridFlow Logo" width={24} height={24} className="w-6 h-6" />
+                <Image src="/logo.png" alt="GridFlow Logo" width={24} height={24} unoptimized className="w-6 h-6" />
                 <span className="font-bold text-slate-900 dark:text-slate-50 tracking-tighter">GRIDFLOW_AI</span>
               </div>
               <p className="text-sm text-slate-500 leading-relaxed font-light">

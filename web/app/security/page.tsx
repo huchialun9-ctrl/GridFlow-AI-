@@ -1,7 +1,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import logoImg from "../../public/logo.png";
+// Removed redundant logoImg import
 
 export default function Security() {
   return (
