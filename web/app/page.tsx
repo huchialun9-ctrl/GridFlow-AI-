@@ -13,7 +13,6 @@ export default async function Home() {
       {/* Header */}
       <header className="fixed top-0 w-full border-b border-slate-200 dark:border-slate-800/50 bg-[#F8FAFC]/80 dark:bg-[#0B1120]/80 backdrop-blur-md z-50">
         <div className="container mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-mono font-bold text-sm tracking-tight group cursor-pointer">
           <div className="flex items-center gap-3 font-mono font-bold text-sm tracking-tight group cursor-pointer">
             <Image src="/logo.png" alt="GridFlow Logo" width={24} height={24} className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
             GRIDFLOW_AI
