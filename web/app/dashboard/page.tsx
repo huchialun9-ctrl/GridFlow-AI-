@@ -35,13 +35,16 @@ export default function Dashboard() {
 
             // Calculate stats
             const totalRows = data?.reduce((acc, curr) => acc + (curr.row_count || 0), 0) || 0;
-            // Realistic storage: approx 1KB per row for this demo
-            const storageUsedMB = (totalRows * 1024) / (1024 * 1024);
+            
+            // Calculate REAL storage used by the JSON blobs
+            const jsonString = JSON.stringify(data || []);
+            const bytes = new TextEncoder().encode(jsonString).length;
+            const storageUsedMB = bytes / (1024 * 1024);
             
             setStats({
                 totalRows,
                 activeSessions: data?.length || 0,
-                storageUsed: Number(storageUsedMB.toFixed(2))
+                storageUsed: Number(storageUsedMB.toFixed(4)) // Higher precision for real data
             });
         } catch (e) {
             console.error("Error fetching datasets:", e);
@@ -117,34 +120,38 @@ export default function Dashboard() {
         setIsProcessing(true);
         
         try {
-            // Simulate AI work
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const response = await fetch('/api/extract', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
 
-            const name = url.replace('https://', '').replace('www.', '').split('/')[0] + ' Extractor';
-            
-            // Mocking extracted data for the new entry
-            const mockHeaders = ['ID', 'Name', 'Price', 'Stock', 'Category'];
-            const mockRows = [
-                ['E001', 'Quantum Core', '$1,299', '12', 'Hardware'],
-                ['E002', 'Neural Link', '$850', '45', 'Interface'],
-                ['E003', 'Optic Bundle', '$320', '150', 'Cabling']
-            ];
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Extraction failed');
+            }
+
+            const extractionResult = await response.json();
 
             const { error } = await supabase
                 .from('datasets')
                 .insert([{
-                    name,
+                    name: extractionResult.name,
                     source_url: url,
-                    row_count: mockRows.length,
-                    headers: mockHeaders,
-                    rows: mockRows,
-                    metadata: { type: 'manual_extraction', browser: navigator.userAgent }
+                    row_count: extractionResult.rowCount,
+                    headers: extractionResult.headers,
+                    rows: extractionResult.rows,
+                    metadata: { 
+                        type: 'live_extraction', 
+                        engine: 'jina_reader_v1',
+                        timestamp: new Date().toISOString()
+                    }
                 }]);
 
             if (error) throw error;
             await fetchData();
         } catch (e: any) {
-            alert('Extraction failed: ' + e.message);
+            alert('Extraction sequence failed: ' + e.message + '\n\nPlease ensure your database table is created.');
         } finally {
             setLoading(false);
             setIsProcessing(false);
