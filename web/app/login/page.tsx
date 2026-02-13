@@ -37,7 +37,7 @@ export default function Login() {
         await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo: `https://gridflow-ai-production.up.railway.app/auth/callback`,
             },
         })
     }
