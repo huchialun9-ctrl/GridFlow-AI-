@@ -4,6 +4,7 @@ import { createClient } from "../lib/supabaseServer";
 import LogosSection from "@/components/LogosSection";
 import HeroAnimation from "../components/HeroAnimation";
 import DeveloperSection from '@/components/DeveloperSection';
+import InnovationShowcase from '@/components/InnovationShowcase';
 import { Github, BookOpen } from 'lucide-react';
 
 export default async function Home() {
@@ -213,6 +214,9 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        {/* Strategic Innovations */}
+        <InnovationShowcase />
 
         {/* Developer Showcase */}
         <DeveloperSection />

@@ -85,25 +85,56 @@ export default function Docs() {
                     </div>
                 </section>
 
-                {/* Features Deep Dive */}
-                <section className="mb-24 grid md:grid-cols-2 gap-12">
+                {/* Strategic Innovations Deep Dive */}
+                <section id="innovations" className="mb-24 space-y-16">
                     <div className="space-y-4">
-                        <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center text-blue-600">
-                            <Shield className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50">Enterprise Compliance</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed font-light">
-                            Row-Level Security (RLS) ensures that every dataset and export is strictly isolated by User ID. PII masking prevents sensitive information from exposure during processing.
+                        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
+                            <Sparkles className="w-8 h-8 text-blue-500" />
+                            AI Semantic Auto-Layout
+                        </h2>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+                            GridFlow AI solves the "last mile" problem of data extraction. Instead of raw spreadsheets, users receive executive-ready documents.
                         </p>
+                        <div className="grid md:grid-cols-2 gap-6 mt-8">
+                            <div className="p-6 border border-slate-100 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
+                                <h4 className="font-bold text-sm mb-2 text-slate-900 dark:text-slate-50">Report Pre-processing</h4>
+                                <p className="text-xs text-slate-500 leading-relaxed">
+                                    Gemini 1.5 Flash analyzes extracted rows to identify trends, key-performance indicators (KPIs), and sentiment, automatically generating high-level summaries for the document header.
+                                </p>
+                            </div>
+                            <div className="p-6 border border-slate-100 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50">
+                                <h4 className="font-bold text-sm mb-2 text-slate-900 dark:text-slate-50">Generator Engine</h4>
+                                <p className="text-xs text-slate-500 leading-relaxed">
+                                    Integrates <code>pptxgenjs</code> and <code>docx</code> libraries to map JSON data into strictly formatted professional templates, including academic "3-line tables" and brand-aligned slide masters.
+                                </p>
+                            </div>
+                        </div>
                     </div>
+
                     <div className="space-y-4">
-                        <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-xl flex items-center justify-center text-purple-600">
-                            <Cloud className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50">Cloud Resilience</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed font-light">
-                            Deployments are distributed across Railway and Vercel with automated failover and caching, ensuring 99.9% uptime for business-critical operations.
+                        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-3">
+                            <Shield className="w-8 h-8 text-emerald-500" />
+                            Enterprise Data Hub
+                        </h2>
+                        <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+                            A centralized cloud infrastructure that transforms local data into manageable corporate assets.
                         </p>
+                        <ul className="space-y-6 mt-8">
+                            <li className="flex gap-4">
+                                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 text-emerald-600 font-mono text-xs">01</div>
+                                <div>
+                                    <h4 className="font-bold text-slate-900 dark:text-slate-50">Security Infrastructure</h4>
+                                    <p className="text-sm text-slate-500 leading-relaxed">Leverages Supabase <strong>Row Level Security (RLS)</strong> to provide cryptographic identity isolation, ensuring one user's data is never visible to another, even within the same database engine.</p>
+                                </div>
+                            </li>
+                            <li className="flex gap-4">
+                                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 text-emerald-600 font-mono text-xs">02</div>
+                                <div>
+                                    <h4 className="font-bold text-slate-900 dark:text-slate-50">No-Code API Interface</h4>
+                                    <p className="text-sm text-slate-500 leading-relaxed">Exposes dynamic endpoints via <code>sk_live_...</code> secure tokens. This allows non-technical users to pipe web-scraped data directly into Zapier, Notion, or internal dashboards without writing a single line of Python/Node.js.</p>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </section>
 
