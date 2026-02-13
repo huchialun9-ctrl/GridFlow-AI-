@@ -183,41 +183,44 @@ export default function Automation() {
 
     return (
         <div className="space-y-8 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
-            {/* Run Recipe Modal */}
-            {runModalOpen && (
+            {/* Create Recipe Modal */}
+            {createModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white dark:bg-slate-900 w-full max-w-md p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all">
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Run Extraction Recipe</h3>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Create Custom Recipe</h3>
                         <p className="text-sm text-slate-500 mb-4">
-                            Enter your API Key to execute this extraction pipeline securely.
+                            Define a name for your new extraction workflow.
                         </p>
                         
                         <div className="space-y-4">
                             <div>
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">API Key</label>
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">Recipe Name</label>
                                 <input 
-                                    type="password"
+                                    type="text"
                                     autoFocus
-                                    value={apiKeyInput}
-                                    onChange={(e) => setApiKeyInput(e.target.value)}
-                                    placeholder="sk_live_..."
+                                    value={newItemName}
+                                    onChange={(e) => setNewItemName(e.target.value)}
+                                    placeholder="e.g. My Competitor Analysis"
                                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all placeholder:text-slate-400"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') confirmCreateRecipe();
+                                    }}
                                 />
                             </div>
                             
                             <div className="flex justify-end gap-3 pt-2">
                                 <button 
-                                    onClick={() => setRunModalOpen(false)}
+                                    onClick={() => setCreateModalOpen(false)}
                                     className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button 
-                                    onClick={confirmRunRecipe}
-                                    disabled={!apiKeyInput}
+                                    onClick={confirmCreateRecipe}
+                                    disabled={!newItemName}
                                     className="px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
                                 >
-                                    Run Recipe
+                                    Create
                                 </button>
                             </div>
                         </div>
