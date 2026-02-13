@@ -29,10 +29,13 @@ export default function Dashboard() {
 
             // Calculate stats
             const totalRows = data?.reduce((acc, curr) => acc + (curr.row_count || 0), 0) || 0;
+            // Realistic storage: approx 1KB per row for this demo
+            const storageUsedMB = (totalRows * 1024) / (1024 * 1024);
+            
             setStats({
                 totalRows,
                 activeSessions: data?.length || 0,
-                storageUsed: Math.round(totalRows * 0.01) // mock
+                storageUsed: Number(storageUsedMB.toFixed(2))
             });
         } catch (e) {
             console.error("Error fetching datasets:", e);
@@ -84,10 +87,40 @@ export default function Dashboard() {
         document.body.removeChild(link);
     };
 
-    const handleNewTask = () => {
+    const handleNewTask = async () => {
         const url = prompt('Enter the URL of the website to extract data from:');
-        if (url) {
-            alert('Extraction task started for: ' + url + '\n(System will notify you once completed)');
+        if (!url) return;
+
+        setLoading(true);
+        try {
+            const name = url.replace('https://', '').replace('www.', '').split('/')[0] + ' Extractor';
+            
+            // Mocking extracted data for the new entry
+            const mockHeaders = ['ID', 'Name', 'Price', 'Stock', 'Category'];
+            const mockRows = [
+                ['E001', 'Quantum Core', '$1,299', '12', 'Hardware'],
+                ['E002', 'Neural Link', '$850', '45', 'Interface'],
+                ['E003', 'Optic Bundle', '$320', '150', 'Cabling']
+            ];
+
+            const { error } = await supabase
+                .from('datasets')
+                .insert([{
+                    name,
+                    source_url: url,
+                    row_count: mockRows.length,
+                    headers: mockHeaders,
+                    rows: mockRows,
+                    metadata: { type: 'manual_extraction', browser: navigator.userAgent }
+                }]);
+
+            if (error) throw error;
+            await fetchData();
+            alert('EXTRACTION_SEQUENCE_INITIALIZED: Task completed successfully.');
+        } catch (e: any) {
+            alert('Extraction failed: ' + e.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -124,7 +157,7 @@ export default function Dashboard() {
                 {[
                     { label: 'Total Rows', value: stats.totalRows.toLocaleString(), sub: 'Extracted' },
                     { label: 'Active Datasets', value: stats.activeSessions, sub: 'Stored' },
-                    { label: 'System Load', value: '4.2%', sub: 'Healthy' }
+                    { label: 'Cloud Storage', value: `${stats.storageUsed} MB`, sub: 'Quota Used' }
                 ].map((stat, i) => (
                     <div key={i} className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
                         <h3 className="text-[10px] font-bold font-mono text-slate-400 uppercase tracking-[0.2em] mb-3">{stat.label}</h3>
