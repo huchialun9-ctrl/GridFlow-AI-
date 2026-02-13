@@ -21,21 +21,24 @@ export function Overlay({ rect, visible }: OverlayProps) {
     return (
         <div
             style={{
-                position: "fixed", // or absolute depending on context, usually fixed relative to viewport if using Overlay in ShadowDOM
+                position: "fixed",
                 top: top,
                 left: left,
                 width: width,
                 height: height,
-                pointerEvents: "none", // Allow clicks to pass through to the element, or 'auto' if we want to capture click
+                pointerEvents: "none",
                 zIndex: 9999,
-                backgroundColor: "rgba(148, 163, 184, 0.2)", // slate-400 with opacity
-                border: "1px solid rgba(148, 163, 184, 0.5)",
-                transition: "all 0.1s ease-out"
+                backgroundColor: "rgba(100, 116, 139, 0.25)", // Slate-500 gray mask
+                border: "2px solid rgba(100, 116, 139, 0.4)",
+                borderRadius: "4px",
+                boxShadow: "0 0 0 2px rgba(100, 116, 139, 0.1)",
+                transition: "all 0.15s ease-out"
             }}
             className="plasmo-overlay"
         >
-            <div className="plasmo-absolute plasmo-bottom-full plasmo-left-0 plasmo-mb-1 plasmo-bg-slate-800 plasmo-text-white plasmo-text-[10px] plasmo-px-1.5 plasmo-py-0.5 plasmo-rounded plasmo-shadow-sm">
-                Select Table
+            <div className="plasmo-absolute plasmo-top-0 plasmo-right-0 plasmo-mt-2 plasmo-mr-2 plasmo-bg-slate-900 plasmo-text-white plasmo-text-[9px] plasmo-font-bold plasmo-px-2 plasmo-py-1 plasmo-rounded plasmo-shadow-lg plasmo-flex plasmo-items-center plasmo-gap-1.5 plasmo-border plasmo-border-slate-700">
+                <div className="plasmo-w-1.5 plasmo-h-1.5 plasmo-rounded-full plasmo-bg-emerald-500 plasmo-animate-pulse"></div>
+                PATTERN_DETECTED // EXTRACT
             </div>
         </div>
     )

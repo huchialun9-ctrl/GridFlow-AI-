@@ -19,21 +19,41 @@ const ContentScript = () => {
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
-    // Helper: Check if element is a valid table container
+    // Helper: Check if element is a valid table container with structural pattern detection
     const isValidTable = (el: HTMLElement): boolean => {
       if (el.tagName === 'TABLE') return true
 
       const role = el.getAttribute('role')
       if (role === 'grid' || role === 'table') return true
 
-      // Advanced Heuristic: Computed Style
-      // We check this last as it forces layout reflow (expensive)
-      // But user explicitly requested it for modern grids
       const style = window.getComputedStyle(el)
-      return style.display === 'grid' ||
-        style.display === 'table' ||
-        style.display === 'inline-grid' ||
-        style.display === 'inline-table'
+      if (style.display === 'grid' || style.display === 'table' || style.display === 'inline-grid') return true
+
+      // NEW: Structural Similarity Detection
+      // Check if direct children have high similarity in tags/classes
+      const children = Array.from(el.children) as HTMLElement[]
+      if (children.length > 3) {
+        const tagCounts: Record<string, number> = {}
+        const classCounts: Record<string, number> = {}
+        
+        children.slice(0, 10).forEach(child => {
+          tagCounts[child.tagName] = (tagCounts[child.tagName] || 0) + 1
+          if (child.className && typeof child.className === 'string') {
+            classCounts[child.className] = (classCounts[child.className] || 0) + 1
+          }
+        })
+
+        // If more than 70% of first 10 children share the same tag or class
+        const maxTags = Math.max(...Object.values(tagCounts), 0)
+        const maxClasses = Math.max(...Object.values(classCounts), 0)
+        const sampleSize = Math.min(children.length, 10)
+        
+        if (maxTags / sampleSize > 0.7 || (maxClasses > 0 && maxClasses / sampleSize > 0.7)) {
+          return true
+        }
+      }
+
+      return false
     }
 
     // Helper: Validate minimum row limit (Advanced Refinement)
@@ -117,6 +137,7 @@ const ContentScript = () => {
     }
 
     const extractTableData = (element: HTMLElement): string[][] => {
+      // 1. Native TABLE handling
       if (element.tagName === 'TABLE') {
         const table = element as HTMLTableElement
         return Array.from(table.rows).map(row =>
@@ -124,19 +145,26 @@ const ContentScript = () => {
         )
       }
 
-      // Grid/Div Extraction
+      // 2. Recursive DOM Parsing for Grids/DIVs
       const children = Array.from(element.children) as HTMLElement[]
-      if (children.length === 0) return []
+      if (children.length === 0) return [[cleanText(element.innerText)]]
 
-      return children.map(child => {
-        // Check if child has structure (columns)
-        // Heuristic: If child has >1 children, treat those as columns
-        const cols = Array.from(child.children) as HTMLElement[]
-        if (cols.length > 1) {
-          return cols.map(col => cleanText(col.innerText))
+      return children.map(rowEl => {
+        // Find text-bearing elements or structural columns
+        const potentialCols = Array.from(rowEl.querySelectorAll(':scope > *')) as HTMLElement[]
+        
+        if (potentialCols.length > 1) {
+          // Flatten each column to single string
+          return potentialCols.map(col => cleanText(col.innerText))
         }
-        // Fallback: single column row
-        return [cleanText(child.innerText)]
+
+        // Fallback: If row only has one main child, check its children
+        const nestedChildren = Array.from(rowEl.children) as HTMLElement[]
+        if (nestedChildren.length === 1 && nestedChildren[0].children.length > 1) {
+            return Array.from(nestedChildren[0].children).map(c => cleanText((c as HTMLElement).innerText))
+        }
+
+        return [cleanText(rowEl.innerText)]
       })
     }
 
