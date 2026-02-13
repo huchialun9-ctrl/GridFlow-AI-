@@ -1,9 +1,22 @@
 
-import * as XLSX from 'xlsx';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType } from 'docx';
-import pptxgen from "pptxgenjs";
+// Browser-only library imports wrapped for SSR safety
+let XLSX: any;
+let docx: any;
+let PptxGenJS: any;
 
-export const exportToExcel = (headers: string[], rows: any[][], filename: string) => {
+const initLibs = async () => {
+    if (typeof window === 'undefined') return;
+    if (!XLSX) XLSX = await import('xlsx');
+    if (!docx) docx = await import('docx');
+    if (!PptxGenJS) {
+        const mod = await import('pptxgenjs');
+        PptxGenJS = mod.default || mod;
+    }
+};
+
+export const exportToExcel = async (headers: string[], rows: any[][], filename: string) => {
+    if (typeof window === 'undefined') return;
+    await initLibs();
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
@@ -11,7 +24,10 @@ export const exportToExcel = (headers: string[], rows: any[][], filename: string
 };
 
 export const exportToWord = async (headers: string[], rows: any[][], filename: string) => {
-    // Check if it's semantic/structured data from our new AI prompts
+    if (typeof window === 'undefined') return;
+    await initLibs();
+    const { Document, Packer, Paragraph, HeadingLevel, Table, TableRow, TableCell, WidthType } = docx;
+
     const isSemantic = headers.includes('role') && headers.includes('content');
 
     let children: any[] = [
@@ -45,7 +61,6 @@ export const exportToWord = async (headers: string[], rows: any[][], filename: s
             }
         });
     } else {
-        // Fallback to table layout for generic data
         children.push(new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
@@ -75,10 +90,11 @@ export const exportToWord = async (headers: string[], rows: any[][], filename: s
 };
 
 export const exportToPPT = async (headers: string[], rows: any[][], filename: string) => {
-    const pres = new pptxgen();
+    if (typeof window === 'undefined') return;
+    await initLibs();
+    const pres = new PptxGenJS();
     const isSlideData = headers.includes('slide_title') && headers.includes('bullet_points');
 
-    // Title Slide
     let slide = pres.addSlide();
     slide.addText("GridFlow AI Extraction Report", { x: 1, y: 1.5, w: 8, h: 1, fontSize: 36, bold: true, align: 'center', color: '4B44E5' });
     slide.addText(filename.replace(/_/g, ' '), { x: 1, y: 2.5, w: 8, h: 1, fontSize: 24, align: 'center', color: '64748B' });
@@ -91,8 +107,6 @@ export const exportToPPT = async (headers: string[], rows: any[][], filename: st
         rows.forEach(row => {
             const title = String(row[titleIdx]);
             let bullets = row[bulletIdx];
-
-            // Handle cases where AI returns a string representation of an array or JSON
             if (typeof bullets === 'string' && bullets.startsWith('[')) {
                 try { bullets = JSON.parse(bullets); } catch (e) { }
             }
@@ -101,12 +115,11 @@ export const exportToPPT = async (headers: string[], rows: any[][], filename: st
             let dataSlide = pres.addSlide();
             dataSlide.addText(title, { x: 0.5, y: 0.5, w: 9, fontSize: 28, bold: true, color: '1E293B' });
             dataSlide.addText(
-                bulletList.map(b => ({ text: b, options: { bullet: true, indentLevel: 0, fontSize: 18, color: '475569' } })),
+                bulletList.map((b: string) => ({ text: b, options: { bullet: true, indentLevel: 0, fontSize: 18, color: '475569' } })),
                 { x: 0.5, y: 1.5, w: 9, h: 4 }
             );
         });
     } else if (rows.length > 0) {
-        // Fallback to table layout
         const chunkSize = 8;
         for (let i = 0; i < rows.length; i += chunkSize) {
             const chunk = rows.slice(i, i + chunkSize);
@@ -119,7 +132,9 @@ export const exportToPPT = async (headers: string[], rows: any[][], filename: st
     pres.writeFile({ fileName: `${filename}.pptx` });
 };
 
-export const exportToCSV = (headers: string[], rows: any[][], filename: string) => {
+export const exportToCSV = async (headers: string[], rows: any[][], filename: string) => {
+    if (typeof window === 'undefined') return;
+    await initLibs();
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
     const csvContent = XLSX.utils.sheet_to_csv(worksheet);
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
