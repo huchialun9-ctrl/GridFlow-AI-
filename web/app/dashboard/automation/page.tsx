@@ -3,19 +3,36 @@
 import { useState, useEffect } from 'react';
 import { Loader2, Play, Trash2, Plus } from 'lucide-react';
 
+import { supabase } from '@/lib/supabaseClient';
+
 export default function Automation() {
     const [recipes, setRecipes] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [webhookUrl, setWebhookUrl] = useState('');
     const [isDiffEnabled, setIsDiffEnabled] = useState(false);
     const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchRecipes();
-        fetchWebhooks();
-        // Load Diff Setting
-        const savedDiff = localStorage.getItem('gridflow_diff_enabled');
-        if (savedDiff) setIsDiffEnabled(JSON.parse(savedDiff));
+        const init = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                setUserId(user.id);
+                // Load Preferences from DB
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('preferences')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile?.preferences?.diff_enabled) {
+                    setIsDiffEnabled(profile.preferences.diff_enabled);
+                }
+            }
+            fetchRecipes();
+            fetchWebhooks();
+        };
+        init();
     }, []);
 
     const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
@@ -69,11 +86,26 @@ export default function Automation() {
         }
     };
 
-    const toggleDiff = () => {
+    const toggleDiff = async () => {
+        if (!userId) return;
+        
         const newState = !isDiffEnabled;
         setIsDiffEnabled(newState);
-        localStorage.setItem('gridflow_diff_enabled', JSON.stringify(newState));
-        showNotification(newState ? "Intelligence Diff Engine Enabled" : "Diff Engine Disabled");
+        
+        // Update DB
+        const { error } = await supabase
+            .from('profiles')
+            .update({ 
+                preferences: { diff_enabled: newState } 
+            })
+            .eq('id', userId);
+
+        if (error) {
+            console.error('Failed to save preference', error);
+            showNotification("Failed to save preference", 'error');
+        } else {
+            showNotification(newState ? "Intelligence Diff Engine Enabled" : "Diff Engine Disabled");
+        }
     };
 
     const [creatingTemplateId, setCreatingTemplateId] = useState<string | null>(null);

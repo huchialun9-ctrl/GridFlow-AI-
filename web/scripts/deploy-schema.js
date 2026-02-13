@@ -25,6 +25,7 @@ async function deploy() {
         console.log('Connected to database.');
 
         // 1. Read Phase 2 Schema (Recipes, Webhooks, API Keys)
+        /*
         const phase2Path = path.join(process.cwd(), 'supabase/migrations/20240213_phase2_schema.sql');
         if (fs.existsSync(phase2Path)) {
             console.log('Applying Phase 2 Schema (Recipes, Webhooks)...');
@@ -49,6 +50,16 @@ async function deploy() {
             const sql = fs.readFileSync(phase5Path, 'utf8');
             await client.query(sql);
             console.log('✅ Phase 5 Optimization Schema applied.');
+        }
+        */
+
+        // 4. Read Phase 6 Preferences (Add preferences column)
+        const phase6Path = path.join(process.cwd(), 'supabase/migrations/20240213_phase6_preferences.sql');
+        if (fs.existsSync(phase6Path)) {
+            console.log('Applying Phase 6 Preferences Schema...');
+            const sql = fs.readFileSync(phase6Path, 'utf8');
+            await client.query(sql);
+            console.log('✅ Phase 6 Preferences Schema applied.');
         }
 
         console.log('All migrations completed successfully.');

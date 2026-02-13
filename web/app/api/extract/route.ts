@@ -70,7 +70,6 @@ export async function POST(req: Request) {
                 let text = response.text();
                 
                 // Clean up potential markdown code blocks
-                // Clean up potential markdown code blocks
                 text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
                 const jsonResult = JSON.parse(text);
