@@ -202,22 +202,60 @@ export default function Dashboard() {
                 </button>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                    { label: 'Total Rows', value: stats.totalRows.toLocaleString(), sub: 'Extracted' },
-                    { label: 'Active Datasets', value: stats.activeSessions, sub: 'Stored' },
-                    { label: 'Cloud Storage', value: `${stats.storageUsed} MB`, sub: 'Quota Used' }
-                ].map((stat, i) => (
-                    <div key={i} className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-                        <h3 className="text-xs font-bold text-slate-400 tracking-wide mb-3">{stat.label}</h3>
-                        <div className="flex items-baseline gap-2">
-                            <p className="text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tighter">{stat.value}</p>
-                            <span className="text-[10px] text-slate-400">{stat.sub}</span>
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column: Stats & Quotas */}
+                <div className="lg:col-span-2 space-y-8">
+                    {/* Usage Quotas */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Rows Quota */}
+                        <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+                           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <svg className="w-24 h-24 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
+                           </div>
+                           <div className="relative z-10">
+                                <h3 className="text-xs font-bold text-slate-400 tracking-widest uppercase mb-1">Rows_Extracted</h3>
+                                <div className="flex items-baseline gap-1 mb-3">
+                                    <span className="text-2xl font-black text-slate-900 dark:text-slate-50">{stats.totalRows.toLocaleString()}</span>
+                                    <span className="text-xs font-mono text-slate-400">/ 10,000</span>
+                                </div>
+                                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mb-2 overflow-hidden">
+                                    <div 
+                                        className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-out"
+                                        style={{ width: `${Math.min((stats.totalRows / 10000) * 100, 100)}%` }}
+                                    ></div>
+                                </div>
+                                <p className="text-[10px] text-slate-500 flex justify-between">
+                                    <span>Monthly Quota</span>
+                                    <span className="font-bold text-blue-600">{(Math.min((stats.totalRows / 10000) * 100, 100)).toFixed(1)}% Used</span>
+                                </p>
+                           </div>
+                        </div>
+
+                        {/* Storage Quota */}
+                        <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+                           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <svg className="w-24 h-24 text-emerald-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"></path></svg>
+                           </div>
+                           <div className="relative z-10">
+                                <h3 className="text-xs font-bold text-slate-400 tracking-widest uppercase mb-1">Cloud_Storage</h3>
+                                <div className="flex items-baseline gap-1 mb-3">
+                                    <span className="text-2xl font-black text-slate-900 dark:text-slate-50">{stats.storageUsed} MB</span>
+                                    <span className="text-xs font-mono text-slate-400">/ 512 MB</span>
+                                </div>
+                                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 mb-2 overflow-hidden">
+                                     <div 
+                                        className="bg-emerald-500 h-2 rounded-full transition-all duration-1000 ease-out"
+                                        style={{ width: `${Math.min((stats.storageUsed / 512) * 100, 100)}%` }}
+                                    ></div>
+                                </div>
+                                <p className="text-[10px] text-slate-500 flex justify-between">
+                                    <span>Free Tier Limit</span>
+                                    <span className="font-bold text-emerald-600">{(Math.min((stats.storageUsed / 512) * 100, 100)).toFixed(2)}% Used</span>
+                                </p>
+                           </div>
                         </div>
                     </div>
-                ))}
-            </div>
 
             {/* Main Table */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden border-separate">
