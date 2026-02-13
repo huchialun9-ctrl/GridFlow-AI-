@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "../lib/supabaseServer";
 import LogosSection from "@/components/LogosSection";
-import HeroAnimation from "@/components/HeroAnimation";
+import HeroAnimation from "../components/HeroAnimation";
 import DeveloperSection from '@/components/DeveloperSection';
 import { Github, BookOpen } from 'lucide-react';
 
