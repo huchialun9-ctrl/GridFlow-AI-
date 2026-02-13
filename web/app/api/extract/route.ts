@@ -1,5 +1,9 @@
-
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// Initialize Gemini AI
+// Ensure GEMINI_API_KEY is in .env.local
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(req: Request) {
     try {
@@ -9,58 +13,97 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'URL is required' }, { status: 400 });
         }
 
-        // Use Jina Reader API to get a structured markdown representation of the webpage
-        // This is a real API that fetches actual content
-        const response = await fetch(`https://r.jina.ai/${url}`, {
-            headers: {
-                'X-Return-Format': 'markdown'
-            }
+        // 1. Fetch Raw Markdown via Jina Reader
+        const jinaResponse = await fetch(`https://r.jina.ai/${url}`, {
+            headers: { 'X-Return-Format': 'markdown' }
         });
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch from Jina Reader: ${response.statusText}`);
+        if (!jinaResponse.ok) {
+            throw new Error(`Failed to fetch from Jina Reader: ${jinaResponse.statusText}`);
         }
 
-        const data = await response.text();
+        const rawMarkdown = await jinaResponse.text();
 
-        // 1. Recursive Deep Crawl Heuristic
-        // Look for "Next" links in the first page to simulate multi-page extraction
-        const nextLinkMatch = data.match(/\[(?:Next|下一頁|More|Next Page)\]\((.*?)\)/i);
-        let additionalRows: string[][] = [];
-        
-        if (nextLinkMatch && nextLinkMatch[1]) {
-            console.log('Deep Crawl Detected Next Page:', nextLinkMatch[1]);
-            // In a real production scenario, we would recursively fetch nextLinkMatch[1]
-            // For now, we simulate the 'depth' by adding a pseudo-recursive metadata tag
-            // and scanning a bit deeper into the current markdown for more patterns
+        // 2. AI Extraction Logic (Gemini 1.5 Flash)
+        if (process.env.GEMINI_API_KEY) {
+            try {
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+                const prompt = `
+                    You are a precise data extraction engine. 
+                    I will provide you with the markdown content of a webpage.
+                    Your task is to identify the MAIN data table, list, or content stream on this page.
+                    
+                    Rules:
+                    1. Extract the data into a clean JSON array of objects.
+                    2. Keys should be snake_case (e.g., product_name, price, date).
+                    3. Remove any advertisements, navigation links, or irrelevant footer content.
+                    4. If there are multiple potential tables, choose the one that looks like the primary content (e.g. search results, product list).
+                    5. Return ONLY the JSON string, no markdown formatting (no \`\`\`json blocks).
+                    6. Limit to top 50 rows if the list is very long.
+
+                    Markdown Content:
+                    ${rawMarkdown.slice(0, 30000)} // Truncate to avoid context limits if extremely large
+                `;
+
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                let text = response.text();
+                
+                // Clean up potential markdown code blocks
+                text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
+                const rows = JSON.parse(text);
+                
+                // Validate it's an array
+                if (Array.isArray(rows) && rows.length > 0) {
+                    const headers = Object.keys(rows[0]);
+                    
+                    // Convert to 2D array for the frontend [[val1, val2], ...]
+                    const formattedRows = rows.map(row => headers.map(h => {
+                        const val = row[h];
+                         return typeof val === 'object' ? JSON.stringify(val) : String(val);
+                    }));
+
+                    const name = url.replace('https://', '').replace('www.', '').split('/')[0] + ' AI_Extract';
+
+                    return NextResponse.json({
+                        name,
+                        headers,
+                        rows: formattedRows,
+                        rowCount: formattedRows.length,
+                        aiModel: 'gemini-1.5-flash'
+                    });
+                }
+
+            } catch (aiError) {
+                console.error('Gemini Extraction Failed:', aiError);
+                // Fallback to heuristic if AI fails
+            }
         }
 
-        // 2. DOM Pattern Parsing
-        const lines = data.split('\n').filter(line => line.trim().length > 0);
-        
-        // Extract links and content titles
+        // 3. Fallback Heuristic (Simple Regex)
+        // [Existing logic as backup]
+        const lines = rawMarkdown.split('\n').filter(line => line.trim().length > 0);
         const items = lines
             .filter(line => (line.includes('[') && line.includes('](')) || line.startsWith('| '))
             .map(line => {
                 const titleMatch = line.match(/\[(.*?)\]/);
                 const urlMatch = line.match(/\((.*?)\)/);
                 return [
-                    titleMatch ? titleMatch[1] : line.slice(0, 30),
-                    urlMatch ? urlMatch[1] : 'Internal_Node',
-                    line.length + ' chars'
+                    titleMatch ? titleMatch[1] : line.slice(0, 50),
+                    urlMatch ? urlMatch[1] : 'Text Node',
+                    line.length + ''
                 ];
             })
-            .slice(0, 150); // Increased limit for Deep Crawl simulation
-
-        const headers = ['Content_Title', 'Redirect_URL', 'Metadata'];
-        const name = url.replace('https://', '').replace('www.', '').split('/')[0] + ' Deep_Extract';
+            .slice(0, 50);
 
         return NextResponse.json({
-            name,
-            headers,
+            name: 'Raw_Extract_Fallback',
+            headers: ['Content', 'Link', 'Length'],
             rows: items,
             rowCount: items.length,
-            deepCrawlStatus: nextLinkMatch ? 'MULTI_PAGE_SEQUENCE_INITIATED' : 'SINGLE_PAGE_COMPLETED'
+            aiModel: 'none'
         });
 
     } catch (error: any) {
