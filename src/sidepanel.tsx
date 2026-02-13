@@ -23,11 +23,25 @@ function Sidepanel() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loginError, setLoginError] = useState("")
+    const [organizations, setOrganizations] = useState<any[]>([])
+    const [selectedOrgId, setSelectedOrgId] = useState<string>("")
 
     // Derived state: Apply anonymization if enabled
     const displayData = isAnonymized ? Anonymizer.processDataset(data) : data
 
     useEffect(() => {
+        const fetchOrgs = async () => {
+            try {
+                const orgs = await CloudSync.getOrganizations()
+                setOrganizations(orgs)
+            } catch (e) {
+                console.error("Failed to fetch organizations", e)
+            }
+        }
+
+        // Initial fetch
+        fetchOrgs()
+
         const messageListener = (message: any, sender: any, sendResponse: any) => {
             if (message.type === "EXTRACTION_START") {
                 setIsProcessing(true)
@@ -84,16 +98,22 @@ function Sidepanel() {
             const url = tabs[0]?.url || "unknown"
 
             const finalData = isAnonymized ? Anonymizer.processDataset(data) : data
-            await CloudSync.uploadDataset(`Dataset ${new Date().toLocaleString()}`, headers, finalData, url)
+            await CloudSync.uploadDataset(
+                `Dataset ${new Date().toLocaleString()}`,
+                headers,
+                finalData,
+                url,
+                selectedOrgId || undefined
+            )
 
-            // Show success (simple alert for now)
-            // In a real app we might want a toast
-            console.log("Sync Successful")
+            alert("Sync Successful!")
         } catch (e: any) {
             console.error(e)
             // If auth error, show login
             if (e.message.includes("authenticated")) {
                 setShowLogin(true)
+            } else {
+                alert("Sync failed: " + e.message)
             }
         } finally {
             setIsSyncing(false)
@@ -106,6 +126,8 @@ function Sidepanel() {
         setIsSyncing(true)
         try {
             await CloudSync.login(email, password)
+            const orgs = await CloudSync.getOrganizations()
+            setOrganizations(orgs)
             setShowLogin(false)
             handleSync()
         } catch (e: any) {
@@ -126,6 +148,23 @@ function Sidepanel() {
             />
 
             <div className="plasmo-flex-1 plasmo-overflow-hidden plasmo-flex plasmo-flex-col plasmo-relative">
+                {/* Org Selector Overlay if logged in and has orgs */}
+                {data.length > 0 && !isProcessing && !isSyncing && !showLogin && organizations.length > 0 && (
+                    <div className="plasmo-px-3 plasmo-py-2 plasmo-bg-slate-50 dark:plasmo-bg-slate-800/50 plasmo-border-b plasmo-border-slate-100 dark:plasmo-border-slate-800 plasmo-flex plasmo-items-center plasmo-gap-2">
+                        <span className="plasmo-text-[10px] plasmo-font-mono plasmo-text-slate-500 uppercase tracking-tight">Sync To:</span>
+                        <select
+                            value={selectedOrgId}
+                            onChange={(e) => setSelectedOrgId(e.target.value)}
+                            className="plasmo-text-[10px] plasmo-bg-transparent plasmo-border-none plasmo-font-bold plasmo-text-slate-700 dark:plasmo-text-slate-300 focus:plasmo-ring-0 plasmo-p-0"
+                        >
+                            <option value="">Private Vault</option>
+                            {organizations.map(org => (
+                                <option key={org.id} value={org.id}>{org.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
                 {(isProcessing || isSyncing) && (
                     <div className="plasmo-absolute plasmo-inset-0 plasmo-z-50 plasmo-bg-white/80 dark:plasmo-bg-slate-900/80 plasmo-flex plasmo-items-center plasmo-justify-center plasmo-flex-col plasmo-gap-2">
                         <div className="plasmo-animate-spin plasmo-rounded-full plasmo-h-8 plasmo-w-8 plasmo-border-b-2 plasmo-border-slate-800 dark:plasmo-border-slate-200"></div>

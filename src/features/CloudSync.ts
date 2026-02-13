@@ -38,7 +38,27 @@ export class CloudSync {
         return session
     }
 
-    static async uploadDataset(name: string, headers: string[], rows: string[][], sourceUrl: string) {
+    static async getOrganizations() {
+        const session: any = await this.getSession()
+        if (!session) return []
+
+        const authenticatedClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
+            global: {
+                headers: {
+                    Authorization: `Bearer ${session.access_token}`
+                }
+            }
+        })
+
+        const { data, error } = await authenticatedClient
+            .from('organizations')
+            .select('id, name')
+
+        if (error) throw error
+        return data || []
+    }
+
+    static async uploadDataset(name: string, headers: string[], rows: string[][], sourceUrl: string, organizationId?: string) {
         const session: any = await this.getSession()
         if (!session || !session.access_token) {
             throw new Error("Not authenticated. Please log in.")
@@ -62,6 +82,7 @@ export class CloudSync {
                     rows: rows,
                     source_url: sourceUrl,
                     row_count: rows.length,
+                    organization_id: organizationId || null,
                     metadata: {
                         source: "chrome_extension",
                         version: "1.0.0"
