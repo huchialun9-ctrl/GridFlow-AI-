@@ -86,66 +86,68 @@ export async function POST(req: Request) {
 
                 if (mode === 'word') {
                     prompt = `
-                        You are a Semantic Document Architect.
-                        Analyze the Markdown content and transform it into a well-structured document hierarchy.
+                        You are a Semantic Document Architect & Editor-in-Chief.
+                        Analyze the Markdown content and transform it into a professional, well-structured document.
 
                         **Objective:**
-                        Extract the content while preserving its logical flow, headers, and semantic roles (e.g., Intro, Analysis, Findings).
+                        Deconstruct the content into logical sections. Do not use tables unless the data is explicitly tabular. Use headers and themed paragraphs for narrative flow.
+
+                        **Semantic Roles:**
+                        - "Document Title": The primary heading.
+                        - "Executive Summary": A high-level abstract.
+                        - "Section Header": Major breaks.
+                        - "Sub Header": Specific subsections.
+                        - "Paragraph": Standard text blocks.
+                        - "Bullet Point": List items.
+                        - "Callout": Highlighted insights or warnings.
+                        - "Quote": Significant direct statements.
 
                         **Strict Extraction Rules:**
-                        1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
-                        2. **Data Structure:** Each item in "data" MUST have:
-                           - "role": (e.g., "Main Title", "Section Header", "Paragraph", "Bullet Point")
-                           - "content": The actual text.
-                        3. **Metadata:**
-                           - "entity_type": "Structured Document"
-                           - "page_title": The document's primary subject.
-                           - "tone": (e.g., "Professional", "Technical", "Informative")
+                        1. JSON Object with "data" (array) and "metadata" (object).
+                        2. Each item in "data" MUST have "role" (from above) and "content".
+                        3. Focus on narrative coherence.
 
-                        **Response Format (JSON ONLY):**
+                        **Response Format:**
                         {
                             "data": [
-                                { "role": "Main Title", "content": "..." },
+                                { "role": "Document Title", "content": "..." },
+                                { "role": "Executive Summary", "content": "..." },
                                 { "role": "Section Header", "content": "..." },
-                                { "role": "Paragraph", "content": "..." }
+                                { "role": "Paragraph", "content": "..." },
+                                { "role": "Callout", "content": "..." }
                             ],
-                            "metadata": { "entity_type": "Structured Document", "page_title": "..." }
+                            "metadata": { "entity_type": "Structured Article", "tone": "...", "reading_time": "..." }
                         }
 
-                        **Content Source Notice:** This content was retrieved via fallback direct fetch. Preserve the semantic meaning while ignoring technical debris.
-
-                        **Markdown/Text Content:**
-                        ${rawMarkdown.slice(0, 40000)}
+                        **Content:** ${rawMarkdown.slice(0, 40000)}
                     `;
                 } else if (mode === 'ppt') {
                     prompt = `
                         You are a Visual Information Designer.
-                        Analyze the Markdown content and decompose it into distinct presentation slides.
+                        Transcribe the Markdown content into a professional presentation slide deck.
 
-                        **Objective:**
-                        Extract data and themes suitable for a professional slide deck. Identify logical breaks for individual slides.
+                        **Slide Types:**
+                        - "TitleSlide": Main title and subtitle.
+                        - "Agenda": Overview of the presentation.
+                        - "ContentSlide": Title and bullet points.
+                        - "DeepDive": Detailed analysis slide.
+                        - "SummarySlide": Key takeaways.
 
                         **Strict Extraction Rules:**
-                        1. **Output Format:** JSON Object with keys: "data" (array of objects), "metadata" (object).
-                        2. **Data Structure:** Each item in "data" MUST represent a slide with:
-                           - "slide_title": The headline of the slide.
-                           - "bullet_points": An array of strings containing supporting details or data points.
-                        3. **Metadata:**
-                           - "entity_type": "Presentation Outline"
-                           - "presentation_theme": The overall narrative arc.
+                        1. JSON Object with "data" (array) and "metadata" (object).
+                        2. Each object in "data" MUST have "slide_type", "slide_title", and "bullet_points" (array).
+                        3. Distill complex text into punchy, bullet-ready phrases.
 
-                        **Response Format (JSON ONLY):**
+                        **Response Format:**
                         {
                             "data": [
-                                { "slide_title": "...", "bullet_points": ["...", "..."] }
+                                { "slide_type": "TitleSlide", "slide_title": "...", "bullet_points": ["Sub-headline here"] },
+                                { "slide_type": "ContentSlide", "slide_title": "...", "bullet_points": ["Point A", "Point B"] }
                             ],
-                            "metadata": { "entity_type": "Presentation Outline", "presentation_theme": "..." }
+                            "metadata": { "entity_type": "Presentation Deck", "theme": "..." }
                         }
 
-                        **Content Source Notice:** This content was retrieved via fallback direct fetch. De-clutter the content to focus on the presentation-worthy core.
-
-                        **Markdown/Text Content:**
-                        ${rawMarkdown.slice(0, 40000)}
+                        **Content:** ${rawMarkdown.slice(0, 40000)}
                     `;
                 } else {
                     // Default Excel mode
@@ -231,10 +233,10 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json({
-            name: items.length > 0 ? 'Raw_Extract_Fallback' : 'Extraction_Failed',
-            headers: ['Content', 'Source', 'Chars'],
-            rows: items,
-            rowCount: items.length,
+            name: items.length > 0 ? 'Semantic_Extraction_Report' : 'Document_Snapshot',
+            headers: items[0]?.length === 3 ? ['Headline/Topic', 'Context/Source', 'Significance'] : ['Section', 'Extract'],
+            rows: items.length > 0 ? items : [[rawMarkdown.slice(0, 100).trim(), rawMarkdown.slice(0, 2000)]],
+            rowCount: items.length || 1,
             aiModel: 'none'
         });
 
