@@ -144,23 +144,119 @@ export default function Automation() {
         }
     };
 
-    const handleRunRecipe = async (id: string) => {
-        const apiKey = prompt("To test the No-Code API, please enter an API Key (sk_live_...):");
-        if (!apiKey) return;
+    const [runModalOpen, setRunModalOpen] = useState(false);
+    const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
+    const [apiKeyInput, setApiKeyInput] = useState('');
+
+    const openRunModal = (id: string) => {
+        setSelectedRecipeId(id);
+        setApiKeyInput('');
+        setRunModalOpen(true);
+    };
+
+    const confirmRunRecipe = async () => {
+        if (!apiKeyInput || !selectedRecipeId) return;
+        setRunModalOpen(false); // Close immediately or wait? Better close and show loading/outcome.
 
         try {
-            const res = await fetch(`/api/v1/run/${id}`, {
-                headers: { 'x-api-key': apiKey }
+            const res = await fetch(`/api/v1/run/${selectedRecipeId}`, {
+                headers: { 'x-api-key': apiKeyInput }
             });
             const result = await res.json();
-            alert(JSON.stringify(result, null, 2));
+            alert(JSON.stringify(result, null, 2)); // Could replace this alert too, but step by step.
         } catch (e) {
             alert("Failed to run recipe");
         }
     };
 
+    // ... existing handleRunRecipe (removed) ...
+
     return (
         <div className="space-y-8 font-sans animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+            {/* Run Recipe Modal */}
+            {runModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-md p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Run Extraction Recipe</h3>
+                        <p className="text-sm text-slate-500 mb-4">
+                            Enter your API Key to execute this extraction pipeline securely.
+                        </p>
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">API Key</label>
+                                <input 
+                                    type="password"
+                                    autoFocus
+                                    value={apiKeyInput}
+                                    onChange={(e) => setApiKeyInput(e.target.value)}
+                                    placeholder="sk_live_..."
+                                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all placeholder:text-slate-400"
+                                />
+                            </div>
+                            
+                            <div className="flex justify-end gap-3 pt-2">
+                                <button 
+                                    onClick={() => setRunModalOpen(false)}
+                                    className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={confirmRunRecipe}
+                                    disabled={!apiKeyInput}
+                                    className="px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
+                                >
+                                    Run Recipe
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Run Recipe Modal */}
+            {runModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-md p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Run Extraction Recipe</h3>
+                        <p className="text-sm text-slate-500 mb-4">
+                            Enter your API Key to execute this extraction pipeline securely.
+                        </p>
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">API Key</label>
+                                <input 
+                                    type="password"
+                                    autoFocus
+                                    value={apiKeyInput}
+                                    onChange={(e) => setApiKeyInput(e.target.value)}
+                                    placeholder="sk_live_..."
+                                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-emerald-500/50 outline-none transition-all placeholder:text-slate-400"
+                                />
+                            </div>
+                            
+                            <div className="flex justify-end gap-3 pt-2">
+                                <button 
+                                    onClick={() => setRunModalOpen(false)}
+                                    className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={confirmRunRecipe}
+                                    disabled={!apiKeyInput}
+                                    className="px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
+                                >
+                                    Run Recipe
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Notification Toast */}
             {notification && (
                 <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 animate-in slide-in-from-right-10 ${
@@ -172,6 +268,18 @@ export default function Automation() {
                     <span className="text-sm font-bold">{notification.message}</span>
                 </div>
             )}
+            
+            {/* ... rest of the UI ... */}
+            
+                            <div className="grid grid-cols-2 gap-2 mt-auto">
+                                <button 
+                                    onClick={() => openRunModal(recipe.id)}
+                                    className="py-2 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-400 text-white dark:text-slate-900 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Play className="w-3 h-3" />
+                                    Run
+                                </button>
+
 
             <div>
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">Intelligence Insights</h1>
@@ -311,7 +419,7 @@ export default function Automation() {
 
                             <div className="grid grid-cols-2 gap-2 mt-auto">
                                 <button 
-                                    onClick={() => handleRunRecipe(recipe.id)}
+                                    onClick={() => openRunModal(recipe.id)}
                                     className="py-2 bg-slate-900 dark:bg-slate-50 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-400 text-white dark:text-slate-900 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
                                 >
                                     <Play className="w-3 h-3" />
