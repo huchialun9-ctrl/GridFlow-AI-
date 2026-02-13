@@ -1,6 +1,5 @@
-
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabaseServer'; // Use Server Client for Auth
+import { createClient } from '@/lib/supabaseServer';
 import crypto from 'crypto';
 
 export async function GET(req: Request) {
@@ -33,43 +32,50 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name, scopes } = await req.json();
+    const json = await req.json();
+    const { name, scopes } = json;
 
     if (!name) {
         return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
-    // Generate a new secure key
-    const rawKey = 'sk_live_' + crypto.randomBytes(24).toString('hex');
+    // 1. Generate a secure random key
+    // Prefix with sk_live_ to make it identifiable
+    const randomBytes = crypto.randomBytes(32).toString('hex');
+    const rawKey = `sk_live_${randomBytes}`;
     
-    // Hash the key for storage
+    // 2. Hash the key for storage (SHA-256)
+    // We never store the raw key
     const keyHash = crypto.createHash('sha256').update(rawKey).digest('hex');
 
+    // 3. Insert into DB
     const { data, error } = await supabase
       .from('api_keys')
       .insert({
         user_id: user.id,
         name,
         key_hash: keyHash,
-        scopes: scopes || ['read:datasets']
+        scopes: scopes || ['read:datasets', 'write:extract']
       })
       .select('id, name, created_at, scopes')
       .single();
 
     if (error) {
+       console.error('Supabase error:', error);
        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Return the RAW key only once!
+    // 4. Return the RAW key to the user ONLY ONCE
     return NextResponse.json({ 
         key: {
             ...data,
-            secret: rawKey // This is the only time the user sees this
+            secret: rawKey // IMPORTANT: This is the only time the user sees this
         } 
     });
 
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('API Key creation error:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
 
