@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AIHelpDesk from '@/components/AIHelpDesk';
+import { ChevronDown, ChevronUp, Book, Server, Shield } from 'lucide-react';
 
 export default function HelpPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(0);
