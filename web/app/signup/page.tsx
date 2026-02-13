@@ -6,26 +6,31 @@ import { supabase } from '@/lib/supabaseClient'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-export default function Login() {
+export default function Signup() {
     const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [message, setMessage] = useState<string | null>(null)
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setError(null)
+        setMessage(null)
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
+            const { error } = await supabase.auth.signUp({
                 email,
                 password,
+                options: {
+                    emailRedirectTo: `https://gridflow-ai-production.up.railway.app/auth/callback`,
+                },
             })
 
             if (error) throw error
-            router.push('/dashboard')
+            setMessage('Check your email for the confirmation link.')
         } catch (err: any) {
             setError(err.message)
         } finally {
@@ -54,22 +59,27 @@ export default function Login() {
                     <span className="font-bold text-xl tracking-tight text-slate-900">GridFlow AI</span>
                 </Link>
                 <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-slate-900">
-                    Sign in to your account
+                    Create your account
                 </h2>
                 <p className="mt-2 text-center text-sm text-slate-600">
-                    Or{' '}
-                    <Link href="/signup" className="font-medium text-slate-900 hover:underline">
-                        create a new account
+                    Already have an account?{' '}
+                    <Link href="/login" className="font-medium text-slate-900 hover:underline">
+                        Sign in instead
                     </Link>
                 </p>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow-sm ring-1 ring-slate-900/5 rounded-xl sm:px-10">
-                    <form className="space-y-6" onSubmit={handleLogin}>
+                    <form className="space-y-6" onSubmit={handleSignup}>
                         {error && (
                             <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-md">
                                 {error}
+                            </div>
+                        )}
+                        {message && (
+                            <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 text-sm p-3 rounded-md">
+                                {message}
                             </div>
                         )}
 
@@ -100,32 +110,12 @@ export default function Login() {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    autoComplete="current-password"
+                                    autoComplete="new-password"
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="block w-full appearance-none rounded-md border border-slate-300 px-3 py-2 placeholder-slate-400 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-slate-500 sm:text-sm transition-colors"
                                 />
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <input
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                    className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-500"
-                                />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900">
-                                    Remember me
-                                </label>
-                            </div>
-
-                            <div className="text-sm">
-                                <a href="#" className="font-medium text-slate-900 hover:underline">
-                                    Forgot your password?
-                                </a>
                             </div>
                         </div>
 
@@ -135,7 +125,7 @@ export default function Login() {
                                 disabled={loading}
                                 className="flex w-full justify-center rounded-md border border-transparent bg-slate-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-black focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
-                                {loading ? 'Signing in...' : 'Sign in'}
+                                {loading ? 'Creating account...' : 'Sign up'}
                             </button>
                         </div>
                     </form>
