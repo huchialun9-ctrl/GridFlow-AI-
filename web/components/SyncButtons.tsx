@@ -11,11 +11,41 @@ export default function SyncButtons({ data }: { data: any }) {
 
     const handleGistSync = async () => {
         setIsSyncingGist(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setIsSyncingGist(false);
-        setGistSuccess(true);
-        setTimeout(() => setGistSuccess(false), 3000);
+        try {
+            // Prepare CSV/JSON content
+            const content = JSON.stringify(data.rows, null, 2);
+            const filename = `${data.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+
+            const res = await fetch('/api/sync/gist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    filename,
+                    content
+                })
+            });
+
+            const result = await res.json();
+
+            if (!res.ok) {
+                if (res.status === 401) {
+                    alert("Please login with GitHub to use Gist Sync.");
+                } else {
+                    throw new Error(result.error);
+                }
+                return;
+            }
+
+            setGistSuccess(true);
+            // Maybe open the gist?
+            window.open(result.html_url, '_blank');
+            setTimeout(() => setGistSuccess(false), 3000);
+        } catch (error) {
+            console.error("Gist Sync specific error:", error);
+            // In a real app we would show a toast
+        } finally {
+            setIsSyncingGist(false);
+        }
     };
 
     const handleSheetsSync = async () => {

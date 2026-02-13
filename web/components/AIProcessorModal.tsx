@@ -70,28 +70,53 @@ export default function AIProcessorModal({ isOpen, onClose, onSubmit, isProcessi
                 </div>
                 
                 <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                    {/* Auto-Mapping Suggestions */}
-                    {suggestions.length > 0 && (
+                    {/* Smart Suggestions & Enrichment */}
+                    <div className="space-y-4">
+                        {suggestions.length > 0 && (
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-500 uppercase tracking-wide">
+                                    <Sparkles className="w-3 h-3" />
+                                    Smart Suggestions
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {suggestions.map((s, i) => (
+                                        <button
+                                            key={i}
+                                            type="button"
+                                            onClick={() => handleSuggestionClick(s)}
+                                            className="text-xs bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors flex items-center gap-1"
+                                        >
+                                            {s}
+                                            <ArrowRight className="w-3 h-3 opacity-50" />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         <div className="space-y-2">
-                             <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-500 uppercase tracking-wide">
-                                <Sparkles className="w-3 h-3" />
-                                Smart Suggestions
+                             <div className="flex items-center gap-2 text-[10px] font-bold text-pink-500 uppercase tracking-wide">
+                                <span className="flex h-2 w-2 rounded-full bg-pink-500"></span>
+                                Enrichment Tools
                              </div>
                              <div className="flex flex-wrap gap-2">
-                                {suggestions.map((s, i) => (
-                                    <button
-                                        key={i}
-                                        type="button"
-                                        onClick={() => handleSuggestionClick(s)}
-                                        className="text-xs bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors flex items-center gap-1"
-                                    >
-                                        {s}
-                                        <ArrowRight className="w-3 h-3 opacity-50" />
-                                    </button>
-                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => handleSuggestionClick("Analyze the sentiment of the text. Add 'sentiment_score' (0-1) and 'sentiment_label' (Positive/Negative) columns.")}
+                                    className="text-xs bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 px-3 py-1.5 rounded-lg border border-pink-100 dark:border-pink-800 hover:bg-pink-100 dark:hover:bg-pink-900/40 transition-colors flex items-center gap-1"
+                                >
+                                    ❤️ Sentiment Analysis
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleSuggestionClick("Identify named entities (Person, Org, Location). Add an 'entities' column with a comma-separated list.")}
+                                    className="text-xs bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 px-3 py-1.5 rounded-lg border border-pink-100 dark:border-pink-800 hover:bg-pink-100 dark:hover:bg-pink-900/40 transition-colors flex items-center gap-1"
+                                >
+                                    🏢 Entity Extraction (NER)
+                                </button>
                              </div>
                         </div>
-                    )}
+                    </div>
 
                     <div className="space-y-3">
                         <label className="text-xs font-bold text-slate-400 block">Command Prompt</label>
