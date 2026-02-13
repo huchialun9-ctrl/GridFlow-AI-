@@ -229,6 +229,86 @@ export default function Automation() {
                 </div>
             )}
 
+            {/* Run Recipe Modal */}
+            {runModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-md p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2">Execute Extraction</h3>
+                        <p className="text-sm text-slate-500 mb-4">
+                            Enter your API Key to initialize the extraction protocol for this node.
+                        </p>
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 block">Gemini API Key</label>
+                                <input 
+                                    type="password"
+                                    autoFocus
+                                    value={apiKeyInput}
+                                    onChange={(e) => setApiKeyInput(e.target.value)}
+                                    placeholder="Enter your API Key..."
+                                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all placeholder:text-slate-400"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') confirmRunRecipe();
+                                    }}
+                                />
+                            </div>
+                            
+                            <div className="flex justify-end gap-3 pt-2">
+                                <button 
+                                    onClick={() => setRunModalOpen(false)}
+                                    className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={confirmRunRecipe}
+                                    disabled={!apiKeyInput}
+                                    className="px-4 py-2 text-sm font-bold bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-slate-900/20"
+                                >
+                                    Run_Recipe
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Execution Result Modal */}
+            {resultModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-4xl p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform scale-100 transition-all">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Extraction_Payload_Success
+                            </h3>
+                            <button 
+                                onClick={() => setResultModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <div className="bg-slate-950 rounded-xl p-4 overflow-auto max-h-[60vh] border border-slate-800">
+                             <pre className="text-xs font-mono text-emerald-400 leading-relaxed">
+                                 {resultData}
+                             </pre>
+                        </div>
+                        
+                        <div className="flex justify-end mt-6">
+                             <button 
+                                onClick={() => setResultModalOpen(false)}
+                                className="px-6 py-2 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 text-sm font-bold rounded-xl transition-all shadow-xl hover:scale-105 active:scale-95"
+                            >
+                                Close_Terminal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
 
             <div>
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">Intelligence Insights</h1>
