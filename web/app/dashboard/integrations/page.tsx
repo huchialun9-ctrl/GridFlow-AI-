@@ -85,7 +85,7 @@ export default function IntegrationsPage() {
             // Make Purple Logo (Simplified M)
             icon: (
                  <svg className="w-6 h-6 text-[#6F42C1]" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z"/> 
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm4 0h-2v-6h2v6z"/>
                     {/* Placeholder for Make's infinity-like logo, using stylized M concept */}
                     <path d="M4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8-8-3.59-8-8zm2.5 1h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9zm4 4h3v3h-3v-3zm0-4h3v3h-3V9z" opacity="0.5"/>
                 </svg>
@@ -125,6 +125,79 @@ export default function IntegrationsPage() {
 
     return (
         <div className="max-w-6xl mx-auto space-y-12 pb-20">
+            {/* Notification Toast */}
+             {notification && (
+                <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 animate-in slide-in-from-right-10 ${
+                    notification.type === 'success'
+                        ? 'bg-white dark:bg-slate-900 border-emerald-500 text-emerald-600'
+                        : 'bg-white dark:bg-slate-900 border-red-500 text-red-600'
+                }`}>
+                    <div className={`w-2 h-2 rounded-full ${notification.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
+                    <span className="text-sm font-bold">{notification.message}</span>
+                </div>
+            )}
+
+            {/* Modal */}
+            {isModalOpen && selectedIntegration && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                                {selectedIntegration.icon}
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50">Connect {selectedIntegration.name}</h3>
+                                <p className="text-xs text-slate-500">{selectedIntegration.category}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            {selectedIntegration.name === 'Zapier' || selectedIntegration.name === 'Make' ? (
+                                <>
+                                    <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-100 dark:border-indigo-800 text-xs text-indigo-800 dark:text-indigo-300">
+                                        To connect, please use your <strong>GridFlow API Key</strong> in the {selectedIntegration.name} configuration.
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500">Your API Key</label>
+                                        <div className="flex gap-2">
+                                            <code className="flex-1 bg-slate-100 dark:bg-slate-950 p-2 rounded text-xs font-mono border border-slate-200 dark:border-slate-800">
+                                                sk_live_... (View in Developer Settings)
+                                            </code>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500">API Token / key</label>
+                                        <input type="password" placeholder="e.g. key..." className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs" />
+                                    </div>
+                                     <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500">Target ID (Base/Repo)</label>
+                                        <input type="text" placeholder="e.g. app..." className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs" />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConnect}
+                                className="px-4 py-2 text-xs font-bold bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 rounded-lg hover:opacity-90 transition-opacity"
+                            >
+                                Connect Integration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <div>
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
@@ -165,9 +238,12 @@ export default function IntegrationsPage() {
                             {connector.description}
                         </p>
 
-                        <button className="w-full py-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all flex items-center justify-center gap-2">
-                            Configure
-                            <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        <button 
+                            onClick={() => handleConfigure(connector)}
+                            className="w-full py-2.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2 group-hover:bg-white dark:group-hover:bg-slate-900 group-hover:shadow-sm"
+                        >
+                            {connector.connected ? 'Manage' : 'Configure'}
+                            <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>
                     </motion.div>
                 ))}
