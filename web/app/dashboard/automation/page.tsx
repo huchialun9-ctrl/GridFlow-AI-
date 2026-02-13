@@ -76,7 +76,10 @@ export default function Automation() {
         showNotification(newState ? "Intelligence Diff Engine Enabled" : "Diff Engine Disabled");
     };
 
-    const handleCreateTemplate = async (templateName: string, domain: string, desc: string) => {
+    const [creatingTemplateId, setCreatingTemplateId] = useState<string | null>(null);
+
+    const handleCreateTemplate = async (templateId: string, templateName: string, domain: string, desc: string) => {
+        setCreatingTemplateId(templateId);
         try {
             const res = await fetch('/api/recipes', {
                 method: 'POST',
@@ -85,15 +88,24 @@ export default function Automation() {
                     name: templateName,
                     domain: domain,
                     description: desc,
-                    selector_json: { "template": true } // Mock selector for template
+                    selector_json: { "template": true }
                 })
             });
             if (res.ok) {
                 showNotification(`Template "${templateName}" created!`);
-                fetchRecipes();
+                await fetchRecipes();
             }
         } catch (e) {
             showNotification("Failed to create from template", 'error');
+        } finally {
+            setCreatingTemplateId(null);
+        }
+    };
+
+    const handleCreateCustom = () => {
+        const name = prompt("Enter a name for your new recipe:");
+        if (name) {
+            handleCreateTemplate('custom', name, 'custom.com', 'Custom extraction recipe');
         }
     };
 
@@ -221,12 +233,15 @@ export default function Automation() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Create New */}
-                    <div className="group border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center p-6 space-y-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer min-h-[250px]">
-                        <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-400 group-hover:text-emerald-500 transition-colors">
+                    <div 
+                        onClick={handleCreateCustom}
+                        className="group border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center p-6 space-y-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:border-emerald-500/50 hover:scale-[1.02] transition-all cursor-pointer min-h-[250px]"
+                    >
+                        <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-400 group-hover:text-emerald-500 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-900/20 transition-colors">
                             <Plus className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-slate-900 dark:text-slate-50">Create Custom Recipe</h3>
+                            <h3 className="font-bold text-slate-900 dark:text-slate-50 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Create Custom Recipe</h3>
                             <p className="text-xs text-slate-500 mt-1">Design a new extraction workflow from scratch.</p>
                         </div>
                     </div>
@@ -276,13 +291,15 @@ export default function Automation() {
 
                     {/* Default Templates (Only if no recipes or just as suggestions) */}
                     <div className="group bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-orange-500/30 transition-all relative overflow-hidden min-h-[250px] flex flex-col justify-between">
-                        <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <svg className="w-24 h-24 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" /></svg>
+                        <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <svg className="w-24 h-24 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                             </svg>
                         </div>
                         <div>
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
-                                     <span className="font-bold text-lg">A</span>
+                                <div className="w-10 h-10 rounded-lg bg-[#FF9900]/10 flex items-center justify-center text-[#FF9900]">
+                                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M13.665 10.155L12.571 14.897L15.308 17.652L13.665 10.155ZM11.139 12.639L4.805 15.685L17.585 18.067L19.465 9.778L11.139 12.639ZM13.889 12.062L17.29 11.118L11.758 5.485L11.233 8.356L13.889 12.062ZM2.895 19.5L10.222 15.903L18.66 17.478L2.895 19.5ZM12.321 0.5L9.626 12.008L9.957 12.464L15.228 5.151L12.321 0.5Z"/></svg>
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-slate-900 dark:text-slate-50 text-sm">Amazon Monitor</h3>
@@ -292,21 +309,24 @@ export default function Automation() {
                             <p className="text-xs text-slate-500 leading-relaxed mb-6">Start tracking prices immediately with this pre-built template.</p>
                         </div>
                         <button 
-                            onClick={() => handleCreateTemplate('Amazon Monitor', 'amazon.com', 'Tracks product prices and availability')}
-                            className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-orange-500 hover:text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                            onClick={() => handleCreateTemplate('amazon', 'Amazon Monitor', 'amazon.com', 'Tracks product prices and availability')}
+                            disabled={!!creatingTemplateId}
+                            className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#FF9900] hover:text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:shadow-md"
                         >
-                            Use Template
+                             {creatingTemplateId === 'amazon' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Use Template'}
                         </button>
                     </div>
 
                     <div className="group bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-blue-500/30 transition-all relative overflow-hidden min-h-[250px] flex flex-col justify-between">
-                        <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <svg className="w-24 h-24 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" /></svg>
+                        <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <svg className="w-24 h-24 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
                         </div>
                         <div>
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                                     <span className="font-bold text-lg">in</span>
+                                <div className="w-10 h-10 rounded-lg bg-[#0077B5]/10 flex items-center justify-center text-[#0077B5]">
+                                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-slate-900 dark:text-slate-50 text-sm">LinkedIn Tracker</h3>
@@ -316,10 +336,11 @@ export default function Automation() {
                             <p className="text-xs text-slate-500 leading-relaxed mb-6">Monitor company growth and job postings.</p>
                         </div>
                         <button 
-                            onClick={() => handleCreateTemplate('LinkedIn Tracker', 'linkedin.com', 'Monitors company employee count')}
-                            className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-500 hover:text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                            onClick={() => handleCreateTemplate('linkedin', 'LinkedIn Tracker', 'linkedin.com', 'Monitors company employee count')}
+                            disabled={!!creatingTemplateId}
+                            className="w-full py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#0077B5] hover:text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2 group-hover:shadow-md"
                         >
-                            Use Template
+                            {creatingTemplateId === 'linkedin' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Use Template'}
                         </button>
                     </div>
                 </div>
