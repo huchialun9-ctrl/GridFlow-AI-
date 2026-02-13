@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "../lib/supabaseServer";
 import LogosSection from "@/components/LogosSection";
+import HeroAnimation from "@/components/HeroAnimation";
 import DeveloperSection from '@/components/DeveloperSection';
 import { Github, BookOpen } from 'lucide-react';
 
@@ -121,7 +122,7 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Technical Visualization: Data Flow Animation - Moved Down slightly */}
+            {/* Technical Visualization: Data Flow Animation */}
             <div className="mt-24 pointer-events-none opacity-80">
               <HeroAnimation />
             </div>
@@ -212,23 +213,56 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        {/* Developer Showcase */}
+        <DeveloperSection />
+
       </main>
 
-      <footer className="bg-[#F8FAFC] dark:bg-[#0B1120] border-t border-slate-200 dark:border-slate-800 py-12">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-xs font-mono text-slate-500">
-            © 2026 GRIDFLOW_AI. SYSTEMS OPERATIONAL.
-          </div>
-
-          <div className="flex gap-6 items-center">
-            <a href="mailto:huchialun97@gmail.com" className="text-xs font-mono font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
-              Contact: huchialun97@gmail.com
-            </a>
-            <div className="flex items-center gap-2 text-xs font-mono font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-default">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Status: All Systems Normal
+      <footer className="py-20 border-t border-slate-100 dark:border-slate-900 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-6 max-w-6xl">
+            <div className="grid md:grid-cols-4 gap-12 mb-16">
+              <div className="col-span-1 md:col-span-1">
+                <div className="flex items-center gap-3 mb-6">
+                  <Image src="/logo.png" alt="GridFlow Logo" width={24} height={24} className="w-6 h-6" />
+                  <span className="font-bold text-slate-900 dark:text-slate-50 tracking-tighter">GRIDFLOW_AI</span>
+                </div>
+                <p className="text-sm text-slate-500 leading-relaxed font-light">
+                  Built by <span className="font-bold text-slate-900 dark:text-slate-50">胡家綸</span>. <br />
+                  Empowering data-driven decisions through advanced AI extraction.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Platform</h4>
+                <ul className="space-y-4 text-sm text-slate-500 font-light">
+                  <li><Link href="/solutions" className="hover:text-emerald-500 transition-colors">Solutions</Link></li>
+                  <li><Link href="/security" className="hover:text-emerald-500 transition-colors">Security</Link></li>
+                  <li><Link href="/docs" className="hover:text-emerald-500 transition-colors">Documentation</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Project</h4>
+                <ul className="space-y-4 text-sm text-slate-500 font-light">
+                  <li><a href="https://github.com/huchialun9-ctrl/GridFlow-AI-" target="_blank" className="hover:text-emerald-500 transition-colors">GitHub Repository</a></li>
+                  <li><a href="https://github.com/huchialun9-ctrl" target="_blank" className="hover:text-emerald-500 transition-colors">Developer Profile</a></li>
+                  <li><Link href="/legal/terms" className="hover:text-emerald-500 transition-colors">Terms of Service</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 dark:text-slate-50 text-xs uppercase tracking-widest mb-6 font-mono">Connect</h4>
+                <p className="text-sm text-slate-500 font-light mb-4">Open for collaboration and inquiries.</p>
+                <a href="mailto:huchialun97@gmail.com" className="text-sm font-bold text-emerald-600 hover:underline">huchialun97@gmail.com</a>
+              </div>
             </div>
-          </div>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-12 border-t border-slate-50 dark:border-slate-900">
+              <p className="text-xs text-slate-400 font-mono">© 2026 GRIDFLOW_AI // DESIGN_AND_DEV_BY_胡家綸</p>
+              <div className="flex gap-8 text-[10px] items-center">
+                <div className="flex items-center gap-1.5 text-emerald-500">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <span className="font-bold uppercase tracking-widest">System_Active_v1.0.4</span>
+                </div>
+              </div>
+            </div>
         </div>
       </footer>
     </div>
