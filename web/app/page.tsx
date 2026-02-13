@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "../lib/supabaseServer";
-import HeroAnimation from "@/components/HeroAnimation";
 import LogosSection from "@/components/LogosSection";
+import DeveloperSection from '@/components/DeveloperSection';
+import { Github, BookOpen } from 'lucide-react';
 
 export default async function Home() {
   const supabase = createClient();
@@ -68,12 +69,12 @@ export default async function Home() {
                 Transform unstructured web traffic into actionable business intelligence with banking-grade security.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center gap-4 mt-8 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
                 <Link
                   href="/dashboard"
-                  className="w-full sm:w-auto px-8 py-4 bg-slate-900 dark:bg-slate-50 hover:bg-black dark:hover:bg-white text-white dark:text-slate-900 font-mono text-sm font-bold rounded flex items-center justify-center gap-2 shadow-xl shadow-slate-200/50 dark:shadow-none transition-all"
+                  className="w-full sm:w-auto px-8 py-4 bg-slate-900 dark:bg-slate-50 text-white dark:text-slate-900 font-bold rounded hover:scale-105 transition-all shadow-xl shadow-slate-900/20 flex items-center justify-center gap-2"
                 >
-                  START_AUTOMATION
+                  LAUNCH_CONSOLE <span className="opacity-50">→</span>
                 </Link>
                 <Link
                   href="/solutions"
@@ -81,6 +82,13 @@ export default async function Home() {
                 >
                   VIEW_SOLUTIONS
                 </Link>
+                <a
+                  href="https://github.com/huchialun9-ctrl/GridFlow-AI-"
+                  target="_blank"
+                  className="w-full sm:w-auto px-8 py-4 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-mono text-sm font-bold rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
+                >
+                  <Github className="w-4 h-4" /> REPO
+                </a>
               </div>
 
               {/* Trust Bar */}
