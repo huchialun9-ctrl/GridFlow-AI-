@@ -2,13 +2,17 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(req: Request) {
     try {
         const { data, prompt } = await req.json();
+
+        if (!process.env.OPENAI_API_KEY) {
+            return NextResponse.json({ error: 'OpenAI API Key is missing in environment' }, { status: 500 });
+        }
+
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
 
         if (!data || !prompt) {
             return NextResponse.json({ error: 'Data and prompt are required' }, { status: 400 });
