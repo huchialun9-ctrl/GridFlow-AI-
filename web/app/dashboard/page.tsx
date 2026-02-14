@@ -216,61 +216,62 @@ export default function Dashboard() {
 
                 <button
                     onClick={() => setIsExtModalOpen(true)}
-                    className="px-6 py-3 bg-slate-900 hover:bg-black dark:bg-slate-50 dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold font-mono rounded-lg shadow-xl shadow-slate-200 dark:shadow-none transition-all flex items-center justify-center gap-3 group shrink-0"
+                    className="px-8 py-4 bg-linear-to-br from-slate-900 to-slate-800 hover:from-black hover:to-slate-900 dark:from-slate-50 dark:to-slate-200 dark:hover:from-white dark:hover:to-slate-100 text-white dark:text-slate-900 text-[10px] font-black font-mono rounded-xl shadow-2xl shadow-indigo-500/10 transition-all flex items-center justify-center gap-4 group shrink-0 active:scale-95 border border-white/10 dark:border-black/5"
                 >
-                    <svg className="w-4 h-4 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                    INITIALIZE_EXTRACTION
+                    <div className="w-5 h-5 rounded-full bg-white/10 dark:bg-black/5 flex items-center justify-center group-hover:rotate-180 transition-transform duration-500">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
+                    INITIALIZE_EXTRACTION_PROTO
                 </button>
             </div>
 
-            {/* Strategic Capability Map */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-900/5 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50/50 dark:bg-slate-900/40 p-1.5 rounded-4xl border border-slate-200/50 dark:border-slate-800/50 backdrop-blur-sm shadow-inner overflow-hidden">
                 <div
                     onClick={() => handleModeSelect('excel')}
-                    className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer hover:bg-white dark:hover:bg-slate-800/50 ${processMode === 'excel' ? 'border-[#1D6F42] bg-white dark:bg-slate-800 shadow-lg' : 'border-transparent'}`}
+                    className={`flex flex-col gap-3 p-5 rounded-[1.4rem] border-2 transition-all cursor-pointer group relative overflow-hidden ${processMode === 'excel' ? 'border-emerald-500 bg-white dark:bg-slate-800 shadow-[0_20px_40px_-15px_rgba(16,185,129,0.15)]' : 'border-transparent hover:bg-white/50 dark:hover:bg-slate-800/30'}`}
                 >
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-[#1D6F42]">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className={`p-2.5 rounded-xl transition-colors ${processMode === 'excel' ? 'bg-emerald-500 text-white' : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'}`}>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                         </div>
-                        <span className="text-xs font-black text-slate-900 dark:text-slate-50 uppercase tracking-widest leading-none">Data Extraction</span>
+                        <span className="text-[11px] font-black text-slate-900 dark:text-slate-50 uppercase tracking-[0.2em] leading-none">Structured_Data</span>
                     </div>
-                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Scrape web tables & lists into structured datasets.</p>
-                    <div className="mt-2 flex items-center gap-2">
-                        <span className="text-[9px] font-bold text-[#1D6F42] bg-emerald-50 dark:bg-emerald-900/40 px-2 py-0.5 rounded border border-emerald-100">Excel (.xlsx)</span>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Scrape web manifestations into enterprise spreadsheets.</p>
+                    <div className="mt-auto flex items-center gap-2 pt-2">
+                        <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-900/40 px-2.5 py-1 rounded-full border border-emerald-100/50 uppercase">XLSX_PROTOCOL</span>
                     </div>
                 </div>
 
                 <div
                     onClick={() => handleModeSelect('word')}
-                    className={`flex flex-col gap-2 relative p-4 rounded-xl border-2 transition-all cursor-pointer hover:bg-white dark:hover:bg-slate-800/50 ${processMode === 'word' ? 'border-[#2B579A] bg-white dark:bg-slate-800 shadow-lg' : 'border-transparent'}`}
+                    className={`flex flex-col gap-3 p-5 rounded-[1.4rem] border-2 transition-all cursor-pointer group relative overflow-hidden ${processMode === 'word' ? 'border-indigo-500 bg-white dark:bg-slate-800 shadow-[0_20px_40px_-15px_rgba(79,70,229,0.15)]' : 'border-transparent hover:bg-white/50 dark:hover:bg-slate-800/30'}`}
                 >
-                    <div className="absolute -top-2 -right-2 bg-blue-600 text-[8px] font-black text-white px-2 py-0.5 rounded-full shadow-lg border-2 border-white dark:border-slate-900 animate-bounce">AI POWERED</div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-[#2B579A]">
+                    <div className="absolute top-0 right-0 py-1.5 px-4 bg-indigo-600 text-[8px] font-black text-white rounded-bl-xl shadow-lg uppercase tracking-widest z-10">AI_SEMANTIC</div>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className={`p-2.5 rounded-xl transition-colors ${processMode === 'word' ? 'bg-indigo-500 text-white' : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600'}`}>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         </div>
-                        <span className="text-xs font-black text-slate-900 dark:text-slate-50 uppercase tracking-widest leading-none">Literature Summary</span>
+                        <span className="text-[11px] font-black text-slate-900 dark:text-slate-50 uppercase tracking-[0.2em] leading-none">Abstract_Parsing</span>
                     </div>
-                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">AI analyzes articles & news to generate reflection reports.</p>
-                    <div className="mt-2 flex items-center gap-2">
-                        <span className="text-[9px] font-bold text-[#2B579A] bg-blue-50 dark:bg-blue-900/40 px-2 py-0.5 rounded border border-blue-100">Word (.docx)</span>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Deep analysis of articles to generate research bulletins.</p>
+                    <div className="mt-auto flex items-center gap-2 pt-2">
+                        <span className="text-[8px] font-black text-indigo-600 bg-indigo-50 dark:bg-indigo-900/40 px-2.5 py-1 rounded-full border border-indigo-100/50 uppercase">DOCX_CORE</span>
                     </div>
                 </div>
 
                 <div
                     onClick={() => handleModeSelect('ppt')}
-                    className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer hover:bg-white dark:hover:bg-slate-800/50 ${processMode === 'ppt' ? 'border-[#B7472A] bg-white dark:bg-slate-800 shadow-lg' : 'border-transparent'}`}
+                    className={`flex flex-col gap-3 p-5 rounded-[1.4rem] border-2 transition-all cursor-pointer group relative overflow-hidden ${processMode === 'ppt' ? 'border-orange-500 bg-white dark:bg-slate-800 shadow-[0_20px_40px_-15px_rgba(249,115,22,0.15)]' : 'border-transparent hover:bg-white/50 dark:hover:bg-slate-800/30'}`}
                 >
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-[#B7472A]">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className={`p-2.5 rounded-xl transition-colors ${processMode === 'ppt' ? 'bg-orange-500 text-white' : 'bg-orange-100 dark:bg-orange-900/30 text-orange-600'}`}>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
                         </div>
-                        <span className="text-xs font-black text-slate-900 dark:text-slate-50 uppercase tracking-widest leading-none">Dynamic Presentation</span>
+                        <span className="text-[11px] font-black text-slate-900 dark:text-slate-50 uppercase tracking-[0.2em] leading-none">Visual_Projection</span>
                     </div>
-                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Visualize data & AI insights into professional slide decks.</p>
-                    <div className="mt-2 flex items-center gap-2">
-                        <span className="text-[9px] font-bold text-[#B7472A] bg-orange-50 dark:bg-orange-900/40 px-2 py-0.5 rounded border border-orange-100">PowerPoint (.pptx)</span>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Dynamic visualization of datasets into slide hierarchies.</p>
+                    <div className="mt-auto flex items-center gap-2 pt-2">
+                        <span className="text-[8px] font-black text-orange-600 bg-orange-50 dark:bg-orange-900/40 px-2.5 py-1 rounded-full border border-orange-100/50 uppercase">PPTX_RENDER</span>
                     </div>
                 </div>
             </div>
@@ -330,14 +331,15 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Main Table */}
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden border-separate">
-                        <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-slate-800/20">
-                            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50 tracking-wide">Repository Index</h2>
-                            <div className="flex gap-2">
-                                <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
-                                <div className="h-2 w-2 rounded-full bg-slate-200 dark:bg-slate-800"></div>
-                                <div className="h-2 w-2 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+                    <div className="bg-white dark:bg-slate-900 rounded-4xl border border-slate-200/60 dark:border-slate-800/60 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] overflow-hidden border-separate transition-all hover:border-slate-300 dark:hover:border-slate-700">
+                        <div className="px-8 py-6 border-b border-slate-100/60 dark:border-slate-800/60 flex justify-between items-center bg-linear-to-r from-slate-50/50 to-white dark:from-slate-900/50 dark:to-slate-900">
+                            <div>
+                                <h2 className="text-[11px] font-black text-slate-900 dark:text-slate-50 tracking-[0.2em] uppercase mb-1">Repository_Ledger_Alpha</h2>
+                                <p className="text-[10px] text-slate-400 font-mono">Manifesting {datasets.length} Active Nodes</p>
+                            </div>
+                            <div className="flex gap-1.5">
+                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                <div className="h-1.5 w-4 rounded-full bg-slate-200 dark:bg-slate-800"></div>
                             </div>
                         </div>
                         <div className="overflow-x-auto">
